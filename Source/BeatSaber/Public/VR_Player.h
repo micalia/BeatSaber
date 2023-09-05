@@ -7,7 +7,7 @@
 #include "VR_Player.generated.h"
 
 UCLASS()
-class BEATSABER_API AVR_Player : public APawn
+class BEATSABER_API AVR_Player : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -25,5 +25,29 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UCameraComponent* cam;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UStaticMeshComponent* headMesh;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UMotionControllerComponent* leftController;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class USkeletalMeshComponent* leftHand;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UTextRenderComponent* leftLog;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UMotionControllerComponent* rightController;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class USkeletalMeshComponent* rightHand;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UTextRenderComponent* rightLog;
 
 };
