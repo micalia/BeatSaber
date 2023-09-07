@@ -27,7 +27,7 @@ ANodeBlock::ANodeBlock()
 	sm_nodeBlock->SetRelativeRotation(FRotator(0, 90, 0));
 	sm_nodeBlock->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	sm_nodeBlock->bHiddenInGame = true;
-
+	
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempNodeBlockMesh(TEXT("/Script/Engine.StaticMesh'/Game/Models/RedNoteBlock.RedNoteBlock'"));
 	if (tempNodeBlockMesh.Succeeded()) {
 		sm_nodeBlock->SetStaticMesh(tempNodeBlockMesh.Object);
@@ -39,6 +39,10 @@ void ANodeBlock::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FVector startPos = GetActorLocation();
+	FVector endPos = GetActorUpVector() * -1 * 600;
+
+	DrawDebugLine(GetWorld(), startPos, endPos, FColor::Blue, true, 10, 2, 4);
 }
 
 // Called every frame
