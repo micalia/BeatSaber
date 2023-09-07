@@ -24,7 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USceneComponent* rootComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

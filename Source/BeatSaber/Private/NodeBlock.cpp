@@ -39,10 +39,6 @@ void ANodeBlock::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	FVector startPos = GetActorLocation();
-	FVector endPos = GetActorUpVector() * -1 * 600;
-
-	DrawDebugLine(GetWorld(), startPos, endPos, FColor::Blue, true, 10, 2, 4);
 }
 
 // Called every frame

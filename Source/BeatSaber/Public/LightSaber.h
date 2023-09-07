@@ -34,7 +34,7 @@ public:
 		class UStaticMeshComponent* sm_blade;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		class UStaticMeshComponent* sm_point;
+		class UStaticMeshComponent* sm_pointVal;
 
 	UPROPERTY()
 	class UProceduralMeshComponent* OtherCompPointer;
