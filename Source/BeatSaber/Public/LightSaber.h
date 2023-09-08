@@ -56,4 +56,12 @@ public:
 			UPrimitiveComponent* OtherComp, 
 			int32 OtherBodyIndex
 		);
+
+	UPROPERTY(EditAnywhere, Category = "Materials")
+    class UMaterialInterface* sliceMat;
+
+public:
+	UPROPERTY()
+	class AInGameMode* gm;
+
 };

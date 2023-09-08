@@ -26,12 +26,16 @@ public:
 	TSubclassOf<class ANodeBlock> nodeBlockFactory;
 
 	UPROPERTY(EditAnywhere)
-	float spawnDelayTime = 1;
+	float spawnDelayTime = 2.5;
 	float currTime;
+
+public:
+	//combo
+	UPROPERTY(BlueprintReadWrite)
+	int32 currCombo;
 
 public:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> StartNodeLoc;
-
 
 };

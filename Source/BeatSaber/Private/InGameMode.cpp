@@ -8,7 +8,7 @@
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FClassFinder<ANodeBlock> tempNodeBlockObj(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_NodeBlock.BP_NodeBlock_C'"));
+	ConstructorHelpers::FClassFinder<ANodeBlock> tempNodeBlockObj(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_NodeBlock.BP_NodeBlock_C'"));
 	if (tempNodeBlockObj.Succeeded()) {
 		nodeBlockFactory = tempNodeBlockObj.Class;
 	}
@@ -33,10 +33,7 @@ void AInGameMode::Tick(float DeltaTime)
 	
 		float randomRotateVal = UKismetMathLibrary::RandomFloatInRange(0,360);
 
-		//FRotator randomRotate = FRotator(0, 0, randomRotateVal);
-
-		//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("rotate: %s"),  *randomRotate.ToString()), true, FVector2D(1, 1));
-
 		GetWorld()->SpawnActor<ANodeBlock>(nodeBlockFactory, testSpawnPos, FRotator(0));
+
 	}
 }

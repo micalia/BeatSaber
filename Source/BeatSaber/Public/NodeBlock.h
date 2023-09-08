@@ -32,4 +32,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UStaticMeshComponent* sm_nodeBlock;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bSlice;
+public:
+	//¿Ãµø
+	UPROPERTY(EditAnywhere)
+	float speed = 700;
+
+	void DelayDestroy();
 };
