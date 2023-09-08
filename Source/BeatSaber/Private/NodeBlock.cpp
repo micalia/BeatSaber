@@ -4,6 +4,7 @@
 #include "NodeBlock.h"
 #include "ProceduralMeshComponent.h"
 #include <Components/StaticMeshComponent.h>
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
 ANodeBlock::ANodeBlock()
@@ -39,6 +40,60 @@ void ANodeBlock::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	 int32 rand = UKismetMathLibrary::RandomInteger64InRange(0,7);
+
+	 switch (rand)
+	 {
+		case 0: // 0µµ ¾Æ·¡
+			{
+				SetActorRotation(FRotator(0, 0, 0));
+				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("0 de")), true, FVector2D(1, 1));
+				break;
+			}
+		case 1: // 45µµ ¾Æ·¡ ¿ÞÂÊ ´ë°¢¼±
+			{
+			SetActorRotation(FRotator(0, 0, 45));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("45 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 2: // 90µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 90));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("90 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 3: // 135µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 135));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("135 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 4: // 180µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 180));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("180 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 5: // 225µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 225));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("225 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 6: // 270µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 270));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("270 de")), true, FVector2D(1, 1));
+			break;
+			}
+		case 7: // 315µµ ¿ÞÂÊ
+			{
+			SetActorRotation(FRotator(0, 0, 315));
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("315 de")), true, FVector2D(1, 1));
+			break;
+			}
+	 }
+
 }
 
 // Called every frame

@@ -57,12 +57,12 @@ void ALightSaber::OnEndOverlap_Blade(UPrimitiveComponent* OverlappedComponent, A
 {
 	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("EndOverlap_Blade")), true, FVector2D(1, 1));
 	if (OtherCompPointer) {
-		//UProceduralMeshComponent* OutOtherHalfProcMesh;
-		//UMaterialInterface* mi = nullptr;
+		UProceduralMeshComponent* OutOtherHalfProcMesh;
+		UMaterialInterface* mi = nullptr;
 		if (sm_pointVal) {
-			/*UKismetProceduralMeshLibrary::SliceProceduralMesh(OtherCompPointer, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
+			UKismetProceduralMeshLibrary::SliceProceduralMesh(OtherCompPointer, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
 			OutOtherHalfProcMesh->SetSimulatePhysics(true);
-			OutOtherHalfProcMesh->AddImpulse(FVector(300), FName(TEXT("NONE")), true);*/
+			OutOtherHalfProcMesh->AddImpulse(FVector(300), FName(TEXT("NONE")), true);
 			
 			//각도 계산
 			FVector p0 = sm_pointVal->GetComponentLocation();
@@ -76,12 +76,12 @@ void ALightSaber::OnEndOverlap_Blade(UPrimitiveComponent* OverlappedComponent, A
 
 				float ScoreThreshold = 45.0f;
 				if (Angle <= ScoreThreshold) {
-					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(1, 1));
+					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
 				}
 				else{
-					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(1, 1));
+					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
 				}
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("Angle: %f"),  Angle), true, FVector2D(1, 1));
+				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("Angle: %f"),  Angle), true, FVector2D(3, 3));
 			}
 
 
