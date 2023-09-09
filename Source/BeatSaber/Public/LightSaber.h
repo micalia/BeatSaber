@@ -64,4 +64,5 @@ public:
 	UPROPERTY()
 	class AInGameMode* gm;
 
+	FVector PreviousFrameLocation;
 };

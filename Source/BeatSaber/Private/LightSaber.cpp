@@ -6,6 +6,7 @@
 #include "NodeBlock.h"
 #include <Kismet/GameplayStatics.h>
 #include "InGameMode.h"
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
 ALightSaber::ALightSaber()
@@ -49,6 +50,23 @@ void ALightSaber::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 현재 액터의 위치와 이전 프레임에서의 위치를 가져옵니다.
+	FVector CurrentLocation = sm_pointVal->GetComponentLocation();
+	FVector PreviousLocation = PreviousFrameLocation;
+
+	// 현재 프레임과 이전 프레임 사이의 거리 벡터를 계산합니다.
+	FVector Dir = CurrentLocation - PreviousLocation;
+
+	// 거리 벡터를 정규화하여 방향 벡터로 만듭니다.
+	Dir.Normalize();
+
+	// 원하는 작업 수행
+	FRotator newRotator = UKismetMathLibrary::MakeRotFromYX(Dir, rootComp->GetUpVector());
+	sm_pointVal->SetWorldRotation(newRotator);
+
+	// 현재 위치를 이전 프레임 위치로 설정합니다.
+	PreviousFrameLocation = CurrentLocation;
+
 }
 
 // Called to bind functionality to input
@@ -83,7 +101,7 @@ void ALightSaber::OnEndOverlap_Blade(UPrimitiveComponent* OverlappedComponent, A
 		if (sm_pointVal) {
 			UKismetProceduralMeshLibrary::SliceProceduralMesh(OtherCompPointer, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
 			OutOtherHalfProcMesh->SetSimulatePhysics(true);
-			OutOtherHalfProcMesh->AddImpulse(FVector(-800, 600, 300), FName(TEXT("NONE")), true);
+			OutOtherHalfProcMesh->AddImpulse(FVector(-300, 600, 300), FName(TEXT("NONE")), true);
 			
 			//각도 계산
 			FVector p0 = sm_pointVal->GetComponentLocation();
@@ -104,7 +122,7 @@ void ALightSaber::OnEndOverlap_Blade(UPrimitiveComponent* OverlappedComponent, A
 
 			nodeBlock->bSlice = true;
 			nodeBlock->proceduralMesh->SetSimulatePhysics(true);
-			nodeBlock->proceduralMesh->AddImpulse(FVector(-800, -600, -300), FName("None"), true);
+			nodeBlock->proceduralMesh->AddImpulse(FVector(-300, -600, -300), FName("None"), true);
 			nodeBlock->DelayDestroy();
 
 			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("GM combo: %d"),  gm->currCombo), true, FVector2D(3, 3));
