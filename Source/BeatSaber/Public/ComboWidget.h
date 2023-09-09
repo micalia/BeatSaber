@@ -14,4 +14,7 @@ class BEATSABER_API UComboWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditAnywhere, meta=(BindWidget))
+	class UTextBlock* currCombo_txt;
 };

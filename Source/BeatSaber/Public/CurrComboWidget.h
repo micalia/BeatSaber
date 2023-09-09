@@ -25,5 +25,11 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UComboWidget> comboWidgetFactory;
+
+	UPROPERTY(EditAnywhere)
 	class UWidgetComponent* currComboUIComp;
+
+	UPROPERTY()
+	class UComboWidget* comboWidgetInstance;
 };

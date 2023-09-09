@@ -35,6 +35,12 @@ public:
 	int32 currCombo;
 
 public:
+	//Á¡¼ö À§Á¬
+	UPROPERTY()
+	class ACurrComboWidget* currComboWidgetInstance;
+
+	void ScoreUpdate();
+public:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> StartNodeLoc;
 
