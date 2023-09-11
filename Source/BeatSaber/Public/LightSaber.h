@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		class UStaticMeshComponent* sm_pointVal;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		class UStaticMeshComponent* sm_handle;
+
 	UPROPERTY()
 	class UProceduralMeshComponent* OtherCompPointer;
 

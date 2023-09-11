@@ -50,4 +50,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
 		class UTextRenderComponent* rightLog;
 
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UChildActorComponent* rightSword;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UChildActorComponent* leftSword;
+
+		UPROPERTY(EditAnywhere)
+	TSubclassOf<class AActor> leftSaberFactory;
+		
+		UPROPERTY(EditAnywhere)
+	TSubclassOf<class AActor> rightSaberFactory;
+
 };

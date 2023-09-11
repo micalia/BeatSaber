@@ -20,6 +20,8 @@ ALightSaber::ALightSaber()
 	sm_blade = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blade"));
 	sm_blade->SetupAttachment(rootComp);
 	sm_blade->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	sm_blade->SetRelativeLocation(FVector(0,0, -15));
+	sm_blade->SetRelativeScale3D(FVector(0.06, 0.06, 0.1));
 
 	sm_pointVal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PointVal"));
 	sm_pointVal->SetupAttachment(sm_blade);
@@ -35,6 +37,18 @@ ALightSaber::ALightSaber()
 		sliceMat = tempSliceMat.Object;
 	}
 	
+	sm_handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Handle"));
+	sm_handle->SetupAttachment(rootComp);
+	
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempSmHandleMesh(TEXT("/Script/Engine.StaticMesh'/Game/SB/Meshes/SaberHandle.SaberHandle'"));
+
+	if (tempSmHandleMesh.Succeeded())
+	{
+		sm_handle->SetStaticMesh(tempSmHandleMesh.Object);
+	}
+	
+	sm_handle->SetRelativeScale3D(FVector(0.06, 0.06, 0.055));
+	sm_handle->SetRelativeLocation(FVector(0,0,-5));
 }
 
 // Called when the game starts or when spawned
@@ -50,21 +64,15 @@ void ALightSaber::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// 현재 액터의 위치와 이전 프레임에서의 위치를 가져옵니다.
 	FVector CurrentLocation = sm_pointVal->GetComponentLocation();
 	FVector PreviousLocation = PreviousFrameLocation;
-
-	// 현재 프레임과 이전 프레임 사이의 거리 벡터를 계산합니다.
 	FVector Dir = CurrentLocation - PreviousLocation;
 
-	// 거리 벡터를 정규화하여 방향 벡터로 만듭니다.
 	Dir.Normalize();
 
-	// 원하는 작업 수행
 	FRotator newRotator = UKismetMathLibrary::MakeRotFromYX(Dir, rootComp->GetUpVector());
 	sm_pointVal->SetWorldRotation(newRotator);
 
-	// 현재 위치를 이전 프레임 위치로 설정합니다.
 	PreviousFrameLocation = CurrentLocation;
 
 }

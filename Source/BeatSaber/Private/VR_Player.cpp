@@ -58,7 +58,27 @@ AVR_Player::AVR_Player()
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
+	ConstructorHelpers::FClassFinder<AActor> tempLeftSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_LeftLightSaber.BP_LeftLightSaber_C'"));
+	if (tempLeftSaber.Succeeded()) {
+		leftSaberFactory = tempLeftSaber.Class;
+	}
 
+	ConstructorHelpers::FClassFinder<AActor> tempRightSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_RightLightSaber.BP_RightLightSaber_C'"));
+	if (tempRightSaber.Succeeded()) {
+		rightSaberFactory = tempRightSaber.Class;
+	}
+
+	rightSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("RightSword"));
+	rightSword->SetupAttachment(rightController);
+	rightSword->SetChildActorClass(rightSaberFactory);
+	rightSword->SetRelativeLocation(FVector(26.6, -2.3, -9.4));
+	rightSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
+
+	leftSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("LeftSword"));
+	leftSword->SetupAttachment(leftController);
+	leftSword->SetChildActorClass(leftSaberFactory);
+	leftSword->SetRelativeLocation(FVector(26.6, 2.3, -9.4));
+	leftSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
 }
 
 // Called when the game starts or when spawned
