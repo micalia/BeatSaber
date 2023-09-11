@@ -20,7 +20,7 @@ AVR_Player::AVR_Player()
 	headMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Head"));
 	headMesh->SetupAttachment(cam);
 	headMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	
 	leftController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Left Controller"));
 	leftController->SetupAttachment(RootComponent);
 	// 모션 소스 선택
