@@ -26,9 +26,7 @@ ALightSaber::ALightSaber()
 	sm_pointVal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PointVal"));
 	sm_pointVal->SetupAttachment(sm_blade);
 	sm_pointVal->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-
-	sm_blade->OnComponentBeginOverlap.AddDynamic(this, &ALightSaber::OnStartOverlap_Blade);
-	sm_blade->OnComponentEndOverlap.AddDynamic(this, &ALightSaber::OnEndOverlap_Blade);
+	sm_pointVal->SetRelativeLocation(FVector(0, 0, 790));
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempSliceMat(TEXT("/Script/Engine.Material'/Game/SB/Models/light-saber/source/02_-_Default.02_-_Default'"));
 
@@ -73,6 +71,82 @@ void ALightSaber::Tick(float DeltaTime)
 	FRotator newRotator = UKismetMathLibrary::MakeRotFromYX(Dir, rootComp->GetUpVector());
 	sm_pointVal->SetWorldRotation(newRotator);
 
+	FVector halfSize = FVector(73,4,4);
+	TArray<AActor*> EmptyActorsToIgnore;
+	TArray<FHitResult> HitResult;
+
+	bool bSliceChk = UKismetSystemLibrary::BoxTraceMulti(
+		GetWorld(),
+		CurrentLocation,
+		PreviousLocation,
+		halfSize,
+		newRotator,
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel3),
+		false,
+		EmptyActorsToIgnore,
+		EDrawDebugTrace::ForOneFrame,
+		HitResult,
+		true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		0.1
+	);
+
+	if (bSliceChk) {
+		for (int32 i =0; i<HitResult.Num();i++)
+		{
+			ANodeBlock* nodeBlock = Cast<ANodeBlock>(HitResult[i].GetActor());
+			if (nodeBlock) {
+				if (nodeBlock->bSlice){
+					continue;
+				}
+				else {
+					nodeBlock->bSlice = true;
+				}
+			}else{
+				continue;
+			}
+			UProceduralMeshComponent* proceduralMesh = Cast<UProceduralMeshComponent>(HitResult[i].Component);
+			if (proceduralMesh) {
+				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("YYYYYYYYY")), true, FVector2D(3, 3));
+				UProceduralMeshComponent* OutOtherHalfProcMesh;
+				UMaterialInterface* mi = sliceMat;
+				if (sm_pointVal) {
+					UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
+					OutOtherHalfProcMesh->SetSimulatePhysics(true);
+					OutOtherHalfProcMesh->AddImpulse(FVector(-300, 600, 300), FName(TEXT("NONE")), true);
+
+					//각도 계산
+					FVector p0 = sm_pointVal->GetComponentLocation();
+					FVector p1 = p0 + sm_pointVal->GetRightVector() * 500;
+					FVector swingDir = sm_pointVal->GetRightVector();
+
+					float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(swingDir, nodeBlock->rootComp->GetUpVector() * -1)));
+
+					float ScoreThreshold = 45.0f;
+					if (Angle <= ScoreThreshold) {
+						GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
+						gm->currCombo += 1;
+					}
+					else {
+						GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
+						gm->currCombo = 0;
+					}
+
+					//nodeBlock->bSlice = true;
+					nodeBlock->proceduralMesh->SetSimulatePhysics(true);
+					nodeBlock->proceduralMesh->AddImpulse(FVector(-300, -600, -300), FName("None"), true);
+					nodeBlock->DelayDestroy();
+
+					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("GM combo: %d"), gm->currCombo), true, FVector2D(3, 3));
+			}
+			else {
+				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("NNNNNNNNN")), true, FVector2D(3, 3));
+			}
+		}
+		}
+	}
+
 	PreviousFrameLocation = CurrentLocation;
 
 }
@@ -83,59 +157,4 @@ void ALightSaber::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void ALightSaber::OnStartOverlap_Blade(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	ANodeBlock* nodeBlock = Cast<ANodeBlock>(OtherActor);
-	if (nodeBlock) {
-		if (nodeBlock->bSlice) return;
-	}
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("StartOverlap_Blade")), true, FVector2D(1, 1));
-	OtherCompPointer = Cast<UProceduralMeshComponent>(OtherComp);
-}
-
-void ALightSaber::OnEndOverlap_Blade(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	ANodeBlock* nodeBlock = Cast<ANodeBlock>(OtherActor);
-	if (nodeBlock) {
-		if (nodeBlock->bSlice) return;
-	}
-	else {
-		return;
-	}
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("EndOverlap_Blade")), true, FVector2D(1, 1));
-	if (OtherCompPointer) {
-		UProceduralMeshComponent* OutOtherHalfProcMesh;
-		UMaterialInterface* mi = sliceMat;
-		if (sm_pointVal) {
-			UKismetProceduralMeshLibrary::SliceProceduralMesh(OtherCompPointer, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
-			OutOtherHalfProcMesh->SetSimulatePhysics(true);
-			OutOtherHalfProcMesh->AddImpulse(FVector(-300, 600, 300), FName(TEXT("NONE")), true);
-			
-			//각도 계산
-			FVector p0 = sm_pointVal->GetComponentLocation();
-			FVector p1 = p0 + sm_pointVal->GetRightVector() * 500;
-			FVector swingDir = sm_pointVal->GetRightVector();
-
-			float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(swingDir, nodeBlock->rootComp->GetUpVector() * -1)));
-
-			float ScoreThreshold = 45.0f;
-			if (Angle <= ScoreThreshold) {
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
-				gm->currCombo += 1;
-			}
-			else{
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
-				gm->currCombo = 0;
-			}
-
-			nodeBlock->bSlice = true;
-			nodeBlock->proceduralMesh->SetSimulatePhysics(true);
-			nodeBlock->proceduralMesh->AddImpulse(FVector(-300, -600, -300), FName("None"), true);
-			nodeBlock->DelayDestroy();
-
-			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("GM combo: %d"),  gm->currCombo), true, FVector2D(3, 3));
-
-		}
-	}
-}
 

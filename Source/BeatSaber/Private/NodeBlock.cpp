@@ -19,7 +19,7 @@ ANodeBlock::ANodeBlock()
 	proceduralMesh->SetupAttachment(rootComp);
 	proceduralMesh->SetRelativeLocation(FVector(0, 0, -100));
 	proceduralMesh->SetRelativeRotation(FRotator(0, 90, 0));
-	proceduralMesh->SetCollisionProfileName(TEXT("BlockAll"));
+	proceduralMesh->SetCollisionProfileName(TEXT("NodeBlock"));
 	proceduralMesh->bUseComplexAsSimpleCollision = false;
 
 	sm_nodeBlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("sm_nodeBlock"));

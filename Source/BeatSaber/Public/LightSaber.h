@@ -42,24 +42,6 @@ public:
 	UPROPERTY()
 	class UProceduralMeshComponent* OtherCompPointer;
 
-	UFUNCTION()
-		void OnStartOverlap_Blade(
-			UPrimitiveComponent* OverlappedComponent,
-			AActor* OtherActor,
-			UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex,
-			bool bFromSweep,
-			const FHitResult& SweepResult
-		);
-		
-		UFUNCTION()
-		void OnEndOverlap_Blade(
-			UPrimitiveComponent* OverlappedComponent, 
-			AActor* OtherActor, 
-			UPrimitiveComponent* OtherComp, 
-			int32 OtherBodyIndex
-		);
-
 	UPROPERTY(EditAnywhere, Category = "Materials")
     class UMaterialInterface* sliceMat;
 
