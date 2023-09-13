@@ -54,19 +54,19 @@ void ANodeBlock::BeginPlay()
 	UMaterialInstanceDynamic* CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
-
-	blockColor = UKismetMathLibrary::RandomInteger64InRange(0,1);
+	
+	blockColor = UKismetMathLibrary::RandomIntegerInRange(0,1);
 
 	 switch (blockColor)
 	 {
 		case EBlockColor::Red:
 			if (CubeDynamicMaterial) {
-				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 			}
 			break;
 		case EBlockColor::Blue:
 			if (CubeDynamicMaterial) {
-				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
 			}
 			break;
 	 }

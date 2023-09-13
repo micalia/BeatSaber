@@ -111,18 +111,15 @@ void ALightSaber::Tick(float DeltaTime)
 			if (proceduralMesh) {
 				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("YYYYYYYYY")), true, FVector2D(3, 3));
 				UProceduralMeshComponent* OutOtherHalfProcMesh;
+				//Àß¶óÁø ´Ü¸é »ö±ò
 				if(nodeBlock->blockColor == 0) {  // »¡°­
-					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 				}
 				else if(nodeBlock->blockColor == 1) { // ÆÄ¶û
-					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
 				}
 				UMaterialInterface* mi = SliceCubeDynamicMaterial;
 				if (sm_pointVal) {
-					FVector BoxCenter = nodeBlock->GetActorLocation();
-					FVector CutterOffsetVector = sm_pointVal->GetUpVector();
-					FVector AdjustedCutterOffsetVector = GetActorRotation().UnrotateVector(CutterOffsetVector);
-
 					UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
 					OutOtherHalfProcMesh->SetSimulatePhysics(true);
 					OutOtherHalfProcMesh->SetCollisionProfileName(TEXT("NodeBlock"));
@@ -136,9 +133,17 @@ void ALightSaber::Tick(float DeltaTime)
 					float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(swingDir, nodeBlock->rootComp->GetUpVector() * -1)));
 
 					float ScoreThreshold = 45.0f;
+
+					//Á¡¼ö ÆÇÁ¤
 					if (Angle <= ScoreThreshold) {
-						GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
-						gm->currCombo += 1;
+						if ((int)saberColor == nodeBlock->blockColor) {
+							GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
+							gm->currCombo += 1;
+						}
+						else {
+							GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
+							gm->currCombo = 0;
+						}
 					}
 					else {
 						GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));

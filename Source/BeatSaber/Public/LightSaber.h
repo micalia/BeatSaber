@@ -6,6 +6,12 @@
 #include "GameFramework/Pawn.h"
 #include "LightSaber.generated.h"
 
+UENUM(BlueprintType)
+enum class ESaberColor :uint8 {
+	Red,
+	Blue,
+};
+
 UCLASS()
 class BEATSABER_API ALightSaber : public APawn
 {
@@ -47,6 +53,9 @@ public:
 
 	UPROPERTY()
 	UMaterialInstanceDynamic* SliceCubeDynamicMaterial;
+
+	UPROPERTY(EditAnywhere)
+	ESaberColor saberColor = ESaberColor::Red;
 
 public:
 	UPROPERTY()
