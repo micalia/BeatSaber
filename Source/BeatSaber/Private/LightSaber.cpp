@@ -109,7 +109,6 @@ void ALightSaber::Tick(float DeltaTime)
 			}
 			UProceduralMeshComponent* proceduralMesh = Cast<UProceduralMeshComponent>(HitResult[i].Component);
 			if (proceduralMesh) {
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("YYYYYYYYY")), true, FVector2D(3, 3));
 				UProceduralMeshComponent* OutOtherHalfProcMesh;
 				//잘라진 단면 색깔
 				if(nodeBlock->blockColor == 0) {  // 빨강
@@ -137,16 +136,13 @@ void ALightSaber::Tick(float DeltaTime)
 					//점수 판정
 					if (Angle <= ScoreThreshold) {
 						if ((int)saberColor == nodeBlock->blockColor) {
-							GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ScoreUP!!!!!")), true, FVector2D(3, 3));
 							gm->currCombo += 1;
 						}
 						else {
-							GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
 							gm->currCombo = 0;
 						}
 					}
 					else {
-						GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("notScore")), true, FVector2D(3, 3));
 						gm->currCombo = 0;
 					}
 
@@ -154,10 +150,6 @@ void ALightSaber::Tick(float DeltaTime)
 					nodeBlock->proceduralMesh->AddImpulse(FVector(-550, -700, -400), FName("None"), true);
 					nodeBlock->DelayDestroy();
 
-					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("GM combo: %d"), gm->currCombo), true, FVector2D(3, 3));
-			}
-			else {
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("NNNNNNNNN")), true, FVector2D(3, 3));
 			}
 		}
 		}

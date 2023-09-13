@@ -11,7 +11,7 @@
 // Sets default values
 ANodeBlock::ANodeBlock()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	rootComp = CreateDefaultSubobject<USceneComponent>(TEXT("rootComp"));
@@ -30,7 +30,7 @@ ANodeBlock::ANodeBlock()
 	sm_nodeBlock->SetRelativeRotation(FRotator(0, 90, 0));
 	sm_nodeBlock->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	sm_nodeBlock->bHiddenInGame = true;
-	
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempNodeBlockMesh(TEXT("/Script/Engine.StaticMesh'/Game/Models/RedNoteBlock.RedNoteBlock'"));
 	if (tempNodeBlockMesh.Succeeded()) {
 		sm_nodeBlock->SetStaticMesh(tempNodeBlockMesh.Object);
@@ -39,7 +39,7 @@ ANodeBlock::ANodeBlock()
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempBlockMat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/SB/Materials/M_Cube_Inst.M_Cube_Inst'"));
 
 	if (tempBlockMat.Succeeded())
-	{ 
+	{
 		blockMat = tempBlockMat.Object;
 	}
 
@@ -54,68 +54,68 @@ void ANodeBlock::BeginPlay()
 	UMaterialInstanceDynamic* CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
-	
-	blockColor = UKismetMathLibrary::RandomIntegerInRange(0,1);
 
-	 switch (blockColor)
-	 {
-		case EBlockColor::Red:
-			if (CubeDynamicMaterial) {
-				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
-			}
-			break;
-		case EBlockColor::Blue:
-			if (CubeDynamicMaterial) {
-				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
-			}
-			break;
-	 }
+	blockColor = UKismetMathLibrary::RandomIntegerInRange(0, 1);
 
-	 blockRotate = UKismetMathLibrary::RandomInteger64InRange(0,7);
+	switch (blockColor)
+	{
+	case EBlockColor::Red:
+		if (CubeDynamicMaterial) {
+			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+		}
+		break;
+	case EBlockColor::Blue:
+		if (CubeDynamicMaterial) {
+			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+		}
+		break;
+	}
 
-	 switch (blockRotate)
-	 {
-		case 0: // 0도 아래
-			{
-				SetActorRotation(FRotator(0, 0, 0));
-				break;
-			}
-		case 1: // 45도 아래 왼쪽 대각선
-			{
-			SetActorRotation(FRotator(0, 0, 45));
-			break;
-			}
-		case 2: // 90도 
-			{
-			SetActorRotation(FRotator(0, 0, 90));			
-			break;
-			}
-		case 3: // 135도 
-			{
-			SetActorRotation(FRotator(0, 0, 135));			
-			break;
-			}
-		case 4: // 180도 
-			{
-			SetActorRotation(FRotator(0, 0, 180));			
-			break;
-			}
-		case 5: // 225도 
-			{
-			SetActorRotation(FRotator(0, 0, 225));			
-			break;
-			}
-		case 6: // 270도
-			{
-			SetActorRotation(FRotator(0, 0, 270));			
-			break;
-			}
-		case 7: // 315도 
-			{
-			SetActorRotation(FRotator(0, 0, 315));			
-			break;
-			}
-	 }
+	blockRotate = UKismetMathLibrary::RandomInteger64InRange(0, 7);
+
+	switch (blockRotate)
+	{
+	case 0: // 0도 아래
+	{
+		SetActorRotation(FRotator(0, 0, 0));
+		break;
+	}
+	case 1: // 45도 아래 왼쪽 대각선
+	{
+		SetActorRotation(FRotator(0, 0, 45));
+		break;
+	}
+	case 2: // 90도 
+	{
+		SetActorRotation(FRotator(0, 0, 90));
+		break;
+	}
+	case 3: // 135도 
+	{
+		SetActorRotation(FRotator(0, 0, 135));
+		break;
+	}
+	case 4: // 180도 
+	{
+		SetActorRotation(FRotator(0, 0, 180));
+		break;
+	}
+	case 5: // 225도 
+	{
+		SetActorRotation(FRotator(0, 0, 225));
+		break;
+	}
+	case 6: // 270도
+	{
+		SetActorRotation(FRotator(0, 0, 270));
+		break;
+	}
+	case 7: // 315도 
+	{
+		SetActorRotation(FRotator(0, 0, 315));
+		break;
+	}
+	}
 
 }
 
