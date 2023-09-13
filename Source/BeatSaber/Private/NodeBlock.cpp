@@ -5,6 +5,8 @@
 #include "ProceduralMeshComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include <Kismet/KismetMathLibrary.h>
+#include <Materials/MaterialInstanceDynamic.h>
+#include <Kismet/KismetMaterialLibrary.h>
 
 // Sets default values
 ANodeBlock::ANodeBlock()
@@ -33,16 +35,45 @@ ANodeBlock::ANodeBlock()
 	if (tempNodeBlockMesh.Succeeded()) {
 		sm_nodeBlock->SetStaticMesh(tempNodeBlockMesh.Object);
 	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempBlockMat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/SB/Materials/M_Cube_Inst.M_Cube_Inst'"));
+
+	if (tempBlockMat.Succeeded())
+	{ 
+		blockMat = tempBlockMat.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
 void ANodeBlock::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	 int32 rand = UKismetMathLibrary::RandomInteger64InRange(0,7);
 
-	 switch (rand)
+	sm_nodeBlock->SetMaterial(0, blockMat);
+	UMaterialInstanceDynamic* CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
+	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
+	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
+
+	blockColor = UKismetMathLibrary::RandomInteger64InRange(0,1);
+
+	 switch (blockColor)
+	 {
+		case EBlockColor::Red:
+			if (CubeDynamicMaterial) {
+				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+			}
+			break;
+		case EBlockColor::Blue:
+			if (CubeDynamicMaterial) {
+				CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+			}
+			break;
+	 }
+
+	 blockRotate = UKismetMathLibrary::RandomInteger64InRange(0,7);
+
+	 switch (blockRotate)
 	 {
 		case 0: // 0µµ ¾Æ·¡
 			{
@@ -54,32 +85,32 @@ void ANodeBlock::BeginPlay()
 			SetActorRotation(FRotator(0, 0, 45));
 			break;
 			}
-		case 2: // 90µµ ¿ÞÂÊ
+		case 2: // 90µµ 
 			{
 			SetActorRotation(FRotator(0, 0, 90));			
 			break;
 			}
-		case 3: // 135µµ ¿ÞÂÊ
+		case 3: // 135µµ 
 			{
 			SetActorRotation(FRotator(0, 0, 135));			
 			break;
 			}
-		case 4: // 180µµ ¿ÞÂÊ
+		case 4: // 180µµ 
 			{
 			SetActorRotation(FRotator(0, 0, 180));			
 			break;
 			}
-		case 5: // 225µµ ¿ÞÂÊ
+		case 5: // 225µµ 
 			{
 			SetActorRotation(FRotator(0, 0, 225));			
 			break;
 			}
-		case 6: // 270µµ ¿ÞÂÊ
+		case 6: // 270µµ
 			{
 			SetActorRotation(FRotator(0, 0, 270));			
 			break;
 			}
-		case 7: // 315µµ ¿ÞÂÊ
+		case 7: // 315µµ 
 			{
 			SetActorRotation(FRotator(0, 0, 315));			
 			break;

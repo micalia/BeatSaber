@@ -28,7 +28,7 @@ ALightSaber::ALightSaber()
 	sm_pointVal->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	sm_pointVal->SetRelativeLocation(FVector(0, 0, 790));
 
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempSliceMat(TEXT("/Script/Engine.Material'/Game/SB/Models/light-saber/source/02_-_Default.02_-_Default'"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempSliceMat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/SB/Materials/M_crosssection_Inst.M_crosssection_Inst'"));
 
 	if (tempSliceMat.Succeeded())
 	{
@@ -54,6 +54,7 @@ void ALightSaber::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SliceCubeDynamicMaterial = UMaterialInstanceDynamic::Create(sliceMat, this);
 	gm = Cast<AInGameMode>(GetWorld()->GetAuthGameMode());
 }
 
@@ -84,7 +85,7 @@ void ALightSaber::Tick(float DeltaTime)
 		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel3),
 		false,
 		EmptyActorsToIgnore,
-		EDrawDebugTrace::ForOneFrame,
+		EDrawDebugTrace::None,
 		HitResult,
 		true,
 		FLinearColor::Red,
@@ -110,11 +111,22 @@ void ALightSaber::Tick(float DeltaTime)
 			if (proceduralMesh) {
 				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("YYYYYYYYY")), true, FVector2D(3, 3));
 				UProceduralMeshComponent* OutOtherHalfProcMesh;
-				UMaterialInterface* mi = sliceMat;
+				if(nodeBlock->blockColor == 0) {  // »¡°­
+					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+				}
+				else if(nodeBlock->blockColor == 1) { // ÆÄ¶û
+					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+				}
+				UMaterialInterface* mi = SliceCubeDynamicMaterial;
 				if (sm_pointVal) {
+					FVector BoxCenter = nodeBlock->GetActorLocation();
+					FVector CutterOffsetVector = sm_pointVal->GetUpVector();
+					FVector AdjustedCutterOffsetVector = GetActorRotation().UnrotateVector(CutterOffsetVector);
+
 					UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
 					OutOtherHalfProcMesh->SetSimulatePhysics(true);
-					OutOtherHalfProcMesh->AddImpulse(FVector(-300, 600, 300), FName(TEXT("NONE")), true);
+					OutOtherHalfProcMesh->SetCollisionProfileName(TEXT("NodeBlock"));
+					OutOtherHalfProcMesh->AddImpulse(FVector(-550, 700, 400), FName(TEXT("NONE")), true);
 
 					//°¢µµ °è»ê
 					FVector p0 = sm_pointVal->GetComponentLocation();
@@ -133,9 +145,8 @@ void ALightSaber::Tick(float DeltaTime)
 						gm->currCombo = 0;
 					}
 
-					//nodeBlock->bSlice = true;
 					nodeBlock->proceduralMesh->SetSimulatePhysics(true);
-					nodeBlock->proceduralMesh->AddImpulse(FVector(-300, -600, -300), FName("None"), true);
+					nodeBlock->proceduralMesh->AddImpulse(FVector(-550, -700, -400), FName("None"), true);
 					nodeBlock->DelayDestroy();
 
 					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("GM combo: %d"), gm->currCombo), true, FVector2D(3, 3));

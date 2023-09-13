@@ -43,7 +43,10 @@ public:
 	class UProceduralMeshComponent* OtherCompPointer;
 
 	UPROPERTY(EditAnywhere, Category = "Materials")
-    class UMaterialInterface* sliceMat;
+		class UMaterialInterface* sliceMat;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* SliceCubeDynamicMaterial;
 
 public:
 	UPROPERTY()
