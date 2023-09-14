@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "EO_RhythmNote.generated.h"
+#include "EO_CursorNote.generated.h"
 
 
 UCLASS()
-class BEATSABER_API AEO_RhythmNote : public AActor
+class BEATSABER_API AEO_CursorNote : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	AEO_RhythmNote();
+	AEO_CursorNote();
 
 protected:
 	virtual void BeginPlay() override;
@@ -21,7 +21,7 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere)
-	class UBoxComponent* boxComp;
+	class USceneComponent* rootSceneComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* meshComp;
 	UPROPERTY(VisibleAnywhere)
@@ -30,20 +30,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UMaterialInterface* matInterface;
 
-	UPROPERTY(EditDefaultsOnly)
-	float speed = 500;
-	int myXPos = 0;
-	int myYPos = 0;
-	int colorIndex = 0;
-
-private:
-	UPROPERTY(VisibleAnywhere)
-	class AEO_Sync* sync;
-
 private:
 	UMaterialInstanceDynamic* cubeDynamicMaterial;
 
 public:
 	UFUNCTION()
-	void SetNoteColor(int num);
+	void SwitchNoteColor(int num);
 };

@@ -26,7 +26,6 @@ void AEO_Grid::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	placedNotes.SetNum(4);
 }
 
 void AEO_Grid::Tick(float DeltaTime)

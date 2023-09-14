@@ -49,7 +49,10 @@ public:
 	//블럭 회전 값 (0~7)
 	int blockRotate;
 	
+	UMaterialInstanceDynamic* CubeDynamicMaterial;
 	int blockColor;
+	UFUNCTION()
+	void SwitchColor(int num);
 
 public:
 	//이동

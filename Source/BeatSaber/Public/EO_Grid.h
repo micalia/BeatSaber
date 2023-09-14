@@ -30,8 +30,7 @@ private:
 	class AGridController* gridController;*/
 
 public:
-	UPROPERTY(VisibleAnywhere)
-	TArray<class AEO_RhythmNote*> placedNotes;
+	class AEO_RhythmNote* noteArr[3][4] = { nullptr, };
 
 private:
 	UPROPERTY(EditDefaultsOnly)

@@ -15,7 +15,7 @@ AEO_Sync::AEO_Sync()
 		noteFactory = noteTemp.Class;
 	}
 
-	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/test.test'"));
+	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/test2.test2'"));
 	if (patternTemp.Succeeded())
 	{
 		patternData = patternTemp.Object;
@@ -70,7 +70,8 @@ void AEO_Sync::GenerateNote()
 		{
 			FPatternDataTableRow* row = patternData->FindRow<FPatternDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
 
-			GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, FVector(startPos + offset + 500 * (row->ms * 0.001f), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator());
+			AEO_RhythmNote* tempNote = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 500 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
+			tempNote->SetNoteColor(row->color);
 		}
 	}
 
@@ -82,15 +83,15 @@ float AEO_Sync::XGeneratePos(int rowX)
 {
 	if (rowX == 0)
 	{
-		return 0;
+		return GetActorLocation().Z + 200;
 	}
 	else if (rowX == 1)
 	{
-		return 1;
+		return GetActorLocation().Z + 100;
 	}
 	else if (rowX == 2)
 	{
-		return 2;
+		return GetActorLocation().Z + 0;
 	}
 
 	return -1;

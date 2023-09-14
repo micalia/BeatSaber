@@ -51,26 +51,13 @@ void ANodeBlock::BeginPlay()
 	Super::BeginPlay();
 
 	sm_nodeBlock->SetMaterial(0, blockMat);
-	UMaterialInstanceDynamic* CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
+	CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
 
 	blockColor = UKismetMathLibrary::RandomIntegerInRange(0, 1);
-
-	switch (blockColor)
-	{
-	case 0: // »¡°­
-		if (CubeDynamicMaterial) {
-			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
-		}
-		break;
-	case 1: // ÆÄ¶û
-		if (CubeDynamicMaterial) {
-			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
-		}
-		break;
-	}
-
+	SwitchColor(blockColor);
+	
 	blockRotate = UKismetMathLibrary::RandomInteger64InRange(0, 7);
 
 	switch (blockRotate)
@@ -130,6 +117,23 @@ void ANodeBlock::Tick(float DeltaTime)
 		SetActorLocation(p0 + vt);
 	}
 
+}
+
+void ANodeBlock::SwitchColor(int num)
+{
+	switch (num)
+	{
+	case 0: // »¡°­
+		if (CubeDynamicMaterial) {
+			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+		}
+		break;
+	case 1: // ÆÄ¶û
+		if (CubeDynamicMaterial) {
+			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+		}
+		break;
+	}
 }
 
 void ANodeBlock::DelayDestroy()

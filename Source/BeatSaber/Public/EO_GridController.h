@@ -32,7 +32,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
 	TSubclassOf<class AEO_RhythmNote> noteFactory;
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
-	TSubclassOf<class AActor> cursorFactory;
+	TSubclassOf<class AEO_CursorNote> cursorFactory;
 
 private:
 	float musicBPM;
@@ -47,12 +47,13 @@ private:
 
 	FVector endGridPos;
 
-	class AActor* tempNote = nullptr;
+	class AEO_CursorNote* tempNote = nullptr;
 	class AEO_Grid* currentGrid = nullptr;
 
 	int yArrIndex = 0;
 	int xArrIndex = 2;
 	float zPos = 0;
+	int colorIndex = 0;
 
 	bool isPlaying = false;
 
@@ -65,6 +66,8 @@ private:
 	void NodeRightRotation();
 	void NodeUp();
 	void NodeDown();
+	void ChangeRedColor();
+	void ChangeBlueColor();
 
 	void SoundPlay();
 	void OutData();
