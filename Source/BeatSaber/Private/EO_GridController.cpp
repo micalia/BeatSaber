@@ -98,10 +98,10 @@ void AEO_GridController::Tick(float DeltaTime)
 						yPos = 50;
 						yArrIndex = 2;
 					}
-					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, 0));
+					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
 
-					UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
+					//UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
 				}
 			}
 		}
@@ -132,6 +132,10 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("RemoveClick"), IE_Pressed, this, &AEO_GridController::RemoveNote);
 	PlayerInputComponent->BindAction(TEXT("SoundPlay"), IE_Pressed, this, &AEO_GridController::SoundPlay);
 	PlayerInputComponent->BindAction(TEXT("TestKey"), IE_Pressed, this, &AEO_GridController::OutData);
+	PlayerInputComponent->BindAction(TEXT("LeftRotation"), IE_Pressed, this, &AEO_GridController::NodeLeftRotation);
+	PlayerInputComponent->BindAction(TEXT("RightRotation"), IE_Pressed, this, &AEO_GridController::NodeRightRotation);
+	PlayerInputComponent->BindAction(TEXT("UpNode"), IE_Pressed, this, &AEO_GridController::NodeUp);
+	PlayerInputComponent->BindAction(TEXT("DownNode"), IE_Pressed, this, &AEO_GridController::NodeDown);
 }
 
 void AEO_GridController::MakeGrid()
@@ -184,7 +188,8 @@ void AEO_GridController::PlacedNote()
 		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		AEO_RhythmNote* noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, tempNote->GetTransform(), param);
 		noteTemp->AttachToActor(currentGrid, FAttachmentTransformRules::KeepWorldTransform);
-		noteTemp->myPos = yArrIndex;
+		noteTemp->myXPos = xArrIndex;
+		noteTemp->myYPos = yArrIndex;
 		currentGrid->placedNotes[yArrIndex] = noteTemp;
 	}
 }
@@ -203,6 +208,34 @@ void AEO_GridController::RemoveNote()
 	}
 }
 
+void AEO_GridController::NodeLeftRotation()
+{
+	tempNote->AddActorLocalRotation(FRotator(0, 0, -45));
+}
+
+void AEO_GridController::NodeRightRotation()
+{
+	tempNote->AddActorLocalRotation(FRotator(0, 0, 45));
+}
+
+void AEO_GridController::NodeUp()
+{
+	if (xArrIndex > 0)
+	{
+		zPos += 100;
+		xArrIndex--;
+	}
+}
+
+void AEO_GridController::NodeDown()
+{
+	if (xArrIndex < 2)
+	{
+		zPos -= 100;
+		xArrIndex++;
+	}
+}
+
 void AEO_GridController::SoundPlay()
 {
 	if (!audioComp->IsPlaying())
@@ -211,7 +244,7 @@ void AEO_GridController::SoundPlay()
 			SetActorLocation(FVector(0));
 
 		audioComp->Play(-(GetActorLocation().X / 500.0f));
-		isPlaying = true;
+		isPlaying = true; 
 	}
 	else
 	{
@@ -247,16 +280,16 @@ void AEO_GridController::OutData()
 		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / 500));
 		textData += ",";
 		//x position
-		textData += "2";
+		textData += FString::FromInt(noteData->myXPos);
 		textData += ",";
 		//y position
-		textData += FString::FromInt(noteData->myPos);
+		textData += FString::FromInt(noteData->myYPos);
 		textData += ",";
 		//color
 		textData += "0";
 		textData += ",";
 		//rotation
-		textData += "0";
+		textData += FString::SanitizeFloat(noteData->GetActorRotation().Roll);
 
 		data.Add(textData);
 
