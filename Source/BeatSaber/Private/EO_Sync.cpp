@@ -86,11 +86,11 @@ float AEO_Sync::XGeneratePos(int rowX)
 	}
 	else if (rowX == 1)
 	{
-		return 0;
+		return 1;
 	}
 	else if (rowX == 2)
 	{
-		return 0;
+		return 2;
 	}
 
 	return -1;

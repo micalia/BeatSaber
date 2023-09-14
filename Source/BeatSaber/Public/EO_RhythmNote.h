@@ -27,7 +27,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float speed = 500;
-	int myPos = 0;
+	int myXPos = 0;
+	int myYPos = 0;
 
 private:
 	UPROPERTY(VisibleAnywhere)

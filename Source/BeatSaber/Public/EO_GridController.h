@@ -51,6 +51,8 @@ private:
 	class AEO_Grid* currentGrid = nullptr;
 
 	int yArrIndex = 0;
+	int xArrIndex = 2;
+	float zPos = 0;
 
 	bool isPlaying = false;
 
@@ -59,6 +61,11 @@ private:
 	void MoveGrid(float value);
 	void PlacedNote();
 	void RemoveNote();
+	void NodeLeftRotation();
+	void NodeRightRotation();
+	void NodeUp();
+	void NodeDown();
+
 	void SoundPlay();
 	void OutData();
 };
