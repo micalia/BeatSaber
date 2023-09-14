@@ -135,7 +135,7 @@ void ALightSaber::Tick(float DeltaTime)
 
 					//점수 판정
 					if (Angle <= ScoreThreshold) {
-						if ((int)saberColor == nodeBlock->blockColor) {
+						if ((int8)saberColor == nodeBlock->blockColor) {
 							gm->currCombo += 1;
 						}
 						else {

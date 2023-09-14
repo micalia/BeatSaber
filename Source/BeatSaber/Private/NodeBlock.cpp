@@ -59,12 +59,12 @@ void ANodeBlock::BeginPlay()
 
 	switch (blockColor)
 	{
-	case EBlockColor::Red:
+	case 0: // 빨강
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 		}
 		break;
-	case EBlockColor::Blue:
+	case 1: // 파랑
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
 		}
@@ -75,46 +75,46 @@ void ANodeBlock::BeginPlay()
 
 	switch (blockRotate)
 	{
-	case 0: // 0도 아래
-	{
-		SetActorRotation(FRotator(0, 0, 0));
-		break;
-	}
-	case 1: // 45도 아래 왼쪽 대각선
-	{
-		SetActorRotation(FRotator(0, 0, 45));
-		break;
-	}
-	case 2: // 90도 
-	{
-		SetActorRotation(FRotator(0, 0, 90));
-		break;
-	}
-	case 3: // 135도 
-	{
-		SetActorRotation(FRotator(0, 0, 135));
-		break;
-	}
-	case 4: // 180도 
-	{
-		SetActorRotation(FRotator(0, 0, 180));
-		break;
-	}
-	case 5: // 225도 
-	{
-		SetActorRotation(FRotator(0, 0, 225));
-		break;
-	}
-	case 6: // 270도
-	{
-		SetActorRotation(FRotator(0, 0, 270));
-		break;
-	}
-	case 7: // 315도 
-	{
-		SetActorRotation(FRotator(0, 0, 315));
-		break;
-	}
+		case 0: // 0도 아래
+		{
+			SetActorRotation(FRotator(0, 0, 0));
+			break;
+		}
+		case 1: // 45도 아래 왼쪽 대각선
+		{
+			SetActorRotation(FRotator(0, 0, 45));
+			break;
+		}
+		case 2: // 90도 
+		{
+			SetActorRotation(FRotator(0, 0, 90));
+			break;
+		}
+		case 3: // 135도 
+		{
+			SetActorRotation(FRotator(0, 0, 135));
+			break;
+		}
+		case 4: // 180도 
+		{
+			SetActorRotation(FRotator(0, 0, 180));
+			break;
+		}
+		case 5: // 225도 
+		{
+			SetActorRotation(FRotator(0, 0, 225));
+			break;
+		}
+		case 6: // 270도
+		{
+			SetActorRotation(FRotator(0, 0, 270));
+			break;
+		}
+		case 7: // 315도 
+		{
+			SetActorRotation(FRotator(0, 0, 315));
+			break;
+		}
 	}
 
 }

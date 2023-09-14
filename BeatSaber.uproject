@@ -24,6 +24,10 @@
 				"Android",
 				"HoloLens"
 			]
+		},
+		{
+			"Name": "UdpMessaging",
+			"Enabled": false
 		}
 	],
 	"TargetPlatforms": [
