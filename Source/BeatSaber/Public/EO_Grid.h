@@ -31,8 +31,4 @@ private:
 
 public:
 	class AEO_RhythmNote* noteArr[3][4] = { nullptr, };
-
-private:
-	UPROPERTY(EditDefaultsOnly)
-	float speed = 500;
 };

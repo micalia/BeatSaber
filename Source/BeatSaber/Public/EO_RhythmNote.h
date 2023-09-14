@@ -31,7 +31,7 @@ public:
 	class UMaterialInterface* matInterface;
 
 	UPROPERTY(EditDefaultsOnly)
-	float speed = 500;
+	float speed = 700;
 	int myXPos = 0;
 	int myYPos = 0;
 	int colorIndex = 0;

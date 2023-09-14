@@ -60,4 +60,7 @@ public:
 	float speed = 700;
 
 	void DelayDestroy();
+
+private:
+	class AEO_Sync* sync;
 };

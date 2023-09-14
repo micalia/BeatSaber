@@ -7,6 +7,8 @@
 #include <Kismet/KismetMathLibrary.h>
 #include <Materials/MaterialInstanceDynamic.h>
 #include <Kismet/KismetMaterialLibrary.h>
+#include <Kismet/GameplayStatics.h>
+#include "EO_Sync.h"
 
 // Sets default values
 ANodeBlock::ANodeBlock()
@@ -43,6 +45,7 @@ ANodeBlock::ANodeBlock()
 		blockMat = tempBlockMat.Object;
 	}
 
+	sync = Cast<AEO_Sync>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_Sync::StaticClass()));
 }
 
 // Called when the game starts or when spawned
@@ -55,54 +58,54 @@ void ANodeBlock::BeginPlay()
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
 
-	blockColor = UKismetMathLibrary::RandomIntegerInRange(0, 1);
-	SwitchColor(blockColor);
-	
-	blockRotate = UKismetMathLibrary::RandomInteger64InRange(0, 7);
+	//blockColor = UKismetMathLibrary::RandomIntegerInRange(0, 1);
+	//SwitchColor(blockColor);
+	//
+	//blockRotate = UKismetMathLibrary::RandomInteger64InRange(0, 7);
 
-	switch (blockRotate)
-	{
-		case 0: // 0도 아래
-		{
-			SetActorRotation(FRotator(0, 0, 0));
-			break;
-		}
-		case 1: // 45도 아래 왼쪽 대각선
-		{
-			SetActorRotation(FRotator(0, 0, 45));
-			break;
-		}
-		case 2: // 90도 
-		{
-			SetActorRotation(FRotator(0, 0, 90));
-			break;
-		}
-		case 3: // 135도 
-		{
-			SetActorRotation(FRotator(0, 0, 135));
-			break;
-		}
-		case 4: // 180도 
-		{
-			SetActorRotation(FRotator(0, 0, 180));
-			break;
-		}
-		case 5: // 225도 
-		{
-			SetActorRotation(FRotator(0, 0, 225));
-			break;
-		}
-		case 6: // 270도
-		{
-			SetActorRotation(FRotator(0, 0, 270));
-			break;
-		}
-		case 7: // 315도 
-		{
-			SetActorRotation(FRotator(0, 0, 315));
-			break;
-		}
-	}
+	//switch (blockRotate)
+	//{
+	//	case 0: // 0도 아래
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 0));
+	//		break;
+	//	}
+	//	case 1: // 45도 아래 왼쪽 대각선
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 45));
+	//		break;
+	//	}
+	//	case 2: // 90도 
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 90));
+	//		break;
+	//	}
+	//	case 3: // 135도 
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 135));
+	//		break;
+	//	}
+	//	case 4: // 180도 
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 180));
+	//		break;
+	//	}
+	//	case 5: // 225도 
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 225));
+	//		break;
+	//	}
+	//	case 6: // 270도
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 270));
+	//		break;
+	//	}
+	//	case 7: // 315도 
+	//	{
+	//		SetActorRotation(FRotator(0, 0, 315));
+	//		break;
+	//	}
+	//}
 
 }
 
@@ -111,12 +114,21 @@ void ANodeBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bSlice) {
-		FVector p0 = GetActorLocation();
-		FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
-		SetActorLocation(p0 + vt);
-	}
+	if(sync != nullptr)
+	{
+		if (!bSlice && sync->isGenerate) 
+		{
+			FVector p0 = GetActorLocation();
+			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
+			SetActorLocation(p0 + vt);
+		}
 
+		// 싱크 테스트 코드, 싱크의 정확한 위치에 도달했을 때 없에서 테스트하기 위한 코드
+		if (GetActorLocation().X <= sync->GetActorLocation().X)
+		{
+			Destroy();
+		}
+	}
 }
 
 void ANodeBlock::SwitchColor(int num)

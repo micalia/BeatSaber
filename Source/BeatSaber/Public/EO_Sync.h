@@ -24,8 +24,10 @@ public:
 	class UAudioComponent* audioComp;
 
 public:
+	/*UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AEO_RhythmNote> noteFactory;*/
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AEO_RhythmNote> noteFactory;
+	TSubclassOf<class ANodeBlock> noteFactory;
 	UPROPERTY(EditDefaultsOnly)
 	class USoundBase* testSound;
 	UPROPERTY(VisibleAnywhere)
