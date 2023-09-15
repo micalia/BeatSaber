@@ -30,7 +30,7 @@ AEO_Sync::AEO_Sync()
 void AEO_Sync::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
 
@@ -105,19 +105,19 @@ float AEO_Sync::YGeneratePos(int rowY)
 {
 	if (rowY == 0)
 	{
-		return -150;
+		return GetActorLocation().Y - 150;
 	}
 	else if (rowY == 1)
 	{
-		return -50;
+		return GetActorLocation().Y - 50;
 	}
 	else if (rowY == 2)
 	{
-		return 50;
+		return GetActorLocation().Y + 50;
 	}
 	else if (rowY == 3)
 	{
-		return 150;
+		return GetActorLocation().Y + 150;
 	}
 
 	return -1;
