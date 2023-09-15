@@ -157,6 +157,12 @@ void AEO_GridController::MoveGrid(float value)
 {
 	if (!isPlaying)
 	{
+		if (audioComp->IsPlaying())
+		{
+			audioComp->Stop();
+			audioComp->SetPaused(false);
+		}
+
 		if (value >= 1)
 		{
 			if (GetActorLocation().X < offset)
@@ -259,7 +265,7 @@ void AEO_GridController::SoundPlay()
 			SetActorLocation(FVector(0));
 
 		audioComp->Play(-(GetActorLocation().X / 500.0f));
-		isPlaying = true; 
+		isPlaying = true;
 	}
 	else
 	{

@@ -17,7 +17,7 @@ AEO_Sync::AEO_Sync()
 		noteFactory = noteTemp.Class;
 	}
 
-	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/test2.test2'"));
+	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/27sTest.27sTest'"));
 	if (patternTemp.Succeeded())
 	{
 		patternData = patternTemp.Object;
