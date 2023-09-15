@@ -124,10 +124,10 @@ void ANodeBlock::Tick(float DeltaTime)
 		}
 
 		// 싱크 테스트 코드, 싱크의 정확한 위치에 도달했을 때 없에서 테스트하기 위한 코드
-		if (GetActorLocation().X <= sync->GetActorLocation().X)
+		/*if (GetActorLocation().X <= sync->GetActorLocation().X)
 		{
 			Destroy();
-		}
+		}*/
 	}
 }
 

@@ -30,19 +30,19 @@ void AInGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	currTime+= DeltaTime;
+	//currTime+= DeltaTime;
 
-	if (currTime > spawnDelayTime) {
-		currTime = 0;
+	//if (currTime > spawnDelayTime) {
+	//	currTime = 0;
 
-	////임시 생성위치
-		FVector testSpawnPos = FVector(1300,0,0);
-	
-		float randomRotateVal = UKismetMathLibrary::RandomFloatInRange(0,360);
+	//////임시 생성위치
+	//	FVector testSpawnPos = FVector(1300,0,0);
+	//
+	//	float randomRotateVal = UKismetMathLibrary::RandomFloatInRange(0,360);
 
-		GetWorld()->SpawnActor<ANodeBlock>(nodeBlockFactory, testSpawnPos, FRotator(0));
+	//	//GetWorld()->SpawnActor<ANodeBlock>(nodeBlockFactory, testSpawnPos, FRotator(0));
 
-	}
+	//}
 
 	ScoreUpdate();
 }
