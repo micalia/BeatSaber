@@ -43,7 +43,7 @@ public:
 	bool bSlice;
 
 	UPROPERTY(EditAnywhere, Category = "Materials")
-		class UMaterialInterface* blockMat;
+	class UMaterialInterface* blockMat;
 
 public:
 	//블럭 회전 값 (0~7)
@@ -63,4 +63,7 @@ public:
 
 private:
 	class AEO_Sync* sync;
+
+	UPROPERTY(EditDefaultsOnly)
+	class USoundBase* tik;
 };

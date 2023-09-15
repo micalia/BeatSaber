@@ -37,7 +37,7 @@ AEO_GridController::AEO_GridController()
 void AEO_GridController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
 
@@ -48,6 +48,8 @@ void AEO_GridController::BeginPlay()
 	barPerSec = oneBeatTime * 4;
 
 	audioComp->SetSound(testSound);
+
+	syncPos = GetActorLocation();
 
 	MakeGrid();
 }
@@ -69,7 +71,7 @@ void AEO_GridController::Tick(float DeltaTime)
 		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::None, sphereHits, true))
 		{
 			float min = 9999;
-			
+
 			for (FHitResult grid : sphereHits)
 			{
 				if (min > FVector::Distance(hit.Location, grid.GetActor()->GetActorLocation()))
@@ -100,7 +102,7 @@ void AEO_GridController::Tick(float DeltaTime)
 					}
 					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
-					
+
 					//UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
 				}
 			}
@@ -110,12 +112,12 @@ void AEO_GridController::Tick(float DeltaTime)
 	if (isPlaying)
 	{
 		FVector p0 = GetActorLocation();
-		FVector vt = FVector::BackwardVector * 500 * DeltaTime;
+		FVector vt = FVector::BackwardVector * speed * DeltaTime;
 		FVector p = p0 + vt;
 		SetActorLocation(p);
 	}
 
-	if (-(GetActorLocation().X / 500.0f) >= audioComp->GetSound()->GetDuration())
+	if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
 	{
 		audioComp->Stop();
 		isPlaying = false;
@@ -144,10 +146,32 @@ void AEO_GridController::MakeGrid()
 {
 	for (int i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
 	{
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(500 * (i * 0.001f), 0, 0), FRotator());
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
 		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
+		arr4BitGrid.Add(gridTemp);
+
 		i += oneBeatTime * 1000;
+	}
+
+	for (int i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	{
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		arr8BitGrid.Add(gridTemp);
+
+		i += oneBeatTime * 1000;
+	}
+
+	for (int i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	{
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		arr16BitGrid.Add(gridTemp);
+
+		i += oneBeatTime * 500;
 	}
 
 	tempNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
@@ -167,7 +191,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X < offset)
 			{
-				SetActorLocation(GetActorLocation() + FVector(500 * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
 			}
 			else
 			{
@@ -176,13 +200,13 @@ void AEO_GridController::MoveGrid(float value)
 		}
 		else if (value <= -1)
 		{
-			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * 500))
+			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(500 * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
 			}
 			else
 			{
-				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * 500), 0, 0));
+				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * speed), 0, 0));
 			}
 		}
 	}
@@ -261,10 +285,10 @@ void AEO_GridController::SoundPlay()
 {
 	if (!audioComp->IsPlaying())
 	{
-		if (-(GetActorLocation().X / 500.0f) >= audioComp->GetSound()->GetDuration())
+		if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
 			SetActorLocation(FVector(0));
 
-		audioComp->Play(-(GetActorLocation().X / 500.0f));
+		audioComp->Play(-(GetActorLocation().X / speed));
 		isPlaying = true;
 	}
 	else
@@ -298,7 +322,7 @@ void AEO_GridController::OutData()
 		textData += FString::FromInt(i);
 		textData += ",";
 		//ms
-		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / 500));
+		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed));
 		textData += ",";
 		//x position
 		textData += FString::FromInt(noteData->myXPos);

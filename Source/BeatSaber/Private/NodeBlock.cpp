@@ -114,9 +114,9 @@ void ANodeBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(sync != nullptr)
+	if (sync != nullptr)
 	{
-		if (!bSlice && sync->isGenerate) 
+		if (!bSlice && sync->isGenerate)
 		{
 			FVector p0 = GetActorLocation();
 			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
@@ -126,6 +126,7 @@ void ANodeBlock::Tick(float DeltaTime)
 		// 싱크 테스트 코드, 싱크의 정확한 위치에 도달했을 때 없에서 테스트하기 위한 코드
 		/*if (GetActorLocation().X <= sync->GetActorLocation().X)
 		{
+			UGameplayStatics::PlaySound2D(GetWorld(), tik);
 			Destroy();
 		}*/
 	}
