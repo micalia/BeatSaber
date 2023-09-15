@@ -62,4 +62,8 @@ public:
 		UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> rightSaberFactory;
 
+public:
+	UPROPERTY(BlueprintReadWrite)
+	float hp = 100;
+
 };
