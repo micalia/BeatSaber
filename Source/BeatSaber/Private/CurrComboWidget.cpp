@@ -20,6 +20,7 @@ ACurrComboWidget::ACurrComboWidget()
 	SetRootComponent(currComboUIComp);
 
 	currComboUIComp->SetWidgetClass(comboWidgetFactory);
+	currComboUIComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned
