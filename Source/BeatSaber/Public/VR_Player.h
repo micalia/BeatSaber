@@ -63,7 +63,8 @@ public:
 	TSubclassOf<class AActor> rightSaberFactory;
 
 public:
-	UPROPERTY(BlueprintReadWrite)
-	float hp = 100;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PlayerStat")
+	float fullHp = 50;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PlayerStat")
+	float currHp = 25;
 };

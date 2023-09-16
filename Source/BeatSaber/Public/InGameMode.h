@@ -44,4 +44,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> StartNodeLoc;
 
+	UPROPERTY()
+	class AVR_Player* player;
+
 };

@@ -153,6 +153,6 @@ void ANodeBlock::DelayDestroy()
 	FTimerHandle destroyDelay;
 	GetWorld()->GetTimerManager().SetTimer(destroyDelay, FTimerDelegate::CreateLambda([&]() {
 		Destroy();
-		}), 3, false);
+	}), 3, false);
 }
 

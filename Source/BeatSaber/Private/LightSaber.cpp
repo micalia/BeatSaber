@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "InGameMode.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "VR_Player.h"
 
 // Sets default values
 ALightSaber::ALightSaber()
@@ -56,6 +57,9 @@ void ALightSaber::BeginPlay()
 	
 	SliceCubeDynamicMaterial = UMaterialInstanceDynamic::Create(sliceMat, this);
 	gm = Cast<AInGameMode>(GetWorld()->GetAuthGameMode());
+	if (gm && gm->player) {
+		SetOwner(Cast<AActor>(gm->player));
+	}
 }
 
 // Called every frame
@@ -133,16 +137,23 @@ void ALightSaber::Tick(float DeltaTime)
 
 					float ScoreThreshold = 45.0f;
 
+					AVR_Player* player = Cast<AVR_Player>(GetOwner());
 					//점수 판정
 					if (Angle <= ScoreThreshold) {
 						if ((int8)saberColor == nodeBlock->blockColor) {
 							gm->currCombo += 1;
 						}
 						else {
+							if (player) {
+								player->currHp--;
+							}
 							gm->currCombo = 0;
 						}
 					}
 					else {
+						if (player) {
+							player->currHp--;
+						}
 						gm->currCombo = 0;
 					}
 

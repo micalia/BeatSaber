@@ -48,12 +48,13 @@ public:
 public:
 	//블럭 회전 값 (0~7)
 	int blockRotate;
-	
+	UPROPERTY()
 	UMaterialInstanceDynamic* CubeDynamicMaterial;
 	int blockColor;
 	UFUNCTION()
 	void SwitchColor(int num);
-
+	// 0 : 화살표 / 1: 점
+	int blockType;
 public:
 	//이동
 	UPROPERTY(EditAnywhere)

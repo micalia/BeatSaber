@@ -8,6 +8,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "CurrComboWidget.h"
 #include <UMG/Public/Components/TextBlock.h>
+#include "VR_Player.h"
 
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,6 +23,7 @@ void AInGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	currComboWidgetInstance = Cast<ACurrComboWidget>(UGameplayStatics::GetActorOfClass(GetWorld(), ACurrComboWidget::StaticClass()));
 
 }
