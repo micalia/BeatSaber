@@ -62,4 +62,9 @@ public:
 	class AInGameMode* gm;
 
 	FVector PreviousFrameLocation;
+
+	UPROPERTY(EditAnywhere, Category="Sound")
+	class USoundBase* hitCutSound;
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	class USoundBase* badCutSound;
 };

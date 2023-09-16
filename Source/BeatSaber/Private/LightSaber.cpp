@@ -8,6 +8,7 @@
 #include "InGameMode.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "VR_Player.h"
+#include <Sound/SoundBase.h>
 
 // Sets default values
 ALightSaber::ALightSaber()
@@ -48,6 +49,20 @@ ALightSaber::ALightSaber()
 	
 	sm_handle->SetRelativeScale3D(FVector(0.06, 0.06, 0.055));
 	sm_handle->SetRelativeLocation(FVector(0,0,-5));
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> tempHitSound(TEXT("/Script/Engine.SoundWave'/Game/SB/Sounds/hitEffectSound.hitEffectSound'"));
+
+	if (tempHitSound.Succeeded())
+	{
+		hitCutSound = tempHitSound.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundBase> tempBadCutSound(TEXT("/Script/Engine.SoundWave'/Game/SB/Sounds/badCut.badCut'"));
+
+	if (tempBadCutSound.Succeeded())
+	{
+		badCutSound = tempBadCutSound.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -141,12 +156,14 @@ void ALightSaber::Tick(float DeltaTime)
 					//점수 판정
 					if (Angle <= ScoreThreshold) {
 						if ((int8)saberColor == nodeBlock->blockColor) {
+							UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound);
 							gm->currCombo += 1;
 						}
 						else {
 							if (player) {
 								player->currHp--;
 							}
+							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
 							gm->currCombo = 0;
 						}
 					}
@@ -154,6 +171,7 @@ void ALightSaber::Tick(float DeltaTime)
 						if (player) {
 							player->currHp--;
 						}
+						UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
 						gm->currCombo = 0;
 					}
 
