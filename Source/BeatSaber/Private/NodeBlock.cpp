@@ -139,11 +139,13 @@ void ANodeBlock::SwitchColor(int num)
 	case 0: // »¡°­
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+			blockColor = 1;
 		}
 		break;
 	case 1: // ÆÄ¶û
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+			blockColor = 0;
 		}
 		break;
 	}
