@@ -39,9 +39,16 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	class AEO_Sync* sync;
+	UPROPERTY(VisibleAnywhere)
+	class AEO_GridController* gridController;
+	UPROPERTY(EditDefaultsOnly)
+	class USoundBase* tik;
 
 private:
 	UMaterialInstanceDynamic* cubeDynamicMaterial;
+	
+	FVector syncPos;
+	bool isTik = false;
 
 public:
 	UFUNCTION()

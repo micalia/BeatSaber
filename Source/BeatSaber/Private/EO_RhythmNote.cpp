@@ -3,6 +3,7 @@
 #include "EO_Sync.h"
 #include <Kismet/GameplayStatics.h>
 #include <../Plugins/Runtime/ProceduralMeshComponent/Source/ProceduralMeshComponent/Public/ProceduralMeshComponent.h>
+#include "EO_GridController.h"
 
 
 AEO_RhythmNote::AEO_RhythmNote()
@@ -19,8 +20,8 @@ AEO_RhythmNote::AEO_RhythmNote()
 	if (meshTemp.Succeeded())
 	{
 		meshComp->SetStaticMesh(meshTemp.Object);
-		meshComp->SetRelativeLocation(FVector(0,0,-50));
-		meshComp->SetRelativeRotation(FRotator(0,90,0));
+		meshComp->SetRelativeLocation(FVector(0, 0, -50));
+		meshComp->SetRelativeRotation(FRotator(0, 90, 0));
 		meshComp->SetRelativeScale3D(FVector(0.5f));
 		meshComp->SetCollisionProfileName(TEXT("NoCollision"));
 	}
@@ -35,18 +36,21 @@ AEO_RhythmNote::AEO_RhythmNote()
 	}
 
 	sync = Cast<AEO_Sync>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_Sync::StaticClass()));
+	gridController = Cast<AEO_GridController>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_GridController::StaticClass()));
 }
 
 void AEO_RhythmNote::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	meshComp->SetMaterial(0, matInterface);
 	cubeDynamicMaterial = UMaterialInstanceDynamic::Create(meshComp->GetMaterial(0), this);
 	meshComp->SetMaterial(0, cubeDynamicMaterial);
 	proceduralMeshComp->SetMaterial(0, cubeDynamicMaterial);
 
 	SetNoteColor(0);
+
+	syncPos = gridController->syncPos;
 }
 
 void AEO_RhythmNote::Tick(float DeltaTime)
@@ -66,6 +70,23 @@ void AEO_RhythmNote::Tick(float DeltaTime)
 			{
 				Destroy();
 			}
+		}
+	}
+
+	if (gridController != nullptr)
+	{
+		if (GetActorLocation().X <= syncPos.X && gridController->isPlaying)
+		{
+			if (tik != nullptr && !isTik)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("one"));
+				UGameplayStatics::PlaySound2D(GetWorld(), tik);
+				isTik = true;
+			}
+		}
+		else
+		{
+			isTik = false;
 		}
 	}
 }

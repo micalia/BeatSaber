@@ -10,7 +10,6 @@ AEO_Sync::AEO_Sync()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	//ConstructorHelpers::FClassFinder<AEO_RhythmNote> noteTemp(TEXT("'/Game/EO/Blueprints/BP_RhythmNote.BP_RhythmNote_C'"));
 	ConstructorHelpers::FClassFinder<ANodeBlock> noteTemp(TEXT("'/Game/SB/Blueprints/BP_NodeBlock.BP_NodeBlock_C'"));
 	if (noteTemp.Succeeded())
 	{
@@ -72,8 +71,6 @@ void AEO_Sync::GenerateNote()
 		{
 			FPatternDataTableRow* row = patternData->FindRow<FPatternDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
 
-			/*AEO_RhythmNote* tempNote = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
-			tempNote->SetNoteColor(row->color);*/
 			ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 			tempNote->SwitchColor(row->color);
 		}

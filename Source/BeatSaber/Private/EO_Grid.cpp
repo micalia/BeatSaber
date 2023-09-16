@@ -25,12 +25,27 @@ AEO_Grid::AEO_Grid()
 void AEO_Grid::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void AEO_Grid::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AEO_Grid::SetActive(bool bCheck)
+{
+	meshComp->SetVisibility(bCheck);
+
+	switch (bCheck)
+	{
+	case true:
+		boxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		break;
+	case false:
+		boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	}
 }
 

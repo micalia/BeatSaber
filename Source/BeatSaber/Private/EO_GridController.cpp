@@ -15,6 +15,12 @@ AEO_GridController::AEO_GridController()
 	audioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	RootComponent = audioComp;
 
+	ConstructorHelpers::FClassFinder<AActor> gridTTemp(TEXT("'/Game/EO/Blueprints/BP_GridTamplate.BP_GridTamplate_C'"));
+	if (gridTTemp.Succeeded())
+	{
+		gridTemplate = gridTTemp.Class;
+	}
+
 	ConstructorHelpers::FClassFinder<AEO_Grid> gridTemp(TEXT("'/Game/EO/Blueprints/BP_Grid.BP_Grid_C'"));
 	if (gridTemp.Succeeded())
 	{
@@ -37,7 +43,7 @@ AEO_GridController::AEO_GridController()
 void AEO_GridController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
 
@@ -48,6 +54,8 @@ void AEO_GridController::BeginPlay()
 	barPerSec = oneBeatTime * 4;
 
 	audioComp->SetSound(testSound);
+
+	syncPos = GetActorLocation();
 
 	MakeGrid();
 }
@@ -69,7 +77,7 @@ void AEO_GridController::Tick(float DeltaTime)
 		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::None, sphereHits, true))
 		{
 			float min = 9999;
-			
+
 			for (FHitResult grid : sphereHits)
 			{
 				if (min > FVector::Distance(hit.Location, grid.GetActor()->GetActorLocation()))
@@ -100,7 +108,7 @@ void AEO_GridController::Tick(float DeltaTime)
 					}
 					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
-					
+
 					//UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
 				}
 			}
@@ -110,12 +118,12 @@ void AEO_GridController::Tick(float DeltaTime)
 	if (isPlaying)
 	{
 		FVector p0 = GetActorLocation();
-		FVector vt = FVector::BackwardVector * 500 * DeltaTime;
+		FVector vt = FVector::BackwardVector * speed * DeltaTime;
 		FVector p = p0 + vt;
 		SetActorLocation(p);
 	}
 
-	if (-(GetActorLocation().X / 500.0f) >= audioComp->GetSound()->GetDuration())
+	if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
 	{
 		audioComp->Stop();
 		isPlaying = false;
@@ -138,16 +146,52 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("DownNode"), IE_Pressed, this, &AEO_GridController::NodeDown);
 	PlayerInputComponent->BindAction(TEXT("SwitchRedColor"), IE_Pressed, this, &AEO_GridController::ChangeRedColor);
 	PlayerInputComponent->BindAction(TEXT("SwitchBlueColor"), IE_Pressed, this, &AEO_GridController::ChangeBlueColor);
+	PlayerInputComponent->BindAction(TEXT("BitUp"), IE_Pressed, this, &AEO_GridController::BitUp);
+	PlayerInputComponent->BindAction(TEXT("BitDown"), IE_Pressed, this, &AEO_GridController::BitDown);
+
 }
 
 void AEO_GridController::MakeGrid()
 {
 	for (int i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
 	{
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(500 * (i * 0.001f), 0, 0), FRotator());
-		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		arr4BitGrid.Add(gridTemp);
 
 		i += oneBeatTime * 1000;
+	}
+
+	for (int i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	{
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		gridTemp->SetActive(false);
+		arr8BitGrid.Add(gridTemp);
+
+		i += oneBeatTime * 1000;
+	}
+
+	for (int i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	{
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		gridTemp->SetActive(false);
+		arr16BitGrid.Add(gridTemp);
+
+		i += oneBeatTime * 500;
 	}
 
 	tempNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
@@ -167,7 +211,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X < offset)
 			{
-				SetActorLocation(GetActorLocation() + FVector(500 * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
 			}
 			else
 			{
@@ -176,13 +220,13 @@ void AEO_GridController::MoveGrid(float value)
 		}
 		else if (value <= -1)
 		{
-			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * 500))
+			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(500 * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
 			}
 			else
 			{
-				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * 500), 0, 0));
+				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * speed), 0, 0));
 			}
 		}
 	}
@@ -195,7 +239,7 @@ void AEO_GridController::PlacedNote()
 		FActorSpawnParameters param;
 		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		AEO_RhythmNote* noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, tempNote->GetTransform(), param);
-		noteTemp->AttachToActor(currentGrid, FAttachmentTransformRules::KeepWorldTransform);
+		noteTemp->AttachToActor(currentGrid->GetAttachParentActor(), FAttachmentTransformRules::KeepWorldTransform);
 		noteTemp->myXPos = xArrIndex;
 		noteTemp->myYPos = yArrIndex;
 		noteTemp->SetNoteColor(colorIndex);
@@ -245,6 +289,56 @@ void AEO_GridController::NodeDown()
 	}
 }
 
+void AEO_GridController::BitUp()
+{
+	if (bitIndex < 2)
+	{
+		bitIndex++;
+	}
+
+	// active 8bit grid
+	if (bitIndex == 1)
+	{
+		for (AEO_Grid* grid : arr8BitGrid)
+		{
+			grid->SetActive(true);
+		}
+	}
+	// active 16bit grid
+	else if (bitIndex == 2)
+	{
+		for (AEO_Grid* grid : arr16BitGrid)
+		{
+			grid->SetActive(true);
+		}
+	}
+}
+
+void AEO_GridController::BitDown()
+{
+	if (bitIndex > 0)
+	{
+		bitIndex--;
+	}
+
+	// deactive 16bit grid
+	if (bitIndex == 1)
+	{
+		for (AEO_Grid* grid : arr16BitGrid)
+		{
+			grid->SetActive(false);
+		}
+	}
+	// deactive 8bit grid
+	else if (bitIndex == 0)
+	{
+		for (AEO_Grid* grid : arr8BitGrid)
+		{
+			grid->SetActive(false);
+		}
+	}
+}
+
 void AEO_GridController::ChangeRedColor()
 {
 	colorIndex = 0;
@@ -261,10 +355,10 @@ void AEO_GridController::SoundPlay()
 {
 	if (!audioComp->IsPlaying())
 	{
-		if (-(GetActorLocation().X / 500.0f) >= audioComp->GetSound()->GetDuration())
+		if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
 			SetActorLocation(FVector(0));
 
-		audioComp->Play(-(GetActorLocation().X / 500.0f));
+		audioComp->Play(-(GetActorLocation().X / speed));
 		isPlaying = true;
 	}
 	else
@@ -298,7 +392,7 @@ void AEO_GridController::OutData()
 		textData += FString::FromInt(i);
 		textData += ",";
 		//ms
-		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / 500));
+		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed));
 		textData += ",";
 		//x position
 		textData += FString::FromInt(noteData->myXPos);
