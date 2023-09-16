@@ -103,19 +103,19 @@ float AEO_Sync::YGeneratePos(int rowY)
 {
 	if (rowY == 0)
 	{
-		return GetActorLocation().Y - 150;
+		return GetActorLocation().Y - 90;
 	}
 	else if (rowY == 1)
 	{
-		return GetActorLocation().Y - 50;
+		return GetActorLocation().Y - 30;
 	}
 	else if (rowY == 2)
 	{
-		return GetActorLocation().Y + 50;
+		return GetActorLocation().Y + 30;
 	}
 	else if (rowY == 3)
 	{
-		return GetActorLocation().Y + 150;
+		return GetActorLocation().Y + 90;
 	}
 
 	return -1;

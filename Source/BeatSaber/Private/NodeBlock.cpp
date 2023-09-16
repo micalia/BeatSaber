@@ -139,14 +139,29 @@ void ANodeBlock::SwitchColor(int num)
 	case 0: // 빨강
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
-			blockColor = 1;
+			blockColor = 0;
 		}
 		break;
 	case 1: // 파랑
 		if (CubeDynamicMaterial) {
 			CubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
-			blockColor = 0;
+			blockColor = 1;
 		}
+		break;
+	}
+}
+
+void ANodeBlock::SwitchType(int num)
+{
+	switch (num)
+	{
+	case 0: // 화살표
+		blockType = 0;
+		CubeDynamicMaterial->SetScalarParameterValue(TEXT("TypeChoice"), 0);
+		break;
+	case 1: // 화살표 없음
+		blockType = 1;
+		CubeDynamicMaterial->SetScalarParameterValue(TEXT("TypeChoice"), 1);
 		break;
 	}
 }

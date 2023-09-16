@@ -154,7 +154,29 @@ void ALightSaber::Tick(float DeltaTime)
 
 					AVR_Player* player = Cast<AVR_Player>(GetOwner());
 					//점수 판정
-					if (Angle <= ScoreThreshold) {
+					if (nodeBlock->blockType == 0) { // 화살표
+						if (Angle <= ScoreThreshold) {
+							if ((int8)saberColor == nodeBlock->blockColor) {
+								UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound);
+								gm->currCombo += 1;
+							}
+							else {
+								if (player) {
+									player->currHp--;
+								}
+								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
+								gm->currCombo = 0;
+							}
+						}
+						else {
+							if (player) {
+								player->currHp--;
+							}
+							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
+							gm->currCombo = 0;
+						}
+					}
+					else {// 화살표 없는 블럭
 						if ((int8)saberColor == nodeBlock->blockColor) {
 							UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound);
 							gm->currCombo += 1;
@@ -166,13 +188,6 @@ void ALightSaber::Tick(float DeltaTime)
 							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
 							gm->currCombo = 0;
 						}
-					}
-					else {
-						if (player) {
-							player->currHp--;
-						}
-						UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
-						gm->currCombo = 0;
 					}
 
 					nodeBlock->proceduralMesh->SetSimulatePhysics(true);

@@ -55,6 +55,8 @@ public:
 	void SwitchColor(int num);
 	// 0 : 화살표 / 1: 점
 	int blockType;
+	UFUNCTION()
+	void SwitchType(int num);
 public:
 	//이동
 	UPROPERTY(EditAnywhere)
