@@ -31,4 +31,7 @@ private:
 
 public:
 	class AEO_RhythmNote* noteArr[3][4] = { nullptr, };
+
+public:
+	void SetActive(bool bCheck);
 };

@@ -15,6 +15,12 @@ AEO_GridController::AEO_GridController()
 	audioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	RootComponent = audioComp;
 
+	ConstructorHelpers::FClassFinder<AActor> gridTTemp(TEXT("'/Game/EO/Blueprints/BP_GridTamplate.BP_GridTamplate_C'"));
+	if (gridTTemp.Succeeded())
+	{
+		gridTemplate = gridTTemp.Class;
+	}
+
 	ConstructorHelpers::FClassFinder<AEO_Grid> gridTemp(TEXT("'/Game/EO/Blueprints/BP_Grid.BP_Grid_C'"));
 	if (gridTemp.Succeeded())
 	{
@@ -140,14 +146,20 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("DownNode"), IE_Pressed, this, &AEO_GridController::NodeDown);
 	PlayerInputComponent->BindAction(TEXT("SwitchRedColor"), IE_Pressed, this, &AEO_GridController::ChangeRedColor);
 	PlayerInputComponent->BindAction(TEXT("SwitchBlueColor"), IE_Pressed, this, &AEO_GridController::ChangeBlueColor);
+	PlayerInputComponent->BindAction(TEXT("BitUp"), IE_Pressed, this, &AEO_GridController::BitUp);
+	PlayerInputComponent->BindAction(TEXT("BitDown"), IE_Pressed, this, &AEO_GridController::BitDown);
+
 }
 
 void AEO_GridController::MakeGrid()
 {
 	for (int i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
 	{
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
-		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 		arr4BitGrid.Add(gridTemp);
 
@@ -156,9 +168,13 @@ void AEO_GridController::MakeGrid()
 
 	for (int i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
-		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		gridTemp->SetActive(false);
 		arr8BitGrid.Add(gridTemp);
 
 		i += oneBeatTime * 1000;
@@ -166,9 +182,13 @@ void AEO_GridController::MakeGrid()
 
 	for (int i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, FVector(speed * (i * 0.001f), 0, 0), FRotator());
-		gridTemp->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
+		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+		gridTemp->SetActive(false);
 		arr16BitGrid.Add(gridTemp);
 
 		i += oneBeatTime * 500;
@@ -219,7 +239,7 @@ void AEO_GridController::PlacedNote()
 		FActorSpawnParameters param;
 		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		AEO_RhythmNote* noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, tempNote->GetTransform(), param);
-		noteTemp->AttachToActor(currentGrid, FAttachmentTransformRules::KeepWorldTransform);
+		noteTemp->AttachToActor(currentGrid->GetAttachParentActor(), FAttachmentTransformRules::KeepWorldTransform);
 		noteTemp->myXPos = xArrIndex;
 		noteTemp->myYPos = yArrIndex;
 		noteTemp->SetNoteColor(colorIndex);
@@ -266,6 +286,56 @@ void AEO_GridController::NodeDown()
 	{
 		zPos -= 100;
 		xArrIndex++;
+	}
+}
+
+void AEO_GridController::BitUp()
+{
+	if (bitIndex < 2)
+	{
+		bitIndex++;
+	}
+
+	// active 8bit grid
+	if (bitIndex == 1)
+	{
+		for (AEO_Grid* grid : arr8BitGrid)
+		{
+			grid->SetActive(true);
+		}
+	}
+	// active 16bit grid
+	else if (bitIndex == 2)
+	{
+		for (AEO_Grid* grid : arr16BitGrid)
+		{
+			grid->SetActive(true);
+		}
+	}
+}
+
+void AEO_GridController::BitDown()
+{
+	if (bitIndex > 0)
+	{
+		bitIndex--;
+	}
+
+	// deactive 16bit grid
+	if (bitIndex == 1)
+	{
+		for (AEO_Grid* grid : arr16BitGrid)
+		{
+			grid->SetActive(false);
+		}
+	}
+	// deactive 8bit grid
+	else if (bitIndex == 0)
+	{
+		for (AEO_Grid* grid : arr8BitGrid)
+		{
+			grid->SetActive(false);
+		}
 	}
 }
 

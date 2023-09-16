@@ -28,6 +28,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Sounds")
 	class USoundBase* testSound;
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
+	TSubclassOf<class AActor> gridTemplate;
+	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
 	TSubclassOf<class AEO_Grid> gridFactory;
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
 	TSubclassOf<class AEO_RhythmNote> noteFactory;
@@ -57,6 +59,8 @@ private:
 	float zPos = 0;
 	int colorIndex = 0;
 
+	int bitIndex = 0;
+
 	UPROPERTY(VisibleAnywhere, Category="Settings|Grid")
 	TArray<class AEO_Grid*> arr4BitGrid;
 	UPROPERTY(VisibleAnywhere, Category="Settings|Grid")
@@ -78,6 +82,8 @@ private:
 	void NodeRightRotation();
 	void NodeUp();
 	void NodeDown();
+	void BitUp();
+	void BitDown();
 	void ChangeRedColor();
 	void ChangeBlueColor();
 
