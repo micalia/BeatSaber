@@ -50,7 +50,7 @@ public:
 	int blockRotate;
 	UPROPERTY()
 	UMaterialInstanceDynamic* CubeDynamicMaterial;
-	int blockColor;
+	int blockColor; // 0 : »¡°­ , 1 : ÆÄ¶û
 	UFUNCTION()
 	void SwitchColor(int num);
 	// 0 : È­»ìÇ¥ / 1: Á¡
