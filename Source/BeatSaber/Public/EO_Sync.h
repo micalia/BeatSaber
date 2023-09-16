@@ -54,6 +54,9 @@ public:
 	bool isGenerate = false;
 
 private:
+	class AVR_Player* player;
+
+private:
 	void MusicPlay();
 	void GenerateNote();
 	float XGeneratePos(int rowX);

@@ -4,6 +4,8 @@
 #include "EO_RhythmNote.h"
 #include "EO_PatternDataTable.h"
 #include "NodeBlock.h"
+#include <Kismet/GameplayStatics.h>
+#include "VR_Player.h"
 
 
 AEO_Sync::AEO_Sync()
@@ -16,8 +18,7 @@ AEO_Sync::AEO_Sync()
 		noteFactory = noteTemp.Class;
 	}
 
-	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT(
-	"'/Game/EO/Resources/test.test'"));
+	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/test.test'"));
 	if (patternTemp.Succeeded())
 	{
 		patternData = patternTemp.Object;
@@ -30,6 +31,10 @@ AEO_Sync::AEO_Sync()
 void AEO_Sync::BeginPlay()
 {
 	Super::BeginPlay();
+
+	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
+	if (player != nullptr)
+		SetActorLocation(FVector(player->GetActorLocation().X + 200, player->GetActorLocation().Y, 90));
 
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
