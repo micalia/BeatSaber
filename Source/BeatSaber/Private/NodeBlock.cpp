@@ -22,18 +22,18 @@ ANodeBlock::ANodeBlock()
 	proceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("proceduralMesh"));
 	proceduralMesh->SetupAttachment(rootComp);
 	proceduralMesh->SetRelativeLocation(FVector(0, 0, -100));
-	proceduralMesh->SetRelativeRotation(FRotator(0, 90, 0));
+	proceduralMesh->SetRelativeRotation(FRotator(0, 180, 180));
 	proceduralMesh->SetCollisionProfileName(TEXT("NodeBlock"));
 	proceduralMesh->bUseComplexAsSimpleCollision = false;
 
 	sm_nodeBlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("sm_nodeBlock"));
 	sm_nodeBlock->SetupAttachment(rootComp);
 	sm_nodeBlock->SetRelativeLocation(FVector(0, 0, -100));
-	sm_nodeBlock->SetRelativeRotation(FRotator(0, 90, 0));
+	sm_nodeBlock->SetRelativeRotation(FRotator(0, 180, 180));
 	sm_nodeBlock->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	sm_nodeBlock->bHiddenInGame = true;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempNodeBlockMesh(TEXT("/Script/Engine.StaticMesh'/Game/Models/RedNoteBlock.RedNoteBlock'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempNodeBlockMesh(TEXT("/Script/Engine.StaticMesh'/Game/SB/Meshes/SM_BS_Cube.SM_BS_Cube'"));
 	if (tempNodeBlockMesh.Succeeded()) {
 		sm_nodeBlock->SetStaticMesh(tempNodeBlockMesh.Object);
 	}
@@ -53,7 +53,7 @@ void ANodeBlock::BeginPlay()
 {
 	Super::BeginPlay();
 
-	sm_nodeBlock->SetMaterial(0, blockMat);
+	//sm_nodeBlock->SetMaterial(0, blockMat);
 	CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);

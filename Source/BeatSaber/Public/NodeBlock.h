@@ -54,6 +54,7 @@ public:
 	UFUNCTION()
 	void SwitchColor(int num);
 	// 0 : 화살표 / 1: 점
+	UPROPERTY(VisibleAnywhere)
 	int blockType;
 	UFUNCTION()
 	void SwitchType(int num);
