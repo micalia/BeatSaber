@@ -408,7 +408,7 @@ void AEO_GridController::OutData()
 	{
 		FString textData;
 
-		textData += FString::FromInt(i + 51);
+		textData += FString::FromInt(i);
 		textData += ",";
 		//type
 		textData += FString::FromInt(noteData->typeIndex);

@@ -34,7 +34,7 @@ void AEO_Sync::BeginPlay()
 
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
-		SetActorLocation(FVector(player->GetActorLocation().X + 200, player->GetActorLocation().Y, 90));
+		SetActorLocation(FVector(player->GetActorLocation().X + 200, player->GetActorLocation().Y, GetActorLocation().Z));
 
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
@@ -91,11 +91,11 @@ float AEO_Sync::XGeneratePos(int rowX)
 {
 	if (rowX == 0)
 	{
-		return GetActorLocation().Z + 160;
+		return GetActorLocation().Z + 120;
 	}
 	else if (rowX == 1)
 	{
-		return GetActorLocation().Z + 80;
+		return GetActorLocation().Z + 60;
 	}
 	else if (rowX == 2)
 	{
