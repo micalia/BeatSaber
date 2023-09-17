@@ -50,7 +50,12 @@ private:
 	FVector syncPos;
 	bool isTik = false;
 
+private:
+	void PatternTest(float deltaTime);
+	void EditorSyncTest();
+
 public:
 	UFUNCTION()
 	void SetNoteColor(int num);
+
 };

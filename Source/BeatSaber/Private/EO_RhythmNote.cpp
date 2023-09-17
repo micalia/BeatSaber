@@ -57,12 +57,18 @@ void AEO_RhythmNote::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	PatternTest(DeltaTime);
+	EditorSyncTest();
+}
+
+void AEO_RhythmNote::PatternTest(float deltaTime)
+{
 	if (sync != nullptr)
 	{
 		if (sync->isGenerate)
 		{
 			FVector p0 = GetActorLocation();
-			FVector vt = FVector::BackwardVector * speed * DeltaTime;
+			FVector vt = FVector::BackwardVector * speed * deltaTime;
 			FVector p = p0 + vt;
 			SetActorLocation(p);
 
@@ -72,21 +78,34 @@ void AEO_RhythmNote::Tick(float DeltaTime)
 			}
 		}
 	}
+}
 
+void AEO_RhythmNote::EditorSyncTest()
+{
 	if (gridController != nullptr)
 	{
-		if (GetActorLocation().X <= syncPos.X && gridController->isPlaying)
+		if (gridController->isPlaying)
 		{
-			if (tik != nullptr && !isTik)
+			if (GetActorLocation().X <= syncPos.X)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("one"));
-				UGameplayStatics::PlaySound2D(GetWorld(), tik);
-				isTik = true;
+				if (tik != nullptr && !isTik)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("one"));
+					UGameplayStatics::PlaySound2D(GetWorld(), tik);
+					isTik = true;
+				}
 			}
 		}
 		else
 		{
-			isTik = false;
+			if (GetActorLocation().X >= syncPos.X)
+			{
+				isTik = false;
+			}
+			else
+			{
+				isTik = true;
+			}
 		}
 	}
 }

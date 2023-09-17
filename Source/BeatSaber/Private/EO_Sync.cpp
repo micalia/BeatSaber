@@ -90,11 +90,11 @@ float AEO_Sync::XGeneratePos(int rowX)
 {
 	if (rowX == 0)
 	{
-		return GetActorLocation().Z + 200;
+		return GetActorLocation().Z + 160;
 	}
 	else if (rowX == 1)
 	{
-		return GetActorLocation().Z + 100;
+		return GetActorLocation().Z + 80;
 	}
 	else if (rowX == 2)
 	{
@@ -108,19 +108,19 @@ float AEO_Sync::YGeneratePos(int rowY)
 {
 	if (rowY == 0)
 	{
-		return GetActorLocation().Y - 90;
+		return GetActorLocation().Y - 105;
 	}
 	else if (rowY == 1)
 	{
-		return GetActorLocation().Y - 30;
+		return GetActorLocation().Y - 35;
 	}
 	else if (rowY == 2)
 	{
-		return GetActorLocation().Y + 30;
+		return GetActorLocation().Y + 35;
 	}
 	else if (rowY == 3)
 	{
-		return GetActorLocation().Y + 90;
+		return GetActorLocation().Y + 105;
 	}
 
 	return -1;

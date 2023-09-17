@@ -36,4 +36,6 @@ private:
 public:
 	UFUNCTION()
 	void SwitchNoteColor(int num);
+	UFUNCTION()
+	void SwitchNoteType(int num);
 };

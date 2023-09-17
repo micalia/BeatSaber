@@ -86,6 +86,7 @@ private:
 	void BitDown();
 	void ChangeRedColor();
 	void ChangeBlueColor();
+	void ChangeNoteType();
 
 	void SoundPlay();
 	void OutData();
