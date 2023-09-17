@@ -148,6 +148,7 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("SwitchBlueColor"), IE_Pressed, this, &AEO_GridController::ChangeBlueColor);
 	PlayerInputComponent->BindAction(TEXT("BitUp"), IE_Pressed, this, &AEO_GridController::BitUp);
 	PlayerInputComponent->BindAction(TEXT("BitDown"), IE_Pressed, this, &AEO_GridController::BitDown);
+	PlayerInputComponent->BindAction(TEXT("ChangeNoteType"), IE_Pressed, this, &AEO_GridController::ChangeNoteType);
 
 }
 
@@ -349,6 +350,12 @@ void AEO_GridController::ChangeBlueColor()
 {
 	colorIndex = 1;
 	tempNote->SwitchNoteColor(colorIndex);
+}
+
+void AEO_GridController::ChangeNoteType()
+{
+	UE_LOG(LogTemp,Warning,TEXT("in"));
+	tempNote->SwitchNoteType(1);
 }
 
 void AEO_GridController::SoundPlay()

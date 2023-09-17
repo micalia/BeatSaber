@@ -42,6 +42,7 @@ void AEO_CursorNote::BeginPlay()
 	proceduralMeshComp->SetMaterial(0, cubeDynamicMaterial);
 
 	SwitchNoteColor(0);
+	SwitchNoteType(1); 
 }
 
 void AEO_CursorNote::Tick(float DeltaTime)
@@ -59,6 +60,19 @@ void AEO_CursorNote::SwitchNoteColor(int num)
 		break;
 	case 1:
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+		break;
+	}
+}
+
+void AEO_CursorNote::SwitchNoteType(int num)
+{
+	switch (num)
+	{
+	case 0:
+		cubeDynamicMaterial->SetScalarParameterValue(TEXT("TypeChoice"), 0);
+		break;
+	case 1:
+		cubeDynamicMaterial->SetScalarParameterValue(TEXT("TypeChoice"), 1);
 		break;
 	}
 }
