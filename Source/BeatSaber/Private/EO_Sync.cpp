@@ -18,7 +18,7 @@ AEO_Sync::AEO_Sync()
 		noteFactory = noteTemp.Class;
 	}
 
-	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/test.test'"));
+	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/Stay_Remix.Stay_Remix'"));
 	if (patternTemp.Succeeded())
 	{
 		patternData = patternTemp.Object;
@@ -79,6 +79,7 @@ void AEO_Sync::GenerateNote()
 
 			ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 			tempNote->SwitchColor(row->color);
+			tempNote->SwitchType(row->type);
 		}
 	}
 

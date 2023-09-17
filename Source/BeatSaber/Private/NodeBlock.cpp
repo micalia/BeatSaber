@@ -21,14 +21,14 @@ ANodeBlock::ANodeBlock()
 
 	proceduralMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("proceduralMesh"));
 	proceduralMesh->SetupAttachment(rootComp);
-	proceduralMesh->SetRelativeLocation(FVector(0, 0, -100));
+	proceduralMesh->SetRelativeLocation(FVector(0));
 	proceduralMesh->SetRelativeRotation(FRotator(0, 180, 180));
 	proceduralMesh->SetCollisionProfileName(TEXT("NodeBlock"));
 	proceduralMesh->bUseComplexAsSimpleCollision = false;
 
 	sm_nodeBlock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("sm_nodeBlock"));
 	sm_nodeBlock->SetupAttachment(rootComp);
-	sm_nodeBlock->SetRelativeLocation(FVector(0, 0, -100));
+	sm_nodeBlock->SetRelativeLocation(FVector(0));
 	sm_nodeBlock->SetRelativeRotation(FRotator(0, 180, 180));
 	sm_nodeBlock->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	sm_nodeBlock->bHiddenInGame = true;

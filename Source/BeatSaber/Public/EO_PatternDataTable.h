@@ -11,7 +11,9 @@ struct FPatternDataTableRow : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ms;
+	int type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ms;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int x;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

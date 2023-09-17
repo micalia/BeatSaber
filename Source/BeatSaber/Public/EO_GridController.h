@@ -26,7 +26,7 @@ public:
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Sounds")
-	class USoundBase* testSound;
+	class USoundBase* musicSound;
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
 	TSubclassOf<class AActor> gridTemplate;
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
@@ -58,6 +58,7 @@ private:
 	int xArrIndex = 2;
 	float zPos = 0;
 	int colorIndex = 0;
+	int typeIndex = 0;
 
 	int bitIndex = 0;
 

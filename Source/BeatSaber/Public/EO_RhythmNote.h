@@ -35,6 +35,7 @@ public:
 	int myXPos = 0;
 	int myYPos = 0;
 	int colorIndex = 0;
+	int typeIndex = 0;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -57,5 +58,7 @@ private:
 public:
 	UFUNCTION()
 	void SetNoteColor(int num);
+	UFUNCTION()
+	void SetNoteType(int num);
 
 };

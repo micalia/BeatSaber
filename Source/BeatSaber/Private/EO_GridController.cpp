@@ -44,7 +44,7 @@ void AEO_GridController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	musicBPM = 120.0f;
+	musicBPM = 169.74f;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -53,10 +53,10 @@ void AEO_GridController::BeginPlay()
 
 	barPerSec = oneBeatTime * 4;
 
-	audioComp->SetSound(testSound);
+	audioComp->SetSound(musicSound);
 
 	syncPos = GetActorLocation();
-
+	
 	MakeGrid();
 }
 
@@ -154,7 +154,7 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AEO_GridController::MakeGrid()
 {
-	for (int i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
+	for (float i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
 	{
 		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
@@ -163,11 +163,11 @@ void AEO_GridController::MakeGrid()
 		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 		arr4BitGrid.Add(gridTemp);
-
+		
 		i += oneBeatTime * 1000;
 	}
 
-	for (int i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	for (float i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
 		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
@@ -177,11 +177,11 @@ void AEO_GridController::MakeGrid()
 
 		gridTemp->SetActive(false);
 		arr8BitGrid.Add(gridTemp);
-
+		
 		i += oneBeatTime * 1000;
 	}
 
-	for (int i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+	for (float i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
 		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
@@ -196,6 +196,8 @@ void AEO_GridController::MakeGrid()
 	}
 
 	tempNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
+	tempNote->SwitchNoteColor(0);
+	tempNote->SwitchNoteType(0);
 }
 
 void AEO_GridController::MoveGrid(float value)
@@ -212,7 +214,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X < offset)
 			{
-				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime), 0, 0));
 			}
 			else
 			{
@@ -223,7 +225,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime * 1000 * 0.001f), 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime), 0, 0));
 			}
 			else
 			{
@@ -244,6 +246,7 @@ void AEO_GridController::PlacedNote()
 		noteTemp->myXPos = xArrIndex;
 		noteTemp->myYPos = yArrIndex;
 		noteTemp->SetNoteColor(colorIndex);
+		noteTemp->SetNoteType(typeIndex);
 		currentGrid->noteArr[xArrIndex][yArrIndex] = noteTemp;
 	}
 }
@@ -354,8 +357,17 @@ void AEO_GridController::ChangeBlueColor()
 
 void AEO_GridController::ChangeNoteType()
 {
-	UE_LOG(LogTemp,Warning,TEXT("in"));
-	tempNote->SwitchNoteType(1);
+	switch (typeIndex)
+	{
+	case 0:
+		typeIndex = 1;
+		break;
+	case 1:
+		typeIndex = 0;
+		break;
+	}
+
+	tempNote->SwitchNoteType(typeIndex);
 }
 
 void AEO_GridController::SoundPlay()
@@ -390,16 +402,19 @@ void AEO_GridController::OutData()
 	SetActorLocation(FVector(0));
 
 	TArray<FString> data;
-	data.Add(TEXT(",ms,x,y,color,rot"));
+	data.Add(TEXT(",type,ms,x,y,color,rot"));
 
 	for (AEO_RhythmNote* noteData : TActorRange<AEO_RhythmNote>(GetWorld()))
 	{
 		FString textData;
 
-		textData += FString::FromInt(i);
+		textData += FString::FromInt(i + 51);
+		textData += ",";
+		//type
+		textData += FString::FromInt(noteData->typeIndex);
 		textData += ",";
 		//ms
-		textData += FString::FromInt(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed));
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed - offset));
 		textData += ",";
 		//x position
 		textData += FString::FromInt(noteData->myXPos);
