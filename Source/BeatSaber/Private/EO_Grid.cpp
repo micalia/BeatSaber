@@ -38,14 +38,20 @@ void AEO_Grid::SetActive(bool bCheck)
 {
 	meshComp->SetVisibility(bCheck);
 
-	switch (bCheck)
+	if (bCheck) {
+		boxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	}
+	else {
+		boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	/*switch (bCheck)
 	{
-	case true:
+	case 1:
 		boxComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		break;
-	case false:
+	case 0:
 		boxComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
-	}
+	}*/
 }
 

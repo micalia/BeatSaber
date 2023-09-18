@@ -44,7 +44,7 @@ void ASB_Destroyzone::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 			gameMode->currCombo = 0;
 			if (player) {
 				player->currHp--;
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("Hp decrease")), true, FVector2D(1, 1));
+				//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("Hp decrease")), true, FVector2D(1, 1));
 			}
 			nodeBlock->DelayDestroy();
 		}

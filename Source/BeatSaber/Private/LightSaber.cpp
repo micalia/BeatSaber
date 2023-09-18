@@ -157,14 +157,14 @@ void ALightSaber::Tick(float DeltaTime)
 					if (nodeBlock->blockType == 0) { // 화살표
 						if (Angle <= ScoreThreshold) {
 							if ((int8)saberColor == nodeBlock->blockColor) {
-								UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound);
+								UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
 								gm->currCombo += 1;
 							}
 							else {
 								if (player) {
 									player->currHp--;
 								}
-								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
+								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 								gm->currCombo = 0;
 							}
 						}
@@ -172,20 +172,20 @@ void ALightSaber::Tick(float DeltaTime)
 							if (player) {
 								player->currHp--;
 							}
-							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
+							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 							gm->currCombo = 0;
 						}
 					}
 					else {// 화살표 없는 블럭
 						if ((int8)saberColor == nodeBlock->blockColor) {
-							UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound);
+							UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
 							gm->currCombo += 1;
 						}
 						else {
 							if (player) {
 								player->currHp--;
 							}
-							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound);
+							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 							gm->currCombo = 0;
 						}
 					}

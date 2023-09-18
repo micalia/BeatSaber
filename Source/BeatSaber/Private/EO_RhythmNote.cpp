@@ -93,7 +93,7 @@ void AEO_RhythmNote::EditorSyncTest()
 			{
 				if (tik != nullptr && !isTik)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("one"));
+					//UE_LOG(LogTemp, Warning, TEXT("one"));
 					UGameplayStatics::PlaySound2D(GetWorld(), tik);
 					isTik = true;
 				}

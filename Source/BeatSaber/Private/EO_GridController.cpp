@@ -6,6 +6,7 @@
 #include "CsvFileManager.h"
 #include <EngineUtils.h>
 #include <Kismet/KismetMathLibrary.h>
+#include "EO_CursorNote.h"
 
 
 AEO_GridController::AEO_GridController()
@@ -67,7 +68,7 @@ void AEO_GridController::Tick(float DeltaTime)
 	FVector worldLoc;
 	FVector worldDir;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->DeprojectMousePositionToWorld(worldLoc, worldDir);
-
+	
 	FHitResult hit;
 	if (GetWorld()->LineTraceSingleByChannel(hit, worldLoc, worldLoc + worldDir * 1000000, ECollisionChannel::ECC_Visibility))
 	{
@@ -109,7 +110,7 @@ void AEO_GridController::Tick(float DeltaTime)
 					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
 
-					//UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
+					////UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
 				}
 			}
 		}
@@ -434,6 +435,6 @@ void AEO_GridController::OutData()
 	}
 
 	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("test.csv"), data);
-	UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
+	//UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
 }
 

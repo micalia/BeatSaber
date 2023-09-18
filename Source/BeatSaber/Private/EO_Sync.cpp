@@ -34,7 +34,7 @@ void AEO_Sync::BeginPlay()
 
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
-		SetActorLocation(FVector(player->GetActorLocation().X + 200, player->GetActorLocation().Y, GetActorLocation().Z));
+		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z));
 
 	musicBPM = 120.0f;
 	frequeny = 44100.0f;
@@ -83,7 +83,7 @@ void AEO_Sync::GenerateNote()
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("All Generated"));
+	//UE_LOG(LogTemp, Warning, TEXT("All Generated"));
 	isGenerate = true;
 }
 

@@ -30,7 +30,7 @@ private:
 	class AGridController* gridController;*/
 
 public:
-	class AEO_RhythmNote* noteArr[3][4] = { nullptr, };
+	class AEO_RhythmNote* noteArr[3][4];
 
 public:
 	void SetActive(bool bCheck);
