@@ -24,14 +24,16 @@ public:
 	class UBoxComponent* boxComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* meshComp;
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* widgetComp;
 
-private:
-	/*UPROPERTY(VisibleAnywhere)
-	class AGridController* gridController;*/
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UUserWidget> gridNumWidget;
 
 public:
 	class AEO_RhythmNote* noteArr[3][4];
 
 public:
 	void SetActive(bool bCheck);
+	void SetGridNumber(int num);
 };
