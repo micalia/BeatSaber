@@ -164,6 +164,7 @@ void AEO_GridController::MakeGrid()
 		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 		arr4BitGrid.Add(gridTemp);
+		gridTemp->SetGridNumber(arr4BitGrid.Num());
 		
 		i += oneBeatTime * 1000;
 	}
