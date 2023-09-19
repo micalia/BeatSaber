@@ -22,4 +22,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compWallMesh;
 
+	UPROPERTY(EditAnywhere)
+	float wallXscaleRatio = 0.105f;
+	UPROPERTY(EditAnywhere)
+	float wallZscaleRatio = 0.25f;
 };

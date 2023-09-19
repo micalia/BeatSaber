@@ -10,6 +10,7 @@ AWallObstacle::AWallObstacle()
 	PrimaryActorTick.bCanEverTick = true;
 
 	compBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BOX"));
+	compBox->SetWorldScale3D(FVector(wallXscaleRatio, 1, wallZscaleRatio)); // 노트 블럭 사이즈로 스케일 조절
 	compBox->SetBoxExtent(FVector(238, 26, 100));
 	SetRootComponent(compBox);
 
