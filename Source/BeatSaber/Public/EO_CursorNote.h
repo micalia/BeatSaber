@@ -26,6 +26,8 @@ public:
 	class UStaticMeshComponent* meshComp;
 	UPROPERTY(VisibleAnywhere)
 	class UProceduralMeshComponent* proceduralMeshComp;
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* bombMeshComp;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UMaterialInterface* matInterface;
@@ -35,7 +37,7 @@ private:
 
 public:
 	UFUNCTION()
-	void SwitchNoteColor(int num);
+	void SwitchNote(int num);
 	UFUNCTION()
 	void SwitchNoteType(int num);
 };

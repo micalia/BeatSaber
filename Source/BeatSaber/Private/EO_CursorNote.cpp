@@ -27,6 +27,16 @@ AEO_CursorNote::AEO_CursorNote()
 	proceduralMeshComp->SetRelativeLocation(FVector(0));
 	proceduralMeshComp->SetRelativeRotation(FRotator(0,0,180));
 
+	bombMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bomb Mesh Component"));
+	bombMeshComp->SetupAttachment(RootComponent);
+	bombMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> bombMeshTemp(TEXT("'/Game/SB/Models/SphereObstacle/Bomb.Bomb'"));
+	if (bombMeshTemp.Succeeded())
+	{
+		bombMeshComp->SetStaticMesh(bombMeshTemp.Object);
+	}
+	bombMeshComp->SetVisibility(false);
+
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempBlockMat(TEXT("'/Game/SB/Materials/M_Cube_Inst.M_Cube_Inst'"));
 	if (tempBlockMat.Succeeded())
 	{
@@ -43,7 +53,7 @@ void AEO_CursorNote::BeginPlay()
 	meshComp->SetMaterial(0, cubeDynamicMaterial);
 	proceduralMeshComp->SetMaterial(0, cubeDynamicMaterial);
 
-	SwitchNoteColor(0);
+	SwitchNote(0);
 	SwitchNoteType(1); 
 }
 
@@ -53,15 +63,23 @@ void AEO_CursorNote::Tick(float DeltaTime)
 
 }
 
-void AEO_CursorNote::SwitchNoteColor(int num)
+void AEO_CursorNote::SwitchNote(int num)
 {
 	switch (num)
 	{
 	case 0:
+		meshComp->SetVisibility(true);
+		bombMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 		break;
 	case 1:
+		meshComp->SetVisibility(true);
+		bombMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+		break;
+	case 2:
+		bombMeshComp->SetVisibility(true);
+		meshComp->SetVisibility(false);
 		break;
 	}
 }

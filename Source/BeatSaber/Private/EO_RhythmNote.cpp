@@ -31,6 +31,16 @@ AEO_RhythmNote::AEO_RhythmNote()
 	proceduralMeshComp->SetRelativeLocation(FVector(0));
 	proceduralMeshComp->SetRelativeRotation(FRotator(0, 0, 180));
 
+	bombMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bomb Mesh Component"));
+	bombMeshComp->SetupAttachment(RootComponent);
+	bombMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> bombMeshTemp(TEXT("'/Game/SB/Models/SphereObstacle/Bomb.Bomb'"));
+	if (bombMeshTemp.Succeeded())
+	{
+		bombMeshComp->SetStaticMesh(bombMeshTemp.Object);
+	}
+	bombMeshComp->SetVisibility(false);
+
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempBlockMat(TEXT("'/Game/SB/Materials/M_Cube_Inst.M_Cube_Inst'"));
 	if (tempBlockMat.Succeeded())
 	{
@@ -50,8 +60,7 @@ void AEO_RhythmNote::BeginPlay()
 	meshComp->SetMaterial(0, cubeDynamicMaterial);
 	proceduralMeshComp->SetMaterial(0, cubeDynamicMaterial);
 
-	SetNoteColor(0);
-
+	SetNote(0);
 
 	syncPos = gridController->syncPos;
 }
@@ -113,17 +122,25 @@ void AEO_RhythmNote::EditorSyncTest()
 	}
 }
 
-void AEO_RhythmNote::SetNoteColor(int num)
+void AEO_RhythmNote::SetNote(int num)
 {
 	colorIndex = num;
 
 	switch (num)
 	{
 	case 0:
+		meshComp->SetVisibility(true);
+		bombMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 		break;
 	case 1:
+		meshComp->SetVisibility(true);
+		bombMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+		break;
+	case 2:
+		bombMeshComp->SetVisibility(true);
+		meshComp->SetVisibility(false);
 		break;
 	}
 }

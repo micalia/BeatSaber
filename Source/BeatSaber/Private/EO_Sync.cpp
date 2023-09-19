@@ -18,7 +18,13 @@ AEO_Sync::AEO_Sync()
 		noteFactory = noteTemp.Class;
 	}
 
-	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("'/Game/EO/Resources/Stay_Remix.Stay_Remix'"));
+	ConstructorHelpers::FClassFinder<ASphereObstacle> bomTemp(TEXT("'/Game/SB/Blueprints/BP_SphereObstacle.BP_SphereObstacle_C'"));
+	if (bomTemp.Succeeded())
+	{
+		bombFactory = bomTemp.Class;
+	}
+
+	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("/Script/Engine.DataTable'/Game/EO/Resources/test.test'"));
 	if (patternTemp.Succeeded())
 	{
 		patternData = patternTemp.Object;
@@ -34,9 +40,9 @@ void AEO_Sync::BeginPlay()
 
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
-		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z));
+		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
 
-	musicBPM = 120.0f;
+	musicBPM = 169.74f;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -77,9 +83,16 @@ void AEO_Sync::GenerateNote()
 		{
 			FPatternDataTableRow* row = patternData->FindRow<FPatternDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
 
-			ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
-			tempNote->SwitchColor(row->color);
-			tempNote->SwitchType(row->type);
+			if(row->color == 0 && row->color == 1)
+			{
+				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
+				tempNote->SwitchColor(row->color);
+				tempNote->SwitchType(row->type);
+			}
+			else if (row->color == 2)
+			{
+				ASphereObstacle* bomb = GetWorld()->SpawnActor<ASphereObstacle>(bombFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator());
+			}
 		}
 	}
 

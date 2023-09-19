@@ -51,7 +51,7 @@ private:
 
 	FVector endGridPos;
 
-	class AEO_CursorNote* tempNote = nullptr;
+	class AEO_CursorNote* cursorNote = nullptr;
 	class AEO_Grid* currentGrid = nullptr;
 
 	int yArrIndex = 0;
@@ -87,6 +87,7 @@ private:
 	void BitDown();
 	void ChangeRedColor();
 	void ChangeBlueColor();
+	void ChangeBomb();
 	void ChangeNoteType();
 
 	void SoundPlay();

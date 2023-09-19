@@ -24,10 +24,10 @@ public:
 	class UAudioComponent* audioComp;
 
 public:
-	/*UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AEO_RhythmNote> noteFactory;*/
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class ANodeBlock> noteFactory;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class ASphereObstacle> bombFactory;
 	UPROPERTY(EditDefaultsOnly)
 	class USoundBase* testSound;
 	UPROPERTY(VisibleAnywhere)

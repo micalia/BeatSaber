@@ -107,7 +107,7 @@ void AEO_GridController::Tick(float DeltaTime)
 						yPos = 50;
 						yArrIndex = 2;
 					}
-					tempNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
+					cursorNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
 
 					////UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
@@ -147,6 +147,7 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("DownNode"), IE_Pressed, this, &AEO_GridController::NodeDown);
 	PlayerInputComponent->BindAction(TEXT("SwitchRedColor"), IE_Pressed, this, &AEO_GridController::ChangeRedColor);
 	PlayerInputComponent->BindAction(TEXT("SwitchBlueColor"), IE_Pressed, this, &AEO_GridController::ChangeBlueColor);
+	PlayerInputComponent->BindAction(TEXT("SwitchBomb"), IE_Pressed, this, &AEO_GridController::ChangeBomb);
 	PlayerInputComponent->BindAction(TEXT("BitUp"), IE_Pressed, this, &AEO_GridController::BitUp);
 	PlayerInputComponent->BindAction(TEXT("BitDown"), IE_Pressed, this, &AEO_GridController::BitDown);
 	PlayerInputComponent->BindAction(TEXT("ChangeNoteType"), IE_Pressed, this, &AEO_GridController::ChangeNoteType);
@@ -197,9 +198,9 @@ void AEO_GridController::MakeGrid()
 		i += oneBeatTime * 500;
 	}
 
-	tempNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
-	tempNote->SwitchNoteColor(0);
-	tempNote->SwitchNoteType(0);
+	cursorNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
+	cursorNote->SwitchNote(0);
+	cursorNote->SwitchNoteType(0);
 }
 
 void AEO_GridController::MoveGrid(float value)
@@ -241,13 +242,16 @@ void AEO_GridController::PlacedNote()
 {
 	if (currentGrid->noteArr[xArrIndex][yArrIndex] == nullptr)
 	{
+		AEO_RhythmNote* noteTemp;
+
 		FActorSpawnParameters param;
 		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		AEO_RhythmNote* noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, tempNote->GetTransform(), param);
+		noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, cursorNote->GetTransform(), param);
+
 		noteTemp->AttachToActor(currentGrid->GetAttachParentActor(), FAttachmentTransformRules::KeepWorldTransform);
 		noteTemp->myXPos = xArrIndex;
 		noteTemp->myYPos = yArrIndex;
-		noteTemp->SetNoteColor(colorIndex);
+		noteTemp->SetNote(colorIndex);
 		noteTemp->SetNoteType(typeIndex);
 		currentGrid->noteArr[xArrIndex][yArrIndex] = noteTemp;
 	}
@@ -269,12 +273,12 @@ void AEO_GridController::RemoveNote()
 
 void AEO_GridController::NodeLeftRotation()
 {
-	tempNote->AddActorLocalRotation(FRotator(0, 0, -45));
+	cursorNote->AddActorLocalRotation(FRotator(0, 0, -45));
 }
 
 void AEO_GridController::NodeRightRotation()
 {
-	tempNote->AddActorLocalRotation(FRotator(0, 0, 45));
+	cursorNote->AddActorLocalRotation(FRotator(0, 0, 45));
 }
 
 void AEO_GridController::NodeUp()
@@ -348,13 +352,19 @@ void AEO_GridController::BitDown()
 void AEO_GridController::ChangeRedColor()
 {
 	colorIndex = 0;
-	tempNote->SwitchNoteColor(colorIndex);
+	cursorNote->SwitchNote(colorIndex);
 }
 
 void AEO_GridController::ChangeBlueColor()
 {
 	colorIndex = 1;
-	tempNote->SwitchNoteColor(colorIndex);
+	cursorNote->SwitchNote(colorIndex);
+}
+
+void AEO_GridController::ChangeBomb()
+{
+	colorIndex = 2;
+	cursorNote->SwitchNote(colorIndex);
 }
 
 void AEO_GridController::ChangeNoteType()
@@ -369,7 +379,7 @@ void AEO_GridController::ChangeNoteType()
 		break;
 	}
 
-	tempNote->SwitchNoteType(typeIndex);
+	cursorNote->SwitchNoteType(typeIndex);
 }
 
 void AEO_GridController::SoundPlay()
