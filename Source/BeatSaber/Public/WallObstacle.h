@@ -21,4 +21,5 @@ public:
 	class UBoxComponent* compBox;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compWallMesh;
+
 };

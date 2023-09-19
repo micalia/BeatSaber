@@ -30,6 +30,9 @@ public:
 		class UCameraComponent* cam;
 
 	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class USphereComponent* headCollision;
+
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
 		class UStaticMeshComponent* headMesh;
 
 	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
@@ -67,4 +70,29 @@ public:
 	float fullHp = 50;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PlayerStat")
 	float currHp = 25;
+
+public:
+	UPROPERTY(EditAnywhere)
+	float decreaseDelayTime = 0.5f;
+	float currTime;
+
+	int32 crashWallCount;
+	bool bPlayerChk;
+
+	UFUNCTION()
+	void OnOverlap(
+		UPrimitiveComponent* OverlappedComponent, 
+		AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex, 
+		bool bFromSweep, 
+		const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnEndOverlap(
+	UPrimitiveComponent* OverlappedComponent, 
+		AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex
+		);
 };

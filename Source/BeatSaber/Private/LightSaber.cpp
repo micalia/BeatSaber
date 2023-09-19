@@ -201,7 +201,7 @@ void ALightSaber::Tick(float DeltaTime)
 				ASphereObstacle* sphereObstacle = Cast<ASphereObstacle>(HitResult[i].GetActor());
 				if (sphereObstacle) {
 					sphereObstacle->CrackEffect();
-					player->currHp =-3;
+					player->currHp--;
 					gm->currCombo = 0;
 				}
 			}

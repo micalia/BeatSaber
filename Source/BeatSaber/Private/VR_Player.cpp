@@ -7,6 +7,7 @@
 #include <HeadMountedDisplay/Public/MotionControllerComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include <Components/TextRenderComponent.h>
+#include <Components/SphereComponent.h>
 
 // Sets default values
 AVR_Player::AVR_Player()
@@ -21,6 +22,9 @@ AVR_Player::AVR_Player()
 	headMesh->SetupAttachment(cam);
 	headMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
+	headCollision = CreateDefaultSubobject<USphereComponent>(TEXT("HeadCollision"));
+	headCollision->SetupAttachment(cam);
+
 	leftController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Left Controller"));
 	leftController->SetupAttachment(RootComponent);
 	// 모션 소스 선택
@@ -85,7 +89,9 @@ AVR_Player::AVR_Player()
 void AVR_Player::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	headCollision->OnComponentBeginOverlap.AddDynamic(this, &AVR_Player::OnOverlap);
+	headCollision->OnComponentEndOverlap.AddDynamic(this, &AVR_Player::OnEndOverlap);
 }
 
 // Called every frame
@@ -93,6 +99,13 @@ void AVR_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bPlayerChk) {
+		currTime += DeltaTime;
+		if (currTime > decreaseDelayTime) {
+			currTime = 0;
+			currHp--;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -102,3 +115,16 @@ void AVR_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+void AVR_Player::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	crashWallCount++;
+	bPlayerChk = true;
+}
+
+void AVR_Player::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	crashWallCount--;
+	if (crashWallCount <= 0) {
+		bPlayerChk = false;
+	}
+}
