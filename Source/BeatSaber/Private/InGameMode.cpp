@@ -34,7 +34,7 @@ void AInGameMode::Tick(float DeltaTime)
 
 	//currTime+= DeltaTime;
 
-	//if (currTime > spawnDelayTime) {
+	//if (currTime > spawnDelayTime) { 
 	//	currTime = 0;
 
 	//////임시 생성위치

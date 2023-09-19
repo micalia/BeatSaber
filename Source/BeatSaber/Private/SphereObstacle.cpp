@@ -4,6 +4,7 @@
 #include "SphereObstacle.h"
 #include "Components/SphereComponent.h"
 #include <Components/StaticMeshComponent.h>
+#include <GeometryCollectionEngine/Public/GeometryCollection/GeometryCollectionComponent.h>
 
 ASphereObstacle::ASphereObstacle()
 {
@@ -20,4 +21,27 @@ ASphereObstacle::ASphereObstacle()
 	if (tempSphereObstacle.Succeeded()) {
 		compSphereObstacleMesh->SetStaticMesh(tempSphereObstacle.Object);
 	}
+
+	compGCSphereObstacle = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("compGC"));
+	compGCSphereObstacle->SetupAttachment(compSphere);
+	compGCSphereObstacle->SetVisibility(false);
+	compGCSphereObstacle->SetSimulatePhysics(false);
+
+	static ConstructorHelpers::FObjectFinder<UGeometryCollection> tempCompGCSphereObstacle(TEXT("/Script/GeometryCollectionEngine.GeometryCollection'/Game/SB/GC/GC_SphereObstacle.GC_SphereObstacle'"));
+	if (tempCompGCSphereObstacle.Succeeded()) {
+		compGCSphereObstacle->SetRestCollection(tempCompGCSphereObstacle.Object);
+	}
+}
+
+void ASphereObstacle::CrackEffect()
+{
+	compSphereObstacleMesh->SetVisibility(false);
+	compGCSphereObstacle->SetVisibility(true);
+	compGCSphereObstacle->SetSimulatePhysics(true);
+	compGCSphereObstacle->ApplyExternalStrain(0, GetActorLocation(), 0, 0, 2000, 2000);
+
+	FTimerHandle destroyDelay;
+	GetWorld()->GetTimerManager().SetTimer(destroyDelay, FTimerDelegate::CreateLambda([&]() {
+		Destroy();
+		}), 2.3f, false);
 }

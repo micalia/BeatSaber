@@ -9,6 +9,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "VR_Player.h"
 #include <Sound/SoundBase.h>
+#include "SphereObstacle.h"
 
 // Sets default values
 ALightSaber::ALightSaber()
@@ -113,6 +114,8 @@ void ALightSaber::Tick(float DeltaTime)
 	);
 
 	if (bSliceChk) {
+		AVR_Player* player = Cast<AVR_Player>(GetOwner());
+
 		for (int32 i =0; i<HitResult.Num();i++)
 		{
 			ANodeBlock* nodeBlock = Cast<ANodeBlock>(HitResult[i].GetActor());
@@ -123,39 +126,57 @@ void ALightSaber::Tick(float DeltaTime)
 				else {
 					nodeBlock->bSlice = true;
 				}
-			}else{
-				continue;
-			}
-			UProceduralMeshComponent* proceduralMesh = Cast<UProceduralMeshComponent>(HitResult[i].Component);
-			if (proceduralMesh) {
-				UProceduralMeshComponent* OutOtherHalfProcMesh;
-				//잘라진 단면 색깔
-				if(nodeBlock->blockColor == 0) {  // 빨강
-					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
-				}
-				else if(nodeBlock->blockColor == 1) { // 파랑
-					SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
-				}
-				UMaterialInterface* mi = SliceCubeDynamicMaterial;
-				if (sm_pointVal) {
-					UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
-					OutOtherHalfProcMesh->SetSimulatePhysics(true);
-					OutOtherHalfProcMesh->SetCollisionProfileName(TEXT("NodeBlock"));
-					OutOtherHalfProcMesh->AddImpulse(FVector(-550, 700, 400), FName(TEXT("NONE")), true);
 
-					//각도 계산
-					FVector p0 = sm_pointVal->GetComponentLocation();
-					FVector p1 = p0 + sm_pointVal->GetRightVector() * 500;
-					FVector swingDir = sm_pointVal->GetRightVector();
+				UProceduralMeshComponent* proceduralMesh = Cast<UProceduralMeshComponent>(HitResult[i].Component);
+				if (proceduralMesh) {
+					UProceduralMeshComponent* OutOtherHalfProcMesh;
+					//잘라진 단면 색깔
+					if(nodeBlock->blockColor == 0) {  // 빨강
+						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+					}
+					else if(nodeBlock->blockColor == 1) { // 파랑
+						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+					}
+					UMaterialInterface* mi = SliceCubeDynamicMaterial;
+					if (sm_pointVal) {
+						UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
+						OutOtherHalfProcMesh->SetSimulatePhysics(true);
+						OutOtherHalfProcMesh->SetCollisionProfileName(TEXT("NodeBlock"));
+						OutOtherHalfProcMesh->AddImpulse(FVector(-550, 700, 400), FName(TEXT("NONE")), true);
 
-					float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(swingDir, nodeBlock->rootComp->GetUpVector() * -1)));
+						//각도 계산
+						FVector p0 = sm_pointVal->GetComponentLocation();
+						FVector p1 = p0 + sm_pointVal->GetRightVector() * 500;
+						FVector swingDir = sm_pointVal->GetRightVector();
 
-					float ScoreThreshold = 45.0f;
+						float Angle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(swingDir, nodeBlock->rootComp->GetUpVector() * -1)));
 
-					AVR_Player* player = Cast<AVR_Player>(GetOwner());
-					//점수 판정
-					if (nodeBlock->blockType == 0) { // 화살표
-						if (Angle <= ScoreThreshold) {
+						float ScoreThreshold = 45.0f;
+
+						//점수 판정
+						if (nodeBlock->blockType == 0) { // 화살표
+							if (Angle <= ScoreThreshold) {
+								if ((int8)saberColor == nodeBlock->blockColor) {
+									UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
+									gm->currCombo += 1;
+								}
+								else {
+									if (player) {
+										player->currHp--;
+									}
+									UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
+									gm->currCombo = 0;
+								}
+							}
+							else {
+								if (player) {
+									player->currHp--;
+								}
+								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
+								gm->currCombo = 0;
+							}
+						}
+						else {// 화살표 없는 블럭
 							if ((int8)saberColor == nodeBlock->blockColor) {
 								UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
 								gm->currCombo += 1;
@@ -168,34 +189,22 @@ void ALightSaber::Tick(float DeltaTime)
 								gm->currCombo = 0;
 							}
 						}
-						else {
-							if (player) {
-								player->currHp--;
-							}
-							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
-							gm->currCombo = 0;
-						}
-					}
-					else {// 화살표 없는 블럭
-						if ((int8)saberColor == nodeBlock->blockColor) {
-							UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
-							gm->currCombo += 1;
-						}
-						else {
-							if (player) {
-								player->currHp--;
-							}
-							UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
-							gm->currCombo = 0;
-						}
-					}
 
-					nodeBlock->proceduralMesh->SetSimulatePhysics(true);
-					nodeBlock->proceduralMesh->AddImpulse(FVector(-550, -700, -400), FName("None"), true);
-					nodeBlock->DelayDestroy();
+						nodeBlock->proceduralMesh->SetSimulatePhysics(true);
+						nodeBlock->proceduralMesh->AddImpulse(FVector(-550, -700, -400), FName("None"), true);
+						nodeBlock->DelayDestroy();
 
+				}
 			}
-		}
+
+			}else{
+				ASphereObstacle* sphereObstacle = Cast<ASphereObstacle>(HitResult[i].GetActor());
+				if (sphereObstacle) {
+					sphereObstacle->CrackEffect();
+					player->currHp =-3;
+					gm->currCombo = 0;
+				}
+			}
 		}
 	}
 

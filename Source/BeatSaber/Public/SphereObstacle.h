@@ -20,4 +20,8 @@ public:
 	class USphereComponent* compSphere;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compSphereObstacleMesh;
+	UPROPERTY(EditAnywhere)
+	class UGeometryCollectionComponent* compGCSphereObstacle;
+
+	void CrackEffect();
 };
