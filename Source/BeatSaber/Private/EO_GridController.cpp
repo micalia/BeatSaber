@@ -7,6 +7,7 @@
 #include <EngineUtils.h>
 #include <Kismet/KismetMathLibrary.h>
 #include "EO_CursorNote.h"
+#include <Camera/CameraActor.h>
 
 
 AEO_GridController::AEO_GridController()
@@ -57,8 +58,10 @@ void AEO_GridController::BeginPlay()
 	audioComp->SetSound(musicSound);
 
 	syncPos = GetActorLocation();
-	
+
 	MakeGrid();
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), arrCamera);
 }
 
 void AEO_GridController::Tick(float DeltaTime)
@@ -68,7 +71,7 @@ void AEO_GridController::Tick(float DeltaTime)
 	FVector worldLoc;
 	FVector worldDir;
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->DeprojectMousePositionToWorld(worldLoc, worldDir);
-	
+
 	FHitResult hit;
 	if (GetWorld()->LineTraceSingleByChannel(hit, worldLoc, worldLoc + worldDir * 1000000, ECollisionChannel::ECC_Visibility))
 	{
@@ -129,6 +132,20 @@ void AEO_GridController::Tick(float DeltaTime)
 		audioComp->Stop();
 		isPlaying = false;
 	}
+
+	if (isWallPlacing)
+	{
+		firstWallPoint.X = wallGridTemp->GetActorLocation().X;
+
+		FVector dist = FVector(cursorNote->GetActorLocation().X - firstWallPoint.X, cursorNote->GetActorLocation().Y + firstWallPoint.Y, cursorNote->GetActorLocation().Z - firstWallPoint.Z);
+		float xRef = arr16BitGrid[0]->GetActorLocation().X - arr4BitGrid[0]->GetActorLocation().X;
+
+		UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Pow(FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1, 2));
+
+		wallTemp->SetActorLocation(FVector(dist / 2));
+		//wallTemp->wallMeshComp->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * 0.135f, FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1 * 1.2f, 0.32f));
+		wallTemp->SetActorScale3D(FVector(FMath::RoundToInt(dist.X / xRef) + 1, FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1, FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1));
+	}
 }
 
 void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -148,10 +165,11 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("SwitchRedColor"), IE_Pressed, this, &AEO_GridController::ChangeRedColor);
 	PlayerInputComponent->BindAction(TEXT("SwitchBlueColor"), IE_Pressed, this, &AEO_GridController::ChangeBlueColor);
 	PlayerInputComponent->BindAction(TEXT("SwitchBomb"), IE_Pressed, this, &AEO_GridController::ChangeBomb);
+	PlayerInputComponent->BindAction(TEXT("SwitchWall"), IE_Pressed, this, &AEO_GridController::ChangeWall);
 	PlayerInputComponent->BindAction(TEXT("BitUp"), IE_Pressed, this, &AEO_GridController::BitUp);
 	PlayerInputComponent->BindAction(TEXT("BitDown"), IE_Pressed, this, &AEO_GridController::BitDown);
 	PlayerInputComponent->BindAction(TEXT("ChangeNoteType"), IE_Pressed, this, &AEO_GridController::ChangeNoteType);
-
+	PlayerInputComponent->BindAction(TEXT("ChangeView"), IE_Pressed, this, &AEO_GridController::ChangeView);
 }
 
 void AEO_GridController::MakeGrid()
@@ -166,7 +184,7 @@ void AEO_GridController::MakeGrid()
 
 		arr4BitGrid.Add(gridTemp);
 		gridTemp->SetGridNumber(arr4BitGrid.Num());
-		
+
 		i += oneBeatTime * 1000;
 	}
 
@@ -180,7 +198,7 @@ void AEO_GridController::MakeGrid()
 
 		gridTemp->SetActive(false);
 		arr8BitGrid.Add(gridTemp);
-		
+
 		i += oneBeatTime * 1000;
 	}
 
@@ -240,7 +258,7 @@ void AEO_GridController::MoveGrid(float value)
 
 void AEO_GridController::PlacedNote()
 {
-	if (currentGrid->noteArr[xArrIndex][yArrIndex] == nullptr)
+	if (currentGrid->noteArr[xArrIndex][yArrIndex] == nullptr && !isWallPlacing)
 	{
 		AEO_RhythmNote* noteTemp;
 
@@ -254,6 +272,18 @@ void AEO_GridController::PlacedNote()
 		noteTemp->SetNote(colorIndex);
 		noteTemp->SetNoteType(typeIndex);
 		currentGrid->noteArr[xArrIndex][yArrIndex] = noteTemp;
+
+		if (noteTemp->colorIndex == 3)
+		{
+			wallTemp = noteTemp;
+			wallGridTemp = currentGrid;
+			firstWallPoint = FVector(currentGrid->GetActorLocation().X, noteTemp->GetActorLocation().Y, noteTemp->GetActorLocation().Z);
+			isWallPlacing = true;
+		}
+	}
+	else if (isWallPlacing)
+	{
+		isWallPlacing = false;
 	}
 }
 
@@ -367,6 +397,12 @@ void AEO_GridController::ChangeBomb()
 	cursorNote->SwitchNote(colorIndex);
 }
 
+void AEO_GridController::ChangeWall()
+{
+	colorIndex = 3;
+	cursorNote->SwitchNote(colorIndex);
+}
+
 void AEO_GridController::ChangeNoteType()
 {
 	switch (typeIndex)
@@ -380,6 +416,16 @@ void AEO_GridController::ChangeNoteType()
 	}
 
 	cursorNote->SwitchNoteType(typeIndex);
+}
+
+void AEO_GridController::ChangeView()
+{
+	if (viewIndex < 2)
+		viewIndex++;
+	else
+		viewIndex = 0;
+
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetViewTarget(arrCamera[viewIndex]);
 }
 
 void AEO_GridController::SoundPlay()

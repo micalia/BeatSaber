@@ -28,12 +28,19 @@ public:
 	class UProceduralMeshComponent* proceduralMeshComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* bombMeshComp;
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* wallMeshComp;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UMaterialInterface* matInterface;
 
 private:
 	UMaterialInstanceDynamic* cubeDynamicMaterial;
+
+	UPROPERTY(EditAnywhere)
+	float wallXscaleRatio = 0.135f;
+	UPROPERTY(EditAnywhere)
+	float wallZscaleRatio = 0.32f;
 
 public:
 	UFUNCTION()

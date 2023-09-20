@@ -41,6 +41,19 @@ AEO_RhythmNote::AEO_RhythmNote()
 	}
 	bombMeshComp->SetVisibility(false);
 
+	wallMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wall Mesh Component"));
+	wallMeshComp->SetupAttachment(RootComponent);
+	wallMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> wallMeshTemp(TEXT("'/Game/SB/Models/WallObstacle/Qiang.Qiang'"));
+	if (wallMeshTemp.Succeeded())
+	{
+		wallMeshComp->SetStaticMesh(wallMeshTemp.Object);
+		wallMeshComp->SetRelativeLocation(FVector(-32, 0, 0));
+		wallMeshComp->SetRelativeRotation(FRotator(0,180,0));
+		wallMeshComp->SetRelativeScale3D(FVector(0.135f, 1.2f, 0.32f));
+	}
+	wallMeshComp->SetVisibility(false);
+
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> tempBlockMat(TEXT("'/Game/SB/Materials/M_Cube_Inst.M_Cube_Inst'"));
 	if (tempBlockMat.Succeeded())
 	{
@@ -131,16 +144,24 @@ void AEO_RhythmNote::SetNote(int num)
 	case 0:
 		meshComp->SetVisibility(true);
 		bombMeshComp->SetVisibility(false);
+		wallMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
 		break;
 	case 1:
 		meshComp->SetVisibility(true);
 		bombMeshComp->SetVisibility(false);
+		wallMeshComp->SetVisibility(false);
 		cubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
 		break;
 	case 2:
 		bombMeshComp->SetVisibility(true);
 		meshComp->SetVisibility(false);
+		wallMeshComp->SetVisibility(false);
+		break;
+	case 3:
+		wallMeshComp->SetVisibility(true);
+		meshComp->SetVisibility(false);
+		bombMeshComp->SetVisibility(false);
 		break;
 	}
 }

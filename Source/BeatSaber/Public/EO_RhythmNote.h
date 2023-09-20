@@ -28,6 +28,8 @@ public:
 	class UProceduralMeshComponent* proceduralMeshComp;
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* bombMeshComp;
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* wallMeshComp;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UMaterialInterface* matInterface;
@@ -52,6 +54,11 @@ private:
 	
 	FVector syncPos;
 	bool isTik = false;
+	
+	UPROPERTY(EditAnywhere)
+	float wallXscaleRatio = 0.135f;
+	UPROPERTY(EditAnywhere)
+	float wallZscaleRatio = 0.32f;
 
 private:
 	void PatternTest(float deltaTime);

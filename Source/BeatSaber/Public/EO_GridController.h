@@ -36,6 +36,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
 	TSubclassOf<class AEO_CursorNote> cursorFactory;
 
+	UPROPERTY(EditDefaultsOnly, Category="Settings|Generate")
+	TSubclassOf<class AWallObstacle> testWall;
+
 private:
 	float musicBPM;
 	float frequeny;
@@ -62,12 +65,21 @@ private:
 
 	int bitIndex = 0;
 
+	bool isWallPlacing = false;
+	class AEO_RhythmNote* wallTemp;
+	class AEO_Grid* wallGridTemp;
+	FVector firstWallPoint;
+
 	UPROPERTY(VisibleAnywhere, Category="Settings|Grid")
 	TArray<class AEO_Grid*> arr4BitGrid;
 	UPROPERTY(VisibleAnywhere, Category="Settings|Grid")
 	TArray<class AEO_Grid*> arr8BitGrid;
 	UPROPERTY(VisibleAnywhere, Category="Settings|Grid")
 	TArray<class AEO_Grid*> arr16BitGrid;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<class AActor*> arrCamera;
+	int viewIndex = 0;
 
 public:
 	bool isPlaying = false;
@@ -88,7 +100,9 @@ private:
 	void ChangeRedColor();
 	void ChangeBlueColor();
 	void ChangeBomb();
+	void ChangeWall();
 	void ChangeNoteType();
+	void ChangeView();
 
 	void SoundPlay();
 	void OutData();
