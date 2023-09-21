@@ -140,11 +140,8 @@ void AEO_GridController::Tick(float DeltaTime)
 		FVector dist = FVector(cursorNote->GetActorLocation().X - firstWallPoint.X, cursorNote->GetActorLocation().Y + firstWallPoint.Y, cursorNote->GetActorLocation().Z - firstWallPoint.Z);
 		float xRef = arr16BitGrid[0]->GetActorLocation().X - arr4BitGrid[0]->GetActorLocation().X;
 
-		UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::Pow(FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1, 2));
-
-		wallTemp->SetActorLocation(FVector(dist / 2));
-		//wallTemp->wallMeshComp->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * 0.135f, FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1 * 1.2f, 0.32f));
-		wallTemp->SetActorScale3D(FVector(FMath::RoundToInt(dist.X / xRef) + 1, FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1, FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1));
+		wallTemp->SetActorLocation(FVector(firstWallPoint.X, dist.Y / 2, dist.Z / 2));
+		wallTemp->testScene->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1), (FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1)));
 	}
 }
 

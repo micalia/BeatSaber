@@ -41,16 +41,20 @@ AEO_RhythmNote::AEO_RhythmNote()
 	}
 	bombMeshComp->SetVisibility(false);
 
+	testScene = CreateDefaultSubobject<USceneComponent>(TEXT("test scene"));
+	testScene->SetupAttachment(RootComponent);
+	testScene->SetRelativeLocation(FVector(-50,0,0));
+
 	wallMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wall Mesh Component"));
-	wallMeshComp->SetupAttachment(RootComponent);
+	wallMeshComp->SetupAttachment(testScene);
 	wallMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
-	ConstructorHelpers::FObjectFinder<UStaticMesh> wallMeshTemp(TEXT("'/Game/SB/Models/WallObstacle/Qiang.Qiang'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> wallMeshTemp(TEXT("'/Engine/BasicShapes/Cube.Cube'"));
 	if (wallMeshTemp.Succeeded())
 	{
 		wallMeshComp->SetStaticMesh(wallMeshTemp.Object);
-		wallMeshComp->SetRelativeLocation(FVector(-32, 0, 0));
+		wallMeshComp->SetRelativeLocation(FVector(0));
 		wallMeshComp->SetRelativeRotation(FRotator(0,180,0));
-		wallMeshComp->SetRelativeScale3D(FVector(0.135f, 1.2f, 0.32f));
+		wallMeshComp->SetRelativeScale3D(FVector(0.21f, 2.0f, 0.5f));
 	}
 	wallMeshComp->SetVisibility(false);
 

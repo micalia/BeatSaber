@@ -29,6 +29,8 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* bombMeshComp;
 	UPROPERTY(VisibleAnywhere)
+	class USceneComponent* testScene;
+	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* wallMeshComp;
 
 	UPROPERTY(EditDefaultsOnly)

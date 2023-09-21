@@ -41,12 +41,13 @@ AEO_CursorNote::AEO_CursorNote()
 	wallMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Wall Mesh Component"));
 	wallMeshComp->SetupAttachment(RootComponent);
 	wallMeshComp->SetCollisionProfileName(TEXT("NoCollision"));
-	ConstructorHelpers::FObjectFinder<UStaticMesh> wallMeshTemp(TEXT("'/Game/SB/Models/WallObstacle/Qiang.Qiang'"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> wallMeshTemp(TEXT("'/Engine/BasicShapes/Cube.Cube'"));
 	if (wallMeshTemp.Succeeded())
 	{
 		wallMeshComp->SetStaticMesh(wallMeshTemp.Object);
-		wallMeshComp->SetRelativeLocation(FVector(32,0,0));
-		wallMeshComp->SetRelativeScale3D(FVector(wallXscaleRatio, 1.2f, wallZscaleRatio));
+		wallMeshComp->SetRelativeLocation(FVector(-50, 0, 0));
+		wallMeshComp->SetRelativeRotation(FRotator(0, 180, 0));
+		wallMeshComp->SetRelativeScale3D(FVector(wallXscaleRatio, 2.0f, wallZscaleRatio));
 	}
 	wallMeshComp->SetVisibility(false);
 

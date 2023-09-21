@@ -38,9 +38,9 @@ private:
 	UMaterialInstanceDynamic* cubeDynamicMaterial;
 
 	UPROPERTY(EditAnywhere)
-	float wallXscaleRatio = 0.135f;
+	float wallXscaleRatio = 0.21f;
 	UPROPERTY(EditAnywhere)
-	float wallZscaleRatio = 0.32f;
+	float wallZscaleRatio = 0.5f;
 
 public:
 	UFUNCTION()
