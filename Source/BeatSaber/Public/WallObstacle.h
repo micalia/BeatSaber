@@ -18,12 +18,16 @@ public:
 	AWallObstacle();
 
 	UPROPERTY(EditAnywhere)
+	class USceneComponent* rootComp;
+	UPROPERTY(EditAnywhere)
 	class UBoxComponent* compBox;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* compWallMesh;
 
 	UPROPERTY(EditAnywhere)
-	float wallXscaleRatio = 0.105f;
+	float wallXscaleRatio = 0.21f;
 	UPROPERTY(EditAnywhere)
-	float wallZscaleRatio = 0.25f;
+	float wallYscaleRatio = 1.4f;
+	UPROPERTY(EditAnywhere)
+	float wallZscaleRatio = 0.5f;
 };

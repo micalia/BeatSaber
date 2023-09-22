@@ -24,7 +24,7 @@ AEO_Sync::AEO_Sync()
 		bombFactory = bomTemp.Class;
 	}
 
-	ConstructorHelpers::FClassFinder<AWallObstacle> wallTemp(TEXT("'/Game/SB/Blueprints/BP_WallObstacle.BP_WallObstacle'"));
+	ConstructorHelpers::FClassFinder<AWallObstacle> wallTemp(TEXT("'/Game/SB/Blueprints/BP_WallObstacle.BP_WallObstacle_C'"));
 	if (wallTemp.Succeeded())
 	{
 		wallFactory = wallTemp.Class;
@@ -89,18 +89,21 @@ void AEO_Sync::GenerateNote()
 		{
 			FPatternDataTableRow* row = patternData->FindRow<FPatternDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
 
-			if (row->color == 0 && row->color == 1)
+			if (row->color == 0 || row->color == 1)
 			{
+				UE_LOG(LogTemp,Warning,TEXT("Spawn block"));
 				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 				tempNote->SwitchColor(row->color);
 				tempNote->SwitchType(row->type);
 			}
 			else if (row->color == 2)
 			{
-				ASphereObstacle* bomb = GetWorld()->SpawnActor<ASphereObstacle>(bombFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator());
+				UE_LOG(LogTemp, Warning, TEXT("Spawn bomb"));
+				ASphereObstacle* bomb = GetWorld()->SpawnActor<ASphereObstacle>(bombFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0));
 			}
 			else if (row->color == 3)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Spawn wall"));
 				FVector vecFirst = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x));
 				FVector vecEnd = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->wEndms * 0.001f)), YGeneratePos(row->y2), XGeneratePos(row->x2));
 
@@ -109,8 +112,8 @@ void AEO_Sync::GenerateNote()
 
 				/*wallTemp->SetActorLocation(FVector(firstWallPoint.X, dist.Y / 2, dist.Z / 2));
 				wallTemp->testScene->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1), (FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1)));*/
-				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, dist.Z / 2), FRotator());
-				
+				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, dist.Z / 2), FRotator(0, 180, 0));
+				wallObj->SetActorRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(vecEnd.Y - vecFirst.Y) / 70 + 1), (FMath::Abs(vecEnd.Z - vecFirst.Z) / 60 + 1)));
 			}
 		}
 	}
