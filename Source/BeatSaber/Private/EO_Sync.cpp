@@ -89,7 +89,7 @@ void AEO_Sync::GenerateNote()
 		{
 			FPatternDataTableRow* row = patternData->FindRow<FPatternDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
 
-			if(row->color == 0 && row->color == 1)
+			if (row->color == 0 && row->color == 1)
 			{
 				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 				tempNote->SwitchColor(row->color);
@@ -101,6 +101,15 @@ void AEO_Sync::GenerateNote()
 			}
 			else if (row->color == 3)
 			{
+				FVector vecFirst = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x));
+				FVector vecEnd = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->wEndms * 0.001f)), YGeneratePos(row->y2), XGeneratePos(row->x2));
+
+				FVector dist = FVector(vecEnd.X - vecFirst.X, vecEnd.Y + vecFirst.Y, vecEnd.Z - vecFirst.Z);
+				float xRef = (700 * (oneBeatTime / 4 * 1000) * 0.001f);
+
+				/*wallTemp->SetActorLocation(FVector(firstWallPoint.X, dist.Y / 2, dist.Z / 2));
+				wallTemp->testScene->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1), (FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1)));*/
+				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, dist.Z / 2), FRotator());
 				
 			}
 		}
