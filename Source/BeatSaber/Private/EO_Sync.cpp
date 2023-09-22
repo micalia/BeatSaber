@@ -24,6 +24,12 @@ AEO_Sync::AEO_Sync()
 		bombFactory = bomTemp.Class;
 	}
 
+	ConstructorHelpers::FClassFinder<AWallObstacle> wallTemp(TEXT("'/Game/SB/Blueprints/BP_WallObstacle.BP_WallObstacle'"));
+	if (wallTemp.Succeeded())
+	{
+		wallFactory = wallTemp.Class;
+	}
+
 	ConstructorHelpers::FObjectFinder<UDataTable> patternTemp(TEXT("/Script/Engine.DataTable'/Game/EO/Resources/test.test'"));
 	if (patternTemp.Succeeded())
 	{
@@ -92,6 +98,10 @@ void AEO_Sync::GenerateNote()
 			else if (row->color == 2)
 			{
 				ASphereObstacle* bomb = GetWorld()->SpawnActor<ASphereObstacle>(bombFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator());
+			}
+			else if (row->color == 3)
+			{
+				
 			}
 		}
 	}

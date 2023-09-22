@@ -29,6 +29,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class ASphereObstacle> bombFactory;
 	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AWallObstacle> wallFactory;
+	UPROPERTY(EditDefaultsOnly)
 	class USoundBase* testSound;
 	UPROPERTY(VisibleAnywhere)
 	class UDataTable* patternData;

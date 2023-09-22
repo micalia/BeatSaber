@@ -22,6 +22,12 @@ struct FPatternDataTableRow : public FTableRowBase
 	int color;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float rot;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float wEndms;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int x2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int y2;
 };
 
 UCLASS()

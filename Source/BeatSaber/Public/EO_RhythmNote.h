@@ -40,6 +40,9 @@ public:
 	float speed = 700;
 	int myXPos = 0;
 	int myYPos = 0;
+	float endPoint = -1;
+	int myXPos2 = -1;
+	int myYPos2 = -1;
 	int colorIndex = 0;
 	int typeIndex = 0;
 

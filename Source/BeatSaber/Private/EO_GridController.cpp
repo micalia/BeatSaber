@@ -113,7 +113,7 @@ void AEO_GridController::Tick(float DeltaTime)
 					cursorNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
 
-					////UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
+					//UE_LOG(LogTemp, Warning, TEXT("%s"), *grid.GetActor()->GetName());
 				}
 			}
 		}
@@ -280,6 +280,9 @@ void AEO_GridController::PlacedNote()
 	}
 	else if (isWallPlacing)
 	{
+		wallTemp->endPoint = currentGrid->GetActorLocation().X;
+		wallTemp->myXPos2 = xArrIndex;
+		wallTemp->myYPos2 = yArrIndex;
 		isWallPlacing = false;
 	}
 }
@@ -457,7 +460,7 @@ void AEO_GridController::OutData()
 	SetActorLocation(FVector(0));
 
 	TArray<FString> data;
-	data.Add(TEXT(",type,ms,x,y,color,rot"));
+	data.Add(TEXT(",type,ms,x,y,color,rot,wEndms,x2,y2"));
 
 	for (AEO_RhythmNote* noteData : TActorRange<AEO_RhythmNote>(GetWorld()))
 	{
@@ -482,13 +485,22 @@ void AEO_GridController::OutData()
 		textData += ",";
 		//rotation
 		textData += FString::SanitizeFloat(noteData->GetActorRotation().Roll);
+		textData += ",";
+		//wall end point
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed - offset));
+		textData += ",";
+		//x2
+		textData += FString::FromInt(noteData->myXPos2);
+		textData += ",";
+		//y2
+		textData += FString::FromInt(noteData->myYPos2);
 
 		data.Add(textData);
 
 		i++;
 	}
 
-	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("test.csv"), data);
+	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("test.csv"), data, true);
 	//UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
 }
 
