@@ -110,8 +110,6 @@ void AEO_Sync::GenerateNote()
 				FVector dist = FVector(vecEnd.X - vecFirst.X, vecEnd.Y + vecFirst.Y, vecEnd.Z - vecFirst.Z);
 				float xRef = (700 * (oneBeatTime / 4 * 1000) * 0.001f);
 
-				/*wallTemp->SetActorLocation(FVector(firstWallPoint.X, dist.Y / 2, dist.Z / 2));
-				wallTemp->testScene->SetRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(cursorNote->GetActorLocation().Y - firstWallPoint.Y) / 100 + 1), (FMath::Abs(cursorNote->GetActorLocation().Z - firstWallPoint.Z) / 100 + 1)));*/
 				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, dist.Z / 2), FRotator(0, 180, 0));
 				wallObj->SetActorRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(vecEnd.Y - vecFirst.Y) / 70 + 1), (FMath::Abs(vecEnd.Z - vecFirst.Z) / 60 + 1)));
 			}
