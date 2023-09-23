@@ -59,11 +59,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
 		class UChildActorComponent* leftSword;
 
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+		class UChildActorComponent* rightRemoteController;
+
 		UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> leftSaberFactory;
 		
 		UPROPERTY(EditAnywhere)
-	TSubclassOf<class AActor> rightSaberFactory;
+			TSubclassOf<class AActor> rightSaberFactory;
+
+		UPROPERTY(EditAnywhere)
+			TSubclassOf<class AActor> rightRemoteControllerFactory;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="PlayerStat")
@@ -95,4 +101,23 @@ public:
 		UPrimitiveComponent* OtherComp, 
 		int32 OtherBodyIndex
 		);
+
+public:
+	UPROPERTY(EditAnywhere, Category="MySettings|Inputs")
+	class UInputMappingContext* imc_VRmap;
+
+	UPROPERTY()
+	class APlayerController* pc;
+
+	UPROPERTY(EditAnywhere, Category="MySettings|Inputs")
+	TArray<class UInputAction*> inputActions;
+
+	void Scroll(const struct FInputActionValue& value);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallScrollUp();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CallScrollDown();
+
+	void ClickTrigger();
 };

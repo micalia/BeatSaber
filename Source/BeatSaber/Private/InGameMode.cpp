@@ -26,6 +26,11 @@ void AInGameMode::BeginPlay()
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	currComboWidgetInstance = Cast<ACurrComboWidget>(UGameplayStatics::GetActorOfClass(GetWorld(), ACurrComboWidget::StaticClass()));
 
+	player->rightSword->SetVisibility(true);
+	player->leftSword->SetVisibility(true);
+	player->rightRemoteController->SetVisibility(false);
+	bGameStart = true;
+
 }
 
 void AInGameMode::Tick(float DeltaTime)

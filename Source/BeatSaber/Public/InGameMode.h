@@ -47,4 +47,5 @@ public:
 	UPROPERTY()
 	class AVR_Player* player;
 
+	bool bGameStart;
 };
