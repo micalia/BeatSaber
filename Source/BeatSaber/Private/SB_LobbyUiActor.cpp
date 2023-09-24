@@ -4,6 +4,7 @@
 #include "SB_LobbyUiActor.h"
 #include <UMG/Public/Components/WidgetComponent.h>
 #include "SB_LobbyUI.h"
+#include <Components/AudioComponent.h>
 
 // Sets default values
 ASB_LobbyUiActor::ASB_LobbyUiActor()
@@ -23,6 +24,9 @@ ASB_LobbyUiActor::ASB_LobbyUiActor()
 	compWidget->SetDrawSize(FVector2D(1800, 900));
 	compWidget->SetGeometryMode(EWidgetGeometryMode::Cylinder);
 	compWidget->SetCylinderArcAngle(80);
+
+	audioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("audioComp"));
+	audioComp->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

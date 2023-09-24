@@ -10,6 +10,18 @@
 #include <UMG/Public/Components/WidgetComponent.h>
 #include <UMG/Public/Components/TextBlock.h>
 #include <UMG/Public/Components/Image.h>
+#include <Sound/SoundBase.h>
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundCue.h>
+#include <Components/AudioComponent.h>
+
+ALobbyGameMode::ALobbyGameMode()
+{
+	static ConstructorHelpers::FObjectFinder<USoundCue> tempPreviewSoundCue(TEXT("/Script/Engine.SoundCue'/Game/SB/Sounds/LobbyPreviewSound.LobbyPreviewSound'"));
+	if (tempPreviewSoundCue.Succeeded()) {
+		SoundCue = tempPreviewSoundCue.Object;
+	}
+}
 
 void ALobbyGameMode::BeginPlay()
 {
@@ -23,7 +35,6 @@ void ALobbyGameMode::BeginPlay()
 	if (lobbyUiActor) {
 		lobbyUIinstance = Cast<USB_LobbyUI>(lobbyUiActor->compWidget->GetWidget());
 	}
-
 }
 
 void ALobbyGameMode::SetSelectMusicInfo(FString songName, FString artist, FString thumbPath)
@@ -45,4 +56,18 @@ void ALobbyGameMode::SetSelectMusicInfo(FString songName, FString artist, FStrin
 		lobbyUIinstance->WB_SelectMusicInfo->SelectThumb_img->SetBrush(Brush);
 
 	}
+}
+
+void ALobbyGameMode::PreviewSoundPlay(FString songPath, float previewSongTime)
+{
+	FStreamableManager assetLoader;
+	USoundBase* musicTexture = Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(songPath)));
+	if (musicTexture) { 
+		if (lobbyUiActor) {
+			lobbyUiActor->audioComp->SetSound(musicTexture);
+			lobbyUiActor->audioComp->Play(previewSongTime);
+			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("previewSongTime : %f"), previewSongTime), true, FVector2D(4,4));
+		}
+	}
+	
 }

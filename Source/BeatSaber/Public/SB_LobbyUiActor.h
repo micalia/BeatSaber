@@ -31,4 +31,7 @@ public:
 
 	UPROPERTY()
 	class USB_LobbyUI* LobbyUIinstance;
+
+	UPROPERTY()
+	class UAudioComponent* audioComp;
 };

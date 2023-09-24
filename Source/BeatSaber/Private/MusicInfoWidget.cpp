@@ -16,4 +16,5 @@ void UMusicInfoWidget::NativeConstruct()
 void UMusicInfoWidget::SetSongInfo()
 { 
 	gm->SetSelectMusicInfo(songSlotData.songName, songSlotData.artist, songSlotData.imagePath);
+	gm->PreviewSoundPlay(songSlotData.songPath, songSlotData.previewSongDuration);
 }

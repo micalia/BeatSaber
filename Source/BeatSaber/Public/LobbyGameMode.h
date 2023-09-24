@@ -14,6 +14,14 @@ class BEATSABER_API ALobbyGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 public:
+	ALobbyGameMode();
+
+	UPROPERTY()
+	class USoundCue* SoundCue;
+	UPROPERTY()
+	class UAudioComponent* AudioComponent;
+
+
 	virtual void BeginPlay() override;
 	UPROPERTY()
 	class ASB_LobbyUiActor* lobbyUiActor;
@@ -22,4 +30,5 @@ public:
 	class USB_LobbyUI* lobbyUIinstance;
 
 	void SetSelectMusicInfo(FString songName, FString artist, FString thumbPath);
+	void PreviewSoundPlay(FString songPath, float previewSongTime);
 };

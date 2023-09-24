@@ -47,5 +47,6 @@ public:
 	UPROPERTY()
 	class AVR_Player* player;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool bGameStart;
 };

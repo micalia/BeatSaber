@@ -25,7 +25,7 @@ USongListUI::USongListUI(const FObjectInitializer& ObjectInitializer) : Super(Ob
 		listDataTable = tempMusicData.Object;
 	}
 
-	ConstructorHelpers::FClassFinder<UMusicInfoWidget> tempMusicInfoWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/SB/Blueprints/WB_MusicInfo.WB_MusicInfo_C'"));
+	static ConstructorHelpers::FClassFinder<UMusicInfoWidget> tempMusicInfoWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/SB/Blueprints/WB_MusicInfo.WB_MusicInfo_C'"));
 	if (tempMusicInfoWidget.Succeeded())
 	{
 		musicInfoWidgetFactory = tempMusicInfoWidget.Class;
@@ -45,7 +45,7 @@ void USongListUI::NativeConstruct()
 				musicInfoSlot = CreateWidget<UMusicInfoWidget>(GetWorld(), musicInfoWidgetFactory);
 			
 				if (musicInfoSlot) {
-					musicInfoSlot->songSlotData = FSongInfo(row->songName, row->artist, row->imagePath);
+					musicInfoSlot->songSlotData = FSongInfo(row->songName, row->artist, row->imagePath, row->songPath, row->previewSongTime);
 					musicInfoSlot->Subtitle_txt->SetText(FText::FromString(row->songName));
 					musicInfoSlot->artist_txt->SetText(FText::FromString(row->artist));
 

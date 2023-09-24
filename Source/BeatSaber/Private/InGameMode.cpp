@@ -29,13 +29,21 @@ void AInGameMode::BeginPlay()
 	player->rightSword->SetVisibility(true);
 	player->leftSword->SetVisibility(true);
 	player->rightRemoteController->SetVisibility(false);
-	bGameStart = true;
 
 }
 
 void AInGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bGameStart) {
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : true")), true, FVector2D(1, 1));
+		UE_LOG(LogTemp, Warning, TEXT("gameStart : true"))
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : false")), true, FVector2D(1, 1));
+		UE_LOG(LogTemp, Warning, TEXT("gameStart : false"))
+	}
 
 	//currTime+= DeltaTime;
 

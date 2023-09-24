@@ -26,7 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
+	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components", BlueprintReadWrite)
 		class UCameraComponent* cam;
 
 	UPROPERTY(EditAnywhere, Category = "VR_Settings|Components")
