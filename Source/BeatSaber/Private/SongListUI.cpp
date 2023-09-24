@@ -50,30 +50,30 @@ void USongListUI::NativeConstruct()
 			if (musicInfoSlot) {
 				musicInfoSlot->Subtitle_txt->SetText(FText::FromString(songData[i].songName));
 				musicInfoSlot->artist_txt->SetText(FText::FromString(songData[i].artist));
-				FString songDurationTxt = FString::Printf(TEXT("%f"), songData[i].songDuration);
+
+				FString timeFormat = FloatToTimeFormat(songData[i].songDuration);
+				FString songDurationTxt = timeFormat;
+
 				musicInfoSlot->musicTime_txt->SetText(FText::FromString(songDurationTxt));
 				FString bpmtxt = FString::Printf(TEXT("%.2f"), songData[i].bpm);
 				musicInfoSlot->bpm_txt->SetText(FText::FromString(bpmtxt));
 				
 				UTexture2D* thumbnail = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *songData[i].imagePath));
-				/*FORCENOINLINE FSlateBrush(ESlateBrushDrawType::Type InDrawType, const FName InResourceName, const FMargin & InMargin, ESlateBrushTileType::Type InTiling, ESlateBrushImageType::Type InImageType, const UE::Slate::FDeprecateVector2DParameter & InImageSize, const FSlateColor & InTint, UObject * InObjectResource = nullptr, bool bInDynamicallyLoaded = false);*/
-				//FSlateBrush brushThumb = 
+
 				FSlateBrush Brush;
-				/*Brush.DrawAs = ESlateBrushDrawType::Image;
+				Brush.DrawAs = ESlateBrushDrawType::Image;
 				Brush.Tiling = ESlateBrushTileType::NoTile;
 				Brush.Mirroring = ESlateBrushMirrorType::NoMirror;
 				Brush.ImageSize = FVector2D(32.0f, 32.0f); 
 				Brush.Margin = FMargin(0.0f, 0.0f, 0.0f, 0.0f); 
-				Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)); */
+				Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)); 
 
-				
 				Brush.SetResourceObject(thumbnail);
 				musicInfoSlot->MusicThumbnail_img->SetBrush(Brush);
 
 				SongList->AddChild(musicInfoSlot);
 			}
 		}
-
 	}
 }
 
@@ -88,6 +88,21 @@ void USongListUI::ScrollDown()
 			SongList->SetScrollOffset(scrollVal);
 	}
 } 
+
+FString USongListUI::FloatToTimeFormat(float songDuration)
+{
+	int32 minute = songDuration / 60;
+	int32 second = (int32)songDuration % 60;
+
+	FString timeFormat;
+	if (second < 10) {
+		timeFormat = FString::FromInt(minute) + TEXT(":0") + FString::FromInt(second);
+	}
+	else {
+		timeFormat = FString::FromInt(minute) + TEXT(":") + FString::FromInt(second);
+	}
+	return timeFormat;
+}
 
 void USongListUI::ScrollUp()
 {

@@ -40,4 +40,6 @@ public:
 	void ScrollUp();
 	UFUNCTION(BlueprintCallable)
 	void ScrollDown();
+
+	FString FloatToTimeFormat(float songDuration);
 };
