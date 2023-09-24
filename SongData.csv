@@ -1,5 +1,5 @@
 ,songName,artist,songDuration,bpm,imagePath,songPath,previewSongTime,patternPath,offset
-0,Stay -EO remix-,The Kid LAROI,115,169.74,none,'/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix',0,'/Game/EO/Resources/Stay_Remix.Stay_Remix',0
+0,Stay -EO remix-,The Kid LAROI,115,169.74,'/Game/EO/Image/Stay_thumb.Stay_thumb','/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix',0,'/Game/EO/Resources/Stay_Remix.Stay_Remix',0
 1,Hype Boy,NewJeans,177,100,'/Game/EO/Image/hypboy_cover.hypboy_cover','/Game/EO/Sounds/NewJeans_-_Hype_Boy.NewJeans_-_Hype_Boy',52,none,300
 2,Shape Of You,Ed Sheeran,235,96,'/Game/EO/Image/ShapeOfYou_Album.ShapeOfYou_Album','/Game/EO/Sounds/Ed_Sheeran_-_Shape_Of_You.Ed_Sheeran_-_Shape_Of_You',50,none,0
 3,Lady,Kenshi Yonezu,243,86.96,'/Game/EO/Image/Lady_Album.Lady_Album','/Game/EO/Sounds/Kenshi_Yonezu_-_LADY.Kenshi_Yonezu_-_LADY',67,none,0
