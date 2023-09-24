@@ -57,7 +57,7 @@ void AEO_Sync::BeginPlay()
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
 
-	/*GenerateNote(TEXT("'/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix'"),TEXT("'/Game/EO/Resources/Stay_Remix.Stay_Remix'"),169.74f);
+	/*GenerateNote(TEXT("'/Game/EO/Sounds/Yuuri-BETELGEUSE.Yuuri-BETELGEUSE'"), TEXT("'/Game/EO/Resources/BETELGEUSE_Complete.BETELGEUSE_Complete'"), 90.f);
 	GameStart();*/
 }
 
@@ -101,21 +101,19 @@ void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
 
 			if (row->color == 0 || row->color == 1)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Spawn block"));
 				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 				tempNote->SwitchColor(row->color);
 				tempNote->SwitchType(row->type);
 			}
 			else if (row->color == 2)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Spawn bomb"));
 				ASphereObstacle* bomb = GetWorld()->SpawnActor<ASphereObstacle>(bombFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0));
 			}
 			else if (row->color == 3)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Spawn wall"));
-				FVector vecFirst = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x));
-				FVector vecEnd = FVector(GetActorLocation().X + (startPos + offset + 700 * (row->wEndms * 0.001f)), YGeneratePos(row->y2), XGeneratePos(row->x2));
+				FVector vecFirst = FVector(GetActorLocation().X + (startPos + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x));
+				FVector vecEnd = FVector(GetActorLocation().X + (startPos + 700 * ((row->ms) * 0.001f)), YGeneratePos(row->y2), XGeneratePos(row->x2));
 
 				FVector dist = FVector(vecEnd.X - vecFirst.X, vecEnd.Y + vecFirst.Y, vecEnd.Z - vecFirst.Z);
 				float xRef = (700 * (oneBeatTime / 4 * 1000) * 0.001f);
