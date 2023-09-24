@@ -66,7 +66,6 @@ void ALobbyGameMode::PreviewSoundPlay(FString songPath, float previewSongTime)
 		if (lobbyUiActor) {
 			lobbyUiActor->audioComp->SetSound(musicTexture);
 			lobbyUiActor->audioComp->Play(previewSongTime);
-			GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("previewSongTime : %f"), previewSongTime), true, FVector2D(4,4));
 		}
 	}
 	
