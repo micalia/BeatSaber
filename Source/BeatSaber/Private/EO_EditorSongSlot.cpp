@@ -17,13 +17,18 @@ void UEO_EditorSongSlot::SongSelectButtonClick()
 {
 	UEO_EditorWidget* widget = ReturnParentWidget();
 	FStreamableManager assetLoader;
-	
+
 	UTexture2D* musicTexture = Cast<UTexture2D>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(imagePath)));
 	widget->image_SongImage->SetBrushFromTexture(musicTexture);
 	widget->text_Title->SetText(text_Title->GetText());
 	widget->text_Artist->SetText(text_Artist->GetText());
 	widget->text_BPM->SetText(text_BPM->GetText());
-	widget->text_SongDuration->SetText(FText::AsNumber(songDuration));
+	FString durationTime;
+	durationTime += FString::FromInt(songDuration / 60);
+	durationTime += ":";
+	int i = FMath::Floor(songDuration);
+	durationTime += FString::FromInt(i % 60);
+	widget->text_SongDuration->SetText(FText::FromString(durationTime));
 	widget->SaveSelectedData(songPath, bpm, offset);
 }
 
