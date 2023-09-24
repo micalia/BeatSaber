@@ -14,6 +14,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Sound/SoundCue.h>
 #include <Components/AudioComponent.h>
+#include "BeatSaberGameInstance.h"
 
 ALobbyGameMode::ALobbyGameMode()
 {
@@ -35,6 +36,8 @@ void ALobbyGameMode::BeginPlay()
 	if (lobbyUiActor) {
 		lobbyUIinstance = Cast<USB_LobbyUI>(lobbyUiActor->compWidget->GetWidget());
 	}
+
+	gi = Cast<UBeatSaberGameInstance>(GetGameInstance());
 }
 
 void ALobbyGameMode::SetSelectMusicInfo(FString songName, FString artist, FString thumbPath)

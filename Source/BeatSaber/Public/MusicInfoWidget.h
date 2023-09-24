@@ -35,4 +35,5 @@ public:
 
 	UPROPERTY()
 	class ALobbyGameMode* gm;
+	
 };

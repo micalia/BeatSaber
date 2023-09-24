@@ -11,8 +11,8 @@ struct FSongInfo
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	FSongInfo():songName(""), artist(""), imagePath(""), songPath(""), previewSongDuration(0) {};
-	FSongInfo(FString& infoSongName, FString& infoArtist, FString& infoImagePath, FString& infoSongPath, float& infoPreviewSongDuration):songName(infoSongName), artist(infoArtist), imagePath(infoImagePath), songPath(infoSongPath), previewSongDuration(infoPreviewSongDuration){};
+	FSongInfo():songName(""), artist(""), imagePath(""), songPath(""), previewSongDuration(0), patternPath(""), bpm(0) {};
+	FSongInfo(FString& infoSongName, FString& infoArtist, FString& infoImagePath, FString& infoSongPath, float& infoPreviewSongDuration, FString& infoPatternPath, float& infoBpm):songName(infoSongName), artist(infoArtist), imagePath(infoImagePath), songPath(infoSongPath), previewSongDuration(infoPreviewSongDuration), patternPath(infoPatternPath), bpm(infoBpm){};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString songName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -23,6 +23,10 @@ public:
 	FString songPath;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float previewSongDuration;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString patternPath;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float bpm;
 };
 UCLASS()
 class BEATSABER_API USB_SelectMusicInfo : public UUserWidget

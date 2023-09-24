@@ -9,6 +9,9 @@
 #include "CurrComboWidget.h"
 #include <UMG/Public/Components/TextBlock.h>
 #include "VR_Player.h"
+#include "BeatSaberGameInstance.h"
+#include "EngineUtils.h"
+#include "EO_Sync.h"
 
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -30,20 +33,30 @@ void AInGameMode::BeginPlay()
 	player->leftSword->SetVisibility(true);
 	player->rightRemoteController->SetVisibility(false);
 
+	gi = Cast<UBeatSaberGameInstance>(GetGameInstance());
+	if (gi) {
+		UE_LOG(LogTemp, Warning, TEXT("SongPath : %s / PatternPath : %s / bpm : %f"), *gi->songPath, *gi->patternPath, gi->bpm)
+
+	}
+
+	for (TActorIterator<AEO_Sync> it(GetWorld()); it; ++it)
+	{
+		sync = *it;
+	}
 }
 
 void AInGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bGameStart) {
+	/*if (bGameStart) {
 		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : true")), true, FVector2D(1, 1));
 		UE_LOG(LogTemp, Warning, TEXT("gameStart : true"))
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : false")), true, FVector2D(1, 1));
 		UE_LOG(LogTemp, Warning, TEXT("gameStart : false"))
-	}
+	}*/
 
 	//currTime+= DeltaTime;
 
@@ -66,5 +79,13 @@ void AInGameMode::ScoreUpdate()
 {	
 	if (currComboWidgetInstance) {
 		currComboWidgetInstance->comboWidgetInstance->currCombo_txt->SetText(FText::AsNumber(currCombo));
+	}
+}
+
+void AInGameMode::GameStart()
+{
+	if (sync) {
+		sync->GenerateNote(gi->songPath, gi->patternPath, gi->bpm);
+		sync->GameStart();
 	}
 }

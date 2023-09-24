@@ -5,6 +5,7 @@
 #include "SongListUI.h"
 #include <UMG/Public/Components/PanelWidget.h>
 #include "LobbyGameMode.h"
+#include "BeatSaberGameInstance.h"
 
 void UMusicInfoWidget::NativeConstruct()
 {
@@ -15,6 +16,14 @@ void UMusicInfoWidget::NativeConstruct()
 
 void UMusicInfoWidget::SetSongInfo()
 { 
-	gm->SetSelectMusicInfo(songSlotData.songName, songSlotData.artist, songSlotData.imagePath);
-	gm->PreviewSoundPlay(songSlotData.songPath, songSlotData.previewSongDuration);
+	if (gm)
+	{ 
+		gm->SetSelectMusicInfo(songSlotData.songName, songSlotData.artist, songSlotData.imagePath);
+		gm->PreviewSoundPlay(songSlotData.songPath, songSlotData.previewSongDuration);
+		if (gm->gi) {
+			gm->gi->songPath = songSlotData.songPath;
+			gm->gi->patternPath = songSlotData.patternPath;
+			gm->gi->bpm = songSlotData.bpm;
+		}
+	}
 }

@@ -49,4 +49,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bGameStart;
+
+	UPROPERTY()
+	class UBeatSaberGameInstance* gi;
+
+	UFUNCTION(BlueprintCallable)
+	void GameStart();
+
+	UPROPERTY()
+	class AEO_Sync* sync;
 };

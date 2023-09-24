@@ -45,7 +45,7 @@ void USongListUI::NativeConstruct()
 				musicInfoSlot = CreateWidget<UMusicInfoWidget>(GetWorld(), musicInfoWidgetFactory);
 			
 				if (musicInfoSlot) {
-					musicInfoSlot->songSlotData = FSongInfo(row->songName, row->artist, row->imagePath, row->songPath, row->previewSongTime);
+					musicInfoSlot->songSlotData = FSongInfo(row->songName, row->artist, row->imagePath, row->songPath, row->previewSongTime, row->patternPath, row->bpm);
 					musicInfoSlot->Subtitle_txt->SetText(FText::FromString(row->songName));
 					musicInfoSlot->artist_txt->SetText(FText::FromString(row->artist));
 

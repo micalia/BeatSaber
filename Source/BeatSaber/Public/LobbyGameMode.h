@@ -31,4 +31,7 @@ public:
 
 	void SetSelectMusicInfo(FString songName, FString artist, FString thumbPath);
 	void PreviewSoundPlay(FString songPath, float previewSongTime);
+
+	UPROPERTY()
+	class UBeatSaberGameInstance* gi;
 };
