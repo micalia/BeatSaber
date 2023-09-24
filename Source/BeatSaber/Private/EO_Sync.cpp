@@ -44,22 +44,18 @@ void AEO_Sync::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (AInGameMode* gmbTemp = Cast<AInGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		gameModeBase = gmbTemp;
+	}
+	else
+	{
+		bGameStart = true;
+	}
+
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
-
-	musicBPM = 169.74f;
-	frequeny = 44100.0f;
-
-	sampleOffset = frequeny * offset;
-	oneBeatTime = (60.0f / musicBPM);
-	nextSample += sampleOffset;
-
-	barPerSec = oneBeatTime * 4;
-
-	audioComp->SetSound(testSound);
-
-	startPos = 700 * 3;
 
 	GenerateNote();
 
@@ -74,6 +70,8 @@ void AEO_Sync::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (gameModeBase != nullptr)
+		bGameStart = gameModeBase->bGameStart;
 }
 
 void AEO_Sync::MusicPlay()
@@ -83,6 +81,19 @@ void AEO_Sync::MusicPlay()
 
 void AEO_Sync::GenerateNote()
 {
+	musicBPM = 169.74f;
+	frequeny = 44100.0f;
+
+	sampleOffset = frequeny * offset;
+	oneBeatTime = (60.0f / musicBPM);
+	nextSample += sampleOffset;
+
+	barPerSec = oneBeatTime * 4;
+
+	audioComp->SetSound(testSound);
+
+	startPos = 700 * 3;
+
 	if (patternData != nullptr)
 	{
 		for (int i = 0; i < patternData->GetRowNames().Num(); i++)
@@ -91,7 +102,7 @@ void AEO_Sync::GenerateNote()
 
 			if (row->color == 0 || row->color == 1)
 			{
-				UE_LOG(LogTemp,Warning,TEXT("Spawn block"));
+				UE_LOG(LogTemp, Warning, TEXT("Spawn block"));
 				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 				tempNote->SwitchColor(row->color);
 				tempNote->SwitchType(row->type);

@@ -1,10 +1,10 @@
 ,songName,artist,songDuration,bpm,imagePath,songPath,previewSongTime,patternPath
 0,Stay -EO remix-,The Kid LAROI,115,169.74,none,'/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix',0,'/Game/EO/Resources/Stay_Remix.Stay_Remix'
-1,Hype Boy,NewJeans,177,100,/Game/EO/Image/hypboy_cover.hypboy_cover',/Game/EO/Sounds/NewJeans_-_Hype_Boy.NewJeans_-_Hype_Boy',52,none
-2,Shape Of You,Ed Sheeran,235,96,/Game/EO/Image/ShapeOfYou_Album.ShapeOfYou_Album',/Game/EO/Sounds/Ed_Sheeran_-_Shape_Of_You.Ed_Sheeran_-_Shape_Of_You',50,none
-3,Lady,Kenshi Yonezu,243,86.96,/Game/EO/Image/Lady_Album.Lady_Album',/Game/EO/Sounds/Kenshi_Yonezu_-_LADY.Kenshi_Yonezu_-_LADY',67,none
-4,Show,Ado,189,132,/Game/EO/Image/Show_Album.Show_Album',/Game/EO/Sounds/Ado_-_Show.Ado_-_Show',66,none
-5,2002,Anne-Marie,194,95.79,/Game/EO/Image/2002_Album.2002_Album',/Game/EO/Sounds/Anne-Marie_-_2002.Anne-Marie_-_2002',51,none
-6,I Don't Think That I Like Her,Charlie Puth,188,93,/Game/EO/Image/IDontThinkThatILikeHer_Album.IDontThinkThatILikeHer_Album',/Game/EO/Sounds/Charlie_Puth_-_I_Don_t_Think_That_I_Like_Her.Charlie_Puth_-_I_Don_t_Think_That_I_Like_Her',42,none
-7,Destr0yer,Sakuzyo,183,176.47,/Game/EO/Image/Destroyer_Album.Destroyer_Album',/Game/EO/Sounds/Sakuzyo_-_Destr0yer_feat__Nikki_Simmons_.Sakuzyo_-_Destr0yer_feat__Nikki_Simmons_',80,none
-8,IZANA,t+pazolite & P*Light,200,110.23,/Game/EO/Image/IZANA.IZANA',/Game/EO/Sounds/t+pazolite___P£ªLight_-_IZANA.t+pazolite___P£ªLight_-_IZANA',17,none
+1,Hype Boy,NewJeans,177,100,'/Game/EO/Image/hypboy_cover.hypboy_cover','/Game/EO/Sounds/NewJeans_-_Hype_Boy.NewJeans_-_Hype_Boy',52,none
+2,Shape Of You,Ed Sheeran,235,96,'/Game/EO/Image/ShapeOfYou_Album.ShapeOfYou_Album','/Game/EO/Sounds/Ed_Sheeran_-_Shape_Of_You.Ed_Sheeran_-_Shape_Of_You',50,none
+3,Lady,Kenshi Yonezu,243,86.96,'/Game/EO/Image/Lady_Album.Lady_Album','/Game/EO/Sounds/Kenshi_Yonezu_-_LADY.Kenshi_Yonezu_-_LADY',67,none
+4,Show,Ado,189,132,'/Game/EO/Image/Show_Album.Show_Album','/Game/EO/Sounds/Ado_-_Show.Ado_-_Show',66,none
+5,2002,Anne-Marie,194,95.79,'/Game/EO/Image/2002_Album.2002_Album','/Game/EO/Sounds/Anne-Marie_-_2002.Anne-Marie_-_2002',51,none
+6,I Don't Think That I Like Her,Charlie Puth,188,93,'/Game/EO/Image/IDontThinkThatILikeHer_Album.IDontThinkThatILikeHer_Album','/Game/EO/Sounds/Charlie_Puth_-_I_Don_t_Think_That_I_Like_Her.Charlie_Puth_-_I_Don_t_Think_That_I_Like_Her',42,none
+7,Destr0yer,Sakuzyo,183,176.47,'/Game/EO/Image/Destroyer_Album.Destroyer_Album','/Game/EO/Sounds/Sakuzyo_-_Destr0yer_feat__Nikki_Simmons_.Sakuzyo_-_Destr0yer_feat__Nikki_Simmons_',80,none
+8,IZANA,t+pazolite & P*Light,200,110.23,'/Game/EO/Image/IZANA.IZANA','/Game/EO/Sounds/t+pazolite___PLight_-_IZANA.t+pazolite___PLight_-_IZANA',17,none

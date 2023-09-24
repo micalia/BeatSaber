@@ -24,9 +24,27 @@ AWallObstacle::AWallObstacle()
 	compWallMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	compWallMesh->SetRelativeLocation(FVector(0));
 	compWallMesh->SetRelativeScale3D(FVector(wallXscaleRatio, wallYscaleRatio, wallZscaleRatio));
+	compWallMesh->SetCollisionProfileName(TEXT("NodeBlock"));
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> tempWallObstacle(TEXT("/Script/Engine.StaticMesh'/Game/SB/Models/WallObstacle/Qiang.Qiang'"));
 	if (tempWallObstacle.Succeeded()) {
 		compWallMesh->SetStaticMesh(tempWallObstacle.Object);
+	}
+
+	sync = Cast<AEO_Sync>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_Sync::StaticClass()));
+}
+
+void AWallObstacle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (sync != nullptr)
+	{
+		if (sync->isGenerate && sync->bGameStart)
+		{
+			FVector p0 = GetActorLocation();
+			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
+			SetActorLocation(p0 + vt);
+		}
 	}
 }

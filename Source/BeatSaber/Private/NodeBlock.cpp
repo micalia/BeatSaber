@@ -116,7 +116,7 @@ void ANodeBlock::Tick(float DeltaTime)
 
 	if (sync != nullptr)
 	{
-		if (!bSlice && sync->isGenerate)
+		if (!bSlice && sync->isGenerate && sync->bGameStart)
 		{
 			FVector p0 = GetActorLocation();
 			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;

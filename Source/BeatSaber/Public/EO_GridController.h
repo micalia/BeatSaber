@@ -40,7 +40,6 @@ public:
 	TSubclassOf<class AWallObstacle> testWall;
 
 private:
-	float musicBPM;
 	float frequeny;
 	float offset = 0;
 	float sampleOffset;
@@ -84,10 +83,11 @@ private:
 public:
 	bool isPlaying = false;
 
+	float musicBPM = 0;
+
 	FVector syncPos;
 
 private:
-	void MakeGrid();
 	void MoveGrid(float value);
 	void PlacedNote();
 	void RemoveNote();
@@ -106,4 +106,7 @@ private:
 
 	void SoundPlay();
 	void OutData();
+
+public:
+	void MakeGrid();
 };

@@ -2,4 +2,83 @@
 
 
 #include "EO_EditorWidget.h"
+#include <UMG/Public/Components/ScrollBox.h>
+#include <UMG/Public/Components/TextBlock.h>
+#include <Engine/StreamableManager.h>
+#include <Components/AudioComponent.h>
+#include <UMG/Public/Components/WidgetSwitcher.h>
+
+UEO_EditorWidget::UEO_EditorWidget(const FObjectInitializer& Object) : Super(Object)
+{
+	ConstructorHelpers::FClassFinder<UEO_EditorSongSlot> slotTemp(TEXT("'/Game/EO/Blueprints/BP_EditorSongSlot.BP_EditorSongSlot_C'"));
+	if (slotTemp.Succeeded())
+	{
+		songSlot = slotTemp.Class;
+	}
+
+	ConstructorHelpers::FObjectFinder<UDataTable> songTemp(TEXT("'/Game/EO/SongData.SongData'"));
+	if (songTemp.Succeeded())
+	{
+		songDatatable = songTemp.Object;
+	}
+
+	ConstructorHelpers::FClassFinder<AEO_GridController> gControllerTemp(TEXT("'/Game/EO/Blueprints/BP_GridController.BP_GridController_C'"));
+	if (gControllerTemp.Succeeded())
+	{
+		gridControllerFactory = gControllerTemp.Class;
+	}
+}
+
+void UEO_EditorWidget::NativeConstruct()
+{
+	if (btn_Add != nullptr)
+		btn_Add->OnClicked.AddDynamic(this, &UEO_EditorWidget::AddPattern);
+
+	GenerateList();
+}
+
+void UEO_EditorWidget::GenerateList()
+{
+	if (songDatatable != nullptr)
+	{
+		for (int i = 0; i < songDatatable->GetRowNames().Num(); i++)
+		{
+			FSongDataTableRow* row = songDatatable->FindRow<FSongDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
+
+			UEO_EditorSongSlot* songSlotTemp = CreateWidget<UEO_EditorSongSlot>(GetWorld(), songSlot);
+			songSlotTemp->text_Title->SetText(FText::FromString(row->songName));
+			songSlotTemp->text_Artist->SetText(FText::FromString(row->artist));
+			songSlotTemp->text_BPM->SetText(FText::AsNumber(row->bpm));
+
+			songSlotTemp->bpm = row->bpm;
+			songSlotTemp->songDuration = row->songDuration;
+
+			songSlotTemp->imagePath = row->imagePath;
+			songSlotTemp->songPath = row->songPath;
+
+			scroll_SongList->AddChild(songSlotTemp);
+		}
+	}
+}
+
+void UEO_EditorWidget::AddPattern()
+{
+	UE_LOG(LogTemp,Warning,TEXT("clicked"));
+	FStreamableManager assetLoader;
+
+	AEO_GridController* gcTemp = GetWorld()->SpawnActor<AEO_GridController>(gridControllerFactory, FVector(), FRotator());
+
+	USoundBase* music = Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(selectSongPath)));
+	gcTemp->audioComp->SetSound(music);
+	gcTemp->musicBPM = selectBPM;
+	gcTemp->MakeGrid();
+
+	ws_Switcher->SetActiveWidgetIndex(1);
+}
+
+void UEO_EditorWidget::SaveSelectedData(FString songPath, float BPM)
+{
+	selectSongPath = songPath;
+	selectBPM = BPM;
+}
 

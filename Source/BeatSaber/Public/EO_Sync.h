@@ -54,9 +54,11 @@ public:
 	float delayTime = 0;
 
 	bool isGenerate = false;
+	bool bGameStart = false;
 
 private:
 	class AVR_Player* player;
+	class AInGameMode* gameModeBase;
 
 private:
 	void MusicPlay();
