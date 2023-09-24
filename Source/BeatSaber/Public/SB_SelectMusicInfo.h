@@ -6,15 +6,27 @@
 #include "Blueprint/UserWidget.h"
 #include "SB_SelectMusicInfo.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FSongInfo
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	FSongInfo():songName(""), artist(""), imagePath(""){};
+	FSongInfo(FString& infoSongName, FString& infoArtist, FString& infoImagePath):songName(infoSongName), artist(infoArtist), imagePath(infoImagePath){};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString songName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString artist;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString imagePath;
+};
 UCLASS()
 class BEATSABER_API USB_SelectMusicInfo : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
 		class UImage* SelectThumb_img;
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
@@ -24,5 +36,4 @@ public:
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
 		class UButton* Play_btn;
 
-		void SetSelectInfo();
 };

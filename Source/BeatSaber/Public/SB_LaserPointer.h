@@ -27,9 +27,9 @@ public:
 	class USceneComponent* rootComp;
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* sm_RemoteController;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class USceneComponent* laserPos;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	class UWidgetInteractionComponent* interactionComp;
 
 };

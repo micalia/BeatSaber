@@ -30,6 +30,9 @@ public:
 	UPROPERTY()
 	class UMusicInfoWidget* musicInfoSlot;
 
+	UPROPERTY(VisibleAnywhere)
+	class UDataTable* listDataTable;
+
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
 	class UScrollBox* SongList;
 

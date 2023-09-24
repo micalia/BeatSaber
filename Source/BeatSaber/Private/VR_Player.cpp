@@ -11,7 +11,8 @@
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputSubsystems.h>
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h>
-
+#include "SB_LaserPointer.h"
+#include <UMG/Public/Components/WidgetInteractionComponent.h>
 // Sets default values
 AVR_Player::AVR_Player()
 {
@@ -123,6 +124,9 @@ void AVR_Player::BeginPlay()
 	}
 
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
+
+	laserPointer = Cast<ASB_LaserPointer>(rightRemoteController->GetChildActor());
+
 }
 
 // Called every frame
@@ -147,8 +151,8 @@ void AVR_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(inputActions[0], ETriggerEvent::Triggered, this, &AVR_Player::Scroll);
 		EnhancedInputComponent->BindAction(inputActions[0], ETriggerEvent::Completed, this, &AVR_Player::Scroll);
-		//EnhancedInputComponent
 		EnhancedInputComponent->BindAction(inputActions[1], ETriggerEvent::Started, this, &AVR_Player::ClickTrigger);
+		EnhancedInputComponent->BindAction(inputActions[1], ETriggerEvent::Completed, this, &AVR_Player::ReleaseTrigger);
 	}
 }
 
@@ -169,15 +173,20 @@ void AVR_Player::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 void AVR_Player::Scroll(const struct FInputActionValue& value)
 {
 	FVector2D scrollVal = value.Get<FVector2D>();
-	if (scrollVal.Y > 0) {
+	if (scrollVal.Y >= 0.5f) {
 		CallScrollUp();
 	}
-	else {
+	else if(scrollVal.Y <= -0.5f){
 		CallScrollDown();
 	}
 }
 
 void AVR_Player::ClickTrigger()
+{ 
+	laserPointer->interactionComp->PressPointerKey(EKeys::LeftMouseButton);
+}
+
+void AVR_Player::ReleaseTrigger()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("ClickTrigger")), true, FVector2D(1, 1));
+	laserPointer->interactionComp->ReleasePointerKey(EKeys::LeftMouseButton);
 }

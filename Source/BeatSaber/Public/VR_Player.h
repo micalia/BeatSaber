@@ -120,4 +120,9 @@ public:
 	void CallScrollDown();
 
 	void ClickTrigger();
+
+	UPROPERTY()
+	class ASB_LaserPointer* laserPointer;
+
+	void ReleaseTrigger();
 };

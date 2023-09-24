@@ -23,5 +23,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UWidgetComponent* compWidget;
 
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class USB_LobbyUI> LobbyUIfactory;
+
+	UPROPERTY()
+	class USB_LobbyUI* LobbyUIinstance;
 };

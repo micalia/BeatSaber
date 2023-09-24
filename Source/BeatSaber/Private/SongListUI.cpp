@@ -15,20 +15,14 @@
 #include <Styling/SlateColor.h>
 #include <Layout/Margin.h>
 #include <Math/Color.h>
+#include "SB_SelectMusicInfo.h"
 
 USongListUI::USongListUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	ConstructorHelpers::FObjectFinder<UDataTable> tempMusicData(TEXT("/Script/Engine.DataTable'/Game/EO/SongData.SongData'"));
 	if (tempMusicData.Succeeded())
 	{
-		UDataTable* data = tempMusicData.Object;
-		TArray<FName> rowNames = data->GetRowNames();
-		for (int32 i = 0; i < rowNames.Num(); i++)
-		{
-			FSongDataTableRow* musicInfo = data->FindRow<FSongDataTableRow>(rowNames[i], TEXT(""));
-			songData.Add(*musicInfo);
-			UE_LOG(LogTemp, Warning, TEXT("musicInfo : %s"), *songData[i].songName)
-		}
+		listDataTable = tempMusicData.Object;
 	}
 
 	ConstructorHelpers::FClassFinder<UMusicInfoWidget> tempMusicInfoWidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/SB/Blueprints/WB_MusicInfo.WB_MusicInfo_C'"));
@@ -43,35 +37,40 @@ void USongListUI::NativeConstruct()
 	Super::NativeConstruct();
 
 	if (musicInfoWidgetFactory) {
-		for (int i =0; i < songData.Num(); i++)
-		{
-			musicInfoSlot = CreateWidget<UMusicInfoWidget>(GetWorld(), musicInfoWidgetFactory);
+		if (listDataTable) {
+			for (int32 i =0; i < listDataTable->GetRowNames().Num(); i++)
+			{
+				FSongDataTableRow* row = listDataTable->FindRow<FSongDataTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
+
+				musicInfoSlot = CreateWidget<UMusicInfoWidget>(GetWorld(), musicInfoWidgetFactory);
 			
-			if (musicInfoSlot) {
-				musicInfoSlot->Subtitle_txt->SetText(FText::FromString(songData[i].songName));
-				musicInfoSlot->artist_txt->SetText(FText::FromString(songData[i].artist));
+				if (musicInfoSlot) {
+					musicInfoSlot->songSlotData = FSongInfo(row->songName, row->artist, row->imagePath);
+					musicInfoSlot->Subtitle_txt->SetText(FText::FromString(row->songName));
+					musicInfoSlot->artist_txt->SetText(FText::FromString(row->artist));
 
-				FString timeFormat = FloatToTimeFormat(songData[i].songDuration);
-				FString songDurationTxt = timeFormat;
+					FString timeFormat = FloatToTimeFormat(row->songDuration);
+					FString songDurationTxt = timeFormat;
 
-				musicInfoSlot->musicTime_txt->SetText(FText::FromString(songDurationTxt));
-				FString bpmtxt = FString::Printf(TEXT("%.2f"), songData[i].bpm);
-				musicInfoSlot->bpm_txt->SetText(FText::FromString(bpmtxt));
-				
-				UTexture2D* thumbnail = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *songData[i].imagePath));
+					musicInfoSlot->musicTime_txt->SetText(FText::FromString(songDurationTxt));
+					FString bpmtxt = FString::Printf(TEXT("%.2f"), row->bpm);
+					musicInfoSlot->bpm_txt->SetText(FText::FromString(bpmtxt));
 
-				FSlateBrush Brush;
-				Brush.DrawAs = ESlateBrushDrawType::Image;
-				Brush.Tiling = ESlateBrushTileType::NoTile;
-				Brush.Mirroring = ESlateBrushMirrorType::NoMirror;
-				Brush.ImageSize = FVector2D(32.0f, 32.0f); 
-				Brush.Margin = FMargin(0.0f, 0.0f, 0.0f, 0.0f); 
-				Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)); 
+					UTexture2D* thumbnail = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *row->imagePath));
 
-				Brush.SetResourceObject(thumbnail);
-				musicInfoSlot->MusicThumbnail_img->SetBrush(Brush);
+					FSlateBrush Brush;
+					Brush.DrawAs = ESlateBrushDrawType::Image;
+					Brush.Tiling = ESlateBrushTileType::NoTile;
+					Brush.Mirroring = ESlateBrushMirrorType::NoMirror;
+					Brush.ImageSize = FVector2D(32.0f, 32.0f); 
+					Brush.Margin = FMargin(0.0f, 0.0f, 0.0f, 0.0f); 
+					Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)); 
 
-				SongList->AddChild(musicInfoSlot);
+					Brush.SetResourceObject(thumbnail);
+					musicInfoSlot->MusicThumbnail_img->SetBrush(Brush);
+
+					SongList->AddChild(musicInfoSlot);
+				}
 			}
 		}
 	}
@@ -81,13 +80,25 @@ void USongListUI::ScrollDown()
 { 
 	if (SongList) {
 			scrollVal += 10;
-			if (scrollVal > SongList->GetScrollOffsetOfEnd()) {
+			if (scrollVal >= SongList->GetScrollOffsetOfEnd()) {
 				scrollVal = SongList->GetScrollOffsetOfEnd();
-				return;
 			}
 			SongList->SetScrollOffset(scrollVal);
 	}
 } 
+
+void USongListUI::ScrollUp()
+{
+	if (SongList) {
+		scrollVal -= 10;
+		if (scrollVal <= 0) {
+			scrollVal = 0;
+		}
+
+		SongList->SetScrollOffset(scrollVal);
+
+	}
+}
 
 FString USongListUI::FloatToTimeFormat(float songDuration)
 {
@@ -102,18 +113,4 @@ FString USongListUI::FloatToTimeFormat(float songDuration)
 		timeFormat = FString::FromInt(minute) + TEXT(":") + FString::FromInt(second);
 	}
 	return timeFormat;
-}
-
-void USongListUI::ScrollUp()
-{
-	if (SongList) {
-		scrollVal -= 10;
-		if (scrollVal < 0) {
-			scrollVal = 0;
-			return;
-		}
-
-		SongList->SetScrollOffset(scrollVal);
-
-	}
 }

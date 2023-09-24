@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "SB_SelectMusicInfo.h"
 #include "MusicInfoWidget.generated.h"
 
 /**
@@ -15,6 +16,9 @@ class BEATSABER_API UMusicInfoWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
+
+	FSongInfo songSlotData;
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
 	class UTextBlock* Subtitle_txt;
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
@@ -25,4 +29,10 @@ public:
 		class UTextBlock* bpm_txt;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
 		class UImage* MusicThumbnail_img;
+
+	UFUNCTION(BlueprintCallable)
+	void SetSongInfo();
+
+	UPROPERTY()
+	class ALobbyGameMode* gm;
 };
