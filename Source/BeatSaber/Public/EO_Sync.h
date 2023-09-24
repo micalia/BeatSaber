@@ -54,13 +54,18 @@ public:
 	float delayTime = 0;
 
 	bool isGenerate = false;
+	bool bGameStart = false;
 
 private:
 	class AVR_Player* player;
+	class AInGameMode* gameModeBase;
 
 private:
 	void MusicPlay();
-	void GenerateNote();
 	float XGeneratePos(int rowX);
 	float YGeneratePos(int rowY);
+
+public:
+	void GenerateNote(FString songPath, FString patternPath, float bpm);
+	void GameStart();
 };

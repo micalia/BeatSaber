@@ -44,11 +44,41 @@ void AEO_Sync::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (AInGameMode* gmbTemp = Cast<AInGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		gameModeBase = gmbTemp;
+	}
+	else
+	{
+		bGameStart = true;
+	}
+
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
 
-	musicBPM = 169.74f;
+	/*GenerateNote(TEXT("'/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix'"),TEXT("'/Game/EO/Resources/Stay_Remix.Stay_Remix'"),169.74f);
+	GameStart();*/
+}
+
+void AEO_Sync::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (gameModeBase != nullptr)
+		bGameStart = gameModeBase->bGameStart;
+}
+
+void AEO_Sync::MusicPlay()
+{
+	audioComp->Play();
+}
+
+void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
+{
+	FStreamableManager assetLoader;
+
+	musicBPM = bpm;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -57,32 +87,12 @@ void AEO_Sync::BeginPlay()
 
 	barPerSec = oneBeatTime * 4;
 
-	audioComp->SetSound(testSound);
+	audioComp->SetSound(Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(songPath))));
 
 	startPos = 700 * 3;
 
-	GenerateNote();
+	patternData = Cast<UDataTable>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(patternPath)));
 
-	if (isGenerate)
-	{
-		FTimerHandle handle;
-		GetWorldTimerManager().SetTimer(handle, this, &AEO_Sync::MusicPlay, 3.0f, false);
-	}
-}
-
-void AEO_Sync::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-void AEO_Sync::MusicPlay()
-{
-	audioComp->Play();
-}
-
-void AEO_Sync::GenerateNote()
-{
 	if (patternData != nullptr)
 	{
 		for (int i = 0; i < patternData->GetRowNames().Num(); i++)
@@ -91,7 +101,7 @@ void AEO_Sync::GenerateNote()
 
 			if (row->color == 0 || row->color == 1)
 			{
-				UE_LOG(LogTemp,Warning,TEXT("Spawn block"));
+				UE_LOG(LogTemp, Warning, TEXT("Spawn block"));
 				ANodeBlock* tempNote = GetWorld()->SpawnActor<ANodeBlock>(noteFactory, FVector(GetActorLocation().X + (startPos + offset + 700 * (row->ms * 0.001f)), YGeneratePos(row->y), XGeneratePos(row->x)), FRotator(0, 0, row->rot));
 				tempNote->SwitchColor(row->color);
 				tempNote->SwitchType(row->type);
@@ -118,6 +128,15 @@ void AEO_Sync::GenerateNote()
 
 	//UE_LOG(LogTemp, Warning, TEXT("All Generated"));
 	isGenerate = true;
+}
+
+void AEO_Sync::GameStart()
+{
+	if (isGenerate)
+	{
+		FTimerHandle handle;
+		GetWorldTimerManager().SetTimer(handle, this, &AEO_Sync::MusicPlay, 3.0f, false);
+	}
 }
 
 float AEO_Sync::XGeneratePos(int rowX)

@@ -46,7 +46,7 @@ void AEO_GridController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	musicBPM = 169.74f;
+	/*musicBPM = 169.74f;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -55,11 +55,11 @@ void AEO_GridController::BeginPlay()
 
 	barPerSec = oneBeatTime * 4;
 
-	audioComp->SetSound(musicSound);
+	audioComp->SetSound(musicSound);*/
+
+	//MakeGrid();
 
 	syncPos = GetActorLocation();
-
-	MakeGrid();
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACameraActor::StaticClass(), arrCamera);
 }
@@ -78,7 +78,7 @@ void AEO_GridController::Tick(float DeltaTime)
 		TArray<AActor*> ignoreActor;
 		TArray<FHitResult> sphereHits;
 
-		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::None, sphereHits, true))
+		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::ForOneFrame, sphereHits, true))
 		{
 			float min = 9999;
 
@@ -110,6 +110,7 @@ void AEO_GridController::Tick(float DeltaTime)
 						yPos = 50;
 						yArrIndex = 2;
 					}
+
 					cursorNote->SetActorLocation(FVector(grid.GetActor()->GetActorLocation().X, yPos, zPos));
 					currentGrid = Cast<AEO_Grid>(grid.GetActor());
 
@@ -127,10 +128,13 @@ void AEO_GridController::Tick(float DeltaTime)
 		SetActorLocation(p);
 	}
 
-	if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
+	if (audioComp->GetSound() != nullptr)
 	{
-		audioComp->Stop();
-		isPlaying = false;
+		if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
+		{
+			audioComp->Stop();
+			isPlaying = false;
+		}
 	}
 
 	if (isWallPlacing)
@@ -171,9 +175,22 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AEO_GridController::MakeGrid()
 {
+	UE_LOG(LogTemp,Warning,TEXT("%f"), musicBPM);
+	//musicBPM = 169.74f;
+	//offset = 100.f;
+	frequeny = 44100.0f;
+
+	sampleOffset = frequeny * offset;
+	oneBeatTime = (60.0f / musicBPM);
+	nextSample += sampleOffset;
+
+	barPerSec = oneBeatTime * 4;
+
+	//audioComp->SetSound(musicSound);
+
 	for (float i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
 	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
 		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
@@ -187,7 +204,7 @@ void AEO_GridController::MakeGrid()
 
 	for (float i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
 		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
@@ -201,7 +218,7 @@ void AEO_GridController::MakeGrid()
 
 	for (float i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
 	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f), 0, 0), FRotator());
+		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
 		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
 		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
@@ -220,7 +237,7 @@ void AEO_GridController::MakeGrid()
 
 void AEO_GridController::MoveGrid(float value)
 {
-	if (!isPlaying)
+	if (!isPlaying && audioComp->GetSound() != nullptr)
 	{
 		if (audioComp->IsPlaying())
 		{
@@ -230,24 +247,24 @@ void AEO_GridController::MoveGrid(float value)
 
 		if (value >= 1)
 		{
-			if (GetActorLocation().X < offset)
+			if (GetActorLocation().X < 0)
 			{
-				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime), 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime) + offset, 0, 0));
 			}
 			else
 			{
-				SetActorLocation(FVector(offset, 0, 0));
+				SetActorLocation(FVector(0, 0, 0));
 			}
 		}
 		else if (value <= -1)
 		{
 			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime), 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime) + offset, 0, 0));
 			}
 			else
 			{
-				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * speed), 0, 0));
+				SetActorLocation(FVector(-(audioComp->GetSound()->GetDuration() * speed) + offset, 0, 0));
 			}
 		}
 	}
@@ -430,6 +447,7 @@ void AEO_GridController::ChangeView()
 
 void AEO_GridController::SoundPlay()
 {
+	UE_LOG(LogTemp, Warning, TEXT("play"));
 	if (!audioComp->IsPlaying())
 	{
 		if (-(GetActorLocation().X / speed) >= audioComp->GetSound()->GetDuration())
@@ -472,7 +490,7 @@ void AEO_GridController::OutData()
 		textData += FString::FromInt(noteData->typeIndex);
 		textData += ",";
 		//ms
-		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed - offset));
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed));
 		textData += ",";
 		//x position
 		textData += FString::FromInt(noteData->myXPos);
@@ -487,7 +505,7 @@ void AEO_GridController::OutData()
 		textData += FString::SanitizeFloat(noteData->GetActorRotation().Roll);
 		textData += ",";
 		//wall end point
-		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed - offset));
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed));
 		textData += ",";
 		//x2
 		textData += FString::FromInt(noteData->myXPos2);
@@ -500,7 +518,7 @@ void AEO_GridController::OutData()
 		i++;
 	}
 
-	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("test.csv"), data, true);
+	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("BETELGEUSE.csv"), data, true);
 	//UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
 }
 

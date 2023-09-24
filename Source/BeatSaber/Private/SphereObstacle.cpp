@@ -31,6 +31,23 @@ ASphereObstacle::ASphereObstacle()
 	if (tempCompGCSphereObstacle.Succeeded()) {
 		compGCSphereObstacle->SetRestCollection(tempCompGCSphereObstacle.Object);
 	}
+
+	sync = Cast<AEO_Sync>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_Sync::StaticClass()));
+}
+
+void ASphereObstacle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (sync != nullptr)
+	{
+		if (sync->isGenerate && sync->bGameStart)
+		{
+			FVector p0 = GetActorLocation();
+			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
+			SetActorLocation(p0 + vt);
+		}
+	}
 }
 
 void ASphereObstacle::CrackEffect()

@@ -16,6 +16,9 @@ class BEATSABER_API ASphereObstacle : public AObstacle
 public:
 	ASphereObstacle();
 
+public:
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* compSphere;
 	UPROPERTY(EditAnywhere)
@@ -24,4 +27,10 @@ public:
 	class UGeometryCollectionComponent* compGCSphereObstacle;
 
 	void CrackEffect();
+
+	UPROPERTY(EditAnywhere)
+	float speed = 700;
+
+private:
+	class AEO_Sync* sync;
 };
