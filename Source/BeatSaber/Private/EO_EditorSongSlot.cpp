@@ -24,7 +24,7 @@ void UEO_EditorSongSlot::SongSelectButtonClick()
 	widget->text_Artist->SetText(text_Artist->GetText());
 	widget->text_BPM->SetText(text_BPM->GetText());
 	widget->text_SongDuration->SetText(FText::AsNumber(songDuration));
-	widget->SaveSelectedData(songPath, bpm);
+	widget->SaveSelectedData(songPath, bpm, offset);
 }
 
 class UEO_EditorWidget* UEO_EditorSongSlot::ReturnParentWidget()

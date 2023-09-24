@@ -41,7 +41,6 @@ public:
 
 private:
 	float frequeny;
-	float offset = 0;
 	float sampleOffset;
 
 	float oneBeatTime;
@@ -84,6 +83,7 @@ public:
 	bool isPlaying = false;
 
 	float musicBPM = 0;
+	float offset = 0;
 
 	FVector syncPos;
 

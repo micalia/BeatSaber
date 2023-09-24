@@ -28,7 +28,7 @@ public:
 
 	float bpm = 0;
 	float songDuration = 0;
-	
+	float offset;
 
 private:
 	UFUNCTION()

@@ -54,6 +54,7 @@ public:
 	FString selectSongPath;
 
 	float selectBPM;
+	float selectOffset;
 
 private:
 	void GenerateList();
@@ -61,5 +62,5 @@ private:
 	void AddPattern();
 
 public:
-	void SaveSelectedData(FString songPath, float BPM);
+	void SaveSelectedData(FString songPath, float BPM, float offset);
 };

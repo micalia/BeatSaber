@@ -62,7 +62,10 @@ private:
 
 private:
 	void MusicPlay();
-	void GenerateNote();
 	float XGeneratePos(int rowX);
 	float YGeneratePos(int rowY);
+
+public:
+	void GenerateNote(FString songPath, FString patternPath, float bpm);
+	void GameStart();
 };

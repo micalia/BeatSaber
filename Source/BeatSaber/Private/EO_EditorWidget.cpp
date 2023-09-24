@@ -52,6 +52,7 @@ void UEO_EditorWidget::GenerateList()
 
 			songSlotTemp->bpm = row->bpm;
 			songSlotTemp->songDuration = row->songDuration;
+			songSlotTemp->offset = row->offset;
 
 			songSlotTemp->imagePath = row->imagePath;
 			songSlotTemp->songPath = row->songPath;
@@ -71,14 +72,16 @@ void UEO_EditorWidget::AddPattern()
 	USoundBase* music = Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(selectSongPath)));
 	gcTemp->audioComp->SetSound(music);
 	gcTemp->musicBPM = selectBPM;
+	gcTemp->offset = selectOffset;
 	gcTemp->MakeGrid();
 
 	ws_Switcher->SetActiveWidgetIndex(1);
 }
 
-void UEO_EditorWidget::SaveSelectedData(FString songPath, float BPM)
+void UEO_EditorWidget::SaveSelectedData(FString songPath, float BPM, float offset)
 {
 	selectSongPath = songPath;
 	selectBPM = BPM;
+	selectOffset = offset;
 }
 

@@ -57,13 +57,8 @@ void AEO_Sync::BeginPlay()
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
 
-	GenerateNote();
-
-	if (isGenerate)
-	{
-		FTimerHandle handle;
-		GetWorldTimerManager().SetTimer(handle, this, &AEO_Sync::MusicPlay, 3.0f, false);
-	}
+	/*GenerateNote(TEXT("'/Game/EO/Sounds/Stay_SemiHardRemix.Stay_SemiHardRemix'"),TEXT("'/Game/EO/Resources/Stay_Remix.Stay_Remix'"),169.74f);
+	GameStart();*/
 }
 
 void AEO_Sync::Tick(float DeltaTime)
@@ -79,9 +74,11 @@ void AEO_Sync::MusicPlay()
 	audioComp->Play();
 }
 
-void AEO_Sync::GenerateNote()
+void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
 {
-	musicBPM = 169.74f;
+	FStreamableManager assetLoader;
+
+	musicBPM = bpm;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -90,9 +87,11 @@ void AEO_Sync::GenerateNote()
 
 	barPerSec = oneBeatTime * 4;
 
-	audioComp->SetSound(testSound);
+	audioComp->SetSound(Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(songPath))));
 
 	startPos = 700 * 3;
+
+	patternData = Cast<UDataTable>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(patternPath)));
 
 	if (patternData != nullptr)
 	{
@@ -129,6 +128,15 @@ void AEO_Sync::GenerateNote()
 
 	//UE_LOG(LogTemp, Warning, TEXT("All Generated"));
 	isGenerate = true;
+}
+
+void AEO_Sync::GameStart()
+{
+	if (isGenerate)
+	{
+		FTimerHandle handle;
+		GetWorldTimerManager().SetTimer(handle, this, &AEO_Sync::MusicPlay, 3.0f, false);
+	}
 }
 
 float AEO_Sync::XGeneratePos(int rowX)

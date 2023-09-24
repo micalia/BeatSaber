@@ -25,6 +25,8 @@ struct FSongDataTableRow : public FTableRowBase
 	float previewSongTime = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString patternPath;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float offset = 0;
 };
 
 UCLASS()

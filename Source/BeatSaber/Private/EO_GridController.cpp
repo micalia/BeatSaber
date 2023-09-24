@@ -175,8 +175,9 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AEO_GridController::MakeGrid()
 {
+	UE_LOG(LogTemp,Warning,TEXT("%f"), musicBPM);
 	//musicBPM = 169.74f;
-	offset = 100.f;
+	//offset = 100.f;
 	frequeny = 44100.0f;
 
 	sampleOffset = frequeny * offset;
@@ -489,7 +490,7 @@ void AEO_GridController::OutData()
 		textData += FString::FromInt(noteData->typeIndex);
 		textData += ",";
 		//ms
-		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed - offset));
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->GetActorLocation().X * 1000 / speed));
 		textData += ",";
 		//x position
 		textData += FString::FromInt(noteData->myXPos);
@@ -504,7 +505,7 @@ void AEO_GridController::OutData()
 		textData += FString::SanitizeFloat(noteData->GetActorRotation().Roll);
 		textData += ",";
 		//wall end point
-		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed - offset));
+		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed));
 		textData += ",";
 		//x2
 		textData += FString::FromInt(noteData->myXPos2);
@@ -517,7 +518,7 @@ void AEO_GridController::OutData()
 		i++;
 	}
 
-	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("test.csv"), data, true);
+	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("BETELGEUSE.csv"), data, true);
 	//UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
 }
 
