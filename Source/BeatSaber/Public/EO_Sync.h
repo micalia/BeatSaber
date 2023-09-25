@@ -56,6 +56,9 @@ public:
 	bool isGenerate = false;
 	bool bGameStart = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsFinished = false;
+
 private:
 	class AVR_Player* player;
 	class AInGameMode* gameModeBase;
