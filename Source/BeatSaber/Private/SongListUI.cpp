@@ -64,7 +64,7 @@ void USongListUI::NativeConstruct()
 					Brush.Mirroring = ESlateBrushMirrorType::NoMirror;
 					Brush.ImageSize = FVector2D(32.0f, 32.0f); 
 					Brush.Margin = FMargin(0.0f, 0.0f, 0.0f, 0.0f); 
-					Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)); 
+					Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 
 					Brush.SetResourceObject(thumbnail);
 					musicInfoSlot->MusicThumbnail_img->SetBrush(Brush);

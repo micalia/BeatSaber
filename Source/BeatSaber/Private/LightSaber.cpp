@@ -142,7 +142,7 @@ void ALightSaber::Tick(float DeltaTime)
 						UKismetProceduralMeshLibrary::SliceProceduralMesh(proceduralMesh, sm_pointVal->GetComponentLocation(), sm_pointVal->GetUpVector(), true, OutOtherHalfProcMesh, EProcMeshSliceCapOption::CreateNewSectionForCap, mi);
 						OutOtherHalfProcMesh->SetSimulatePhysics(true);
 						OutOtherHalfProcMesh->SetCollisionProfileName(TEXT("NodeBlock"));
-						OutOtherHalfProcMesh->AddImpulse(FVector(-550, 700, 400), FName(TEXT("NONE")), true);
+						OutOtherHalfProcMesh->AddImpulse(FVector(150, 600, 300), FName(TEXT("NONE")), true);
 
 						//각도 계산
 						FVector p0 = sm_pointVal->GetComponentLocation();
@@ -191,7 +191,7 @@ void ALightSaber::Tick(float DeltaTime)
 						}
 
 						nodeBlock->proceduralMesh->SetSimulatePhysics(true);
-						nodeBlock->proceduralMesh->AddImpulse(FVector(-550, -700, -400), FName("None"), true);
+						nodeBlock->proceduralMesh->AddImpulse(FVector(150, -600, -300), FName("None"), true);
 						nodeBlock->DelayDestroy();
 
 				}
