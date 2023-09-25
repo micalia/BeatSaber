@@ -6,6 +6,10 @@
 #include "NodeBlock.h"
 #include <Kismet/GameplayStatics.h>
 #include "VR_Player.h"
+#include "InGameMode.h"
+#include <Engine/StreamableManager.h>
+#include "WallObstacle.h"
+#include "SphereObstacle.h"
 
 
 AEO_Sync::AEO_Sync()
@@ -55,7 +59,7 @@ void AEO_Sync::BeginPlay()
 
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
-		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 120));
+		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 200));
 
 	/*GenerateNote(TEXT("'/Game/EO/Sounds/Yuuri-BETELGEUSE.Yuuri-BETELGEUSE'"), TEXT("'/Game/EO/Resources/BETELGEUSE_Complete.BETELGEUSE_Complete'"), 90.f);
 	GameStart();*/
@@ -64,7 +68,7 @@ void AEO_Sync::BeginPlay()
 void AEO_Sync::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (gameModeBase != nullptr)
 		bGameStart = gameModeBase->bGameStart;
 }
@@ -117,8 +121,8 @@ void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
 
 				FVector dist = FVector(vecEnd.X - vecFirst.X, vecEnd.Y + vecFirst.Y, vecEnd.Z - vecFirst.Z);
 				float xRef = (700 * (oneBeatTime / 4 * 1000) * 0.001f);
-
-				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, dist.Z / 2), FRotator(0, 180, 0));
+				
+				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, GetActorLocation().Z + dist.Z / 2), FRotator(0, 180, 0));
 				wallObj->SetActorRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(vecEnd.Y - vecFirst.Y) / 70 + 1), (FMath::Abs(vecEnd.Z - vecFirst.Z) / 60 + 1)));
 			}
 		}
