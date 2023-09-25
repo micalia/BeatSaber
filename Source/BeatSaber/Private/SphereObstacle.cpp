@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include <GeometryCollectionEngine/Public/GeometryCollection/GeometryCollectionComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include "EO_Sync.h"
 
 ASphereObstacle::ASphereObstacle()
 {
@@ -55,7 +57,7 @@ void ASphereObstacle::CrackEffect()
 	compSphereObstacleMesh->SetVisibility(false);
 	compGCSphereObstacle->SetVisibility(true);
 	compGCSphereObstacle->SetSimulatePhysics(true);
-	compGCSphereObstacle->ApplyExternalStrain(0, GetActorLocation(), 0, 0, 2000, 2000);
+	compGCSphereObstacle->ApplyExternalStrain(0, GetActorLocation(), 0, 0, 1, 1);
 
 	FTimerHandle destroyDelay;
 	GetWorld()->GetTimerManager().SetTimer(destroyDelay, FTimerDelegate::CreateLambda([&]() {

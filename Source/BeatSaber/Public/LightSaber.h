@@ -67,4 +67,9 @@ public:
 	class USoundBase* hitCutSound;
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	class USoundBase* badCutSound;
+
+	UPROPERTY(EditAnywhere, Category = Effect)
+	class UParticleSystem* redDestroyEffect;
+	UPROPERTY(EditAnywhere, Category = Effect)
+	class UParticleSystem* blueDestroyEffect;
 };

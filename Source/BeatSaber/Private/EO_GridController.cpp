@@ -78,7 +78,7 @@ void AEO_GridController::Tick(float DeltaTime)
 		TArray<AActor*> ignoreActor;
 		TArray<FHitResult> sphereHits;
 
-		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::ForOneFrame, sphereHits, true))
+		if (UKismetSystemLibrary::SphereTraceMulti(GetWorld(), hit.Location, hit.Location, 150, UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel2), false, ignoreActor, EDrawDebugTrace::None, sphereHits, true))
 		{
 			float min = 9999;
 

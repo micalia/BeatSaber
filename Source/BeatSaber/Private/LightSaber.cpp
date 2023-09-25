@@ -10,6 +10,7 @@
 #include "VR_Player.h"
 #include <Sound/SoundBase.h>
 #include "SphereObstacle.h"
+#include <Particles/ParticleSystem.h>
 
 // Sets default values
 ALightSaber::ALightSaber()
@@ -63,6 +64,20 @@ ALightSaber::ALightSaber()
 	if (tempBadCutSound.Succeeded())
 	{
 		badCutSound = tempBadCutSound.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> tempRedDestroyEffect(TEXT("/Script/Engine.ParticleSystem'/Game/SB/particle/ParticleSpark_red.ParticleSpark_red'"));
+
+	if (tempRedDestroyEffect.Succeeded())
+	{
+		redDestroyEffect = tempRedDestroyEffect.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> tempBlueDestroyEffect(TEXT("/Script/Engine.ParticleSystem'/Game/SB/particle/ParticleSpark_Blue.ParticleSpark_Blue'"));
+
+	if (tempBlueDestroyEffect.Succeeded())
+	{
+		blueDestroyEffect = tempBlueDestroyEffect.Object;
 	}
 }
 
@@ -133,9 +148,11 @@ void ALightSaber::Tick(float DeltaTime)
 					//Àß¶óÁø ´Ü¸é »ö±ò
 					if(nodeBlock->blockColor == 0) {  // »¡°­
 						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), redDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.3f));
 					}
 					else if(nodeBlock->blockColor == 1) { // ÆÄ¶û
 						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), blueDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.3f));
 					}
 					UMaterialInterface* mi = SliceCubeDynamicMaterial;
 					if (sm_pointVal) {
