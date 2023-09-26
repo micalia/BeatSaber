@@ -12,6 +12,9 @@
 #include "BeatSaberGameInstance.h"
 #include "EngineUtils.h"
 #include "EO_Sync.h"
+#include "SB_ScoreWidgetActor.h"
+#include "Components/WidgetComponent.h"
+#include "ScoreWidget.h"
 
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,6 +31,7 @@ void AInGameMode::BeginPlay()
 
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	currComboWidgetInstance = Cast<ACurrComboWidget>(UGameplayStatics::GetActorOfClass(GetWorld(), ACurrComboWidget::StaticClass()));
+	scoreWidgetInstance = Cast<ASB_ScoreWidgetActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_ScoreWidgetActor::StaticClass()));
 
 	player->rightSword->SetVisibility(true);
 	player->leftSword->SetVisibility(true);
@@ -79,6 +83,12 @@ void AInGameMode::ScoreUpdate()
 {	
 	if (currComboWidgetInstance) {
 		currComboWidgetInstance->comboWidgetInstance->currCombo_txt->SetText(FText::AsNumber(currCombo));
+	}
+	
+	if (scoreWidgetInstance) {
+		if (scoreWidgetInstance->scoreWidgetInstance) {
+			scoreWidgetInstance->scoreWidgetInstance->currScoreUI_txt->SetText(FText::AsNumber(score));
+		}
 	}
 }
 

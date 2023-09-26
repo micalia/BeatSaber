@@ -13,6 +13,9 @@
 #include <../Plugins/EnhancedInput/Source/EnhancedInput/Public/EnhancedInputComponent.h>
 #include "SB_LaserPointer.h"
 #include <UMG/Public/Components/WidgetInteractionComponent.h>
+#include "EngineUtils.h"
+#include "EO_Sync.h"
+#include <Components/AudioComponent.h>
 // Sets default values
 AVR_Player::AVR_Player()
 {
@@ -27,77 +30,77 @@ AVR_Player::AVR_Player()
 	headMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	headCollision = CreateDefaultSubobject<USphereComponent>(TEXT("HeadCollision"));
-	headCollision->SetupAttachment(cam);
+headCollision->SetupAttachment(cam);
 
-	leftController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Left Controller"));
-	leftController->SetupAttachment(RootComponent);
-	// 모션 소스 선택
-	leftController->MotionSource = "Left";
+leftController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Left Controller"));
+leftController->SetupAttachment(RootComponent);
+// 모션 소스 선택
+leftController->MotionSource = "Left";
 
-	leftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LeftHand"));
-	leftHand->SetupAttachment(leftController);
-	leftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	leftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f));
+leftHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LeftHand"));
+leftHand->SetupAttachment(leftController);
+leftHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+leftHand->SetRelativeRotation(FRotator(-25.0f, 180.0f, 90.0f));
 
-	leftLog = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Left Log Text"));
-	leftLog->SetupAttachment(leftController);
-	leftLog->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
-	leftLog->SetTextRenderColor(FColor::Yellow);
-	leftLog->SetHorizontalAlignment(EHTA_Center);
-	leftLog->SetVerticalAlignment(EVRTA_TextCenter);
+leftLog = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Left Log Text"));
+leftLog->SetupAttachment(leftController);
+leftLog->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+leftLog->SetTextRenderColor(FColor::Yellow);
+leftLog->SetHorizontalAlignment(EHTA_Center);
+leftLog->SetVerticalAlignment(EVRTA_TextCenter);
 
-	rightController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Right Controller"));
-	rightController->SetupAttachment(RootComponent);
-	rightController->MotionSource = "Right";
+rightController = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("Right Controller"));
+rightController->SetupAttachment(RootComponent);
+rightController->MotionSource = "Right";
 
-	rightHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightHand"));
-	rightHand->SetupAttachment(rightController);
-	rightHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	rightHand->SetRelativeRotation(FRotator(25.0f, 0.0f, 90.0f));
+rightHand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightHand"));
+rightHand->SetupAttachment(rightController);
+rightHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+rightHand->SetRelativeRotation(FRotator(25.0f, 0.0f, 90.0f));
 
-	rightLog = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Right Log Text"));
-	rightLog->SetupAttachment(rightController);
-	rightLog->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
-	rightLog->SetTextRenderColor(FColor::Yellow);
-	rightLog->SetHorizontalAlignment(EHTA_Center);
-	rightLog->SetVerticalAlignment(EVRTA_TextCenter);
+rightLog = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Right Log Text"));
+rightLog->SetupAttachment(rightController);
+rightLog->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+rightLog->SetTextRenderColor(FColor::Yellow);
+rightLog->SetHorizontalAlignment(EHTA_Center);
+rightLog->SetVerticalAlignment(EVRTA_TextCenter);
 
-	bUseControllerRotationPitch = true;
+bUseControllerRotationPitch = true;
 
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
+AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	ConstructorHelpers::FClassFinder<AActor> tempLeftSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_LeftLightSaber.BP_LeftLightSaber_C'"));
-	if (tempLeftSaber.Succeeded()) {
-		leftSaberFactory = tempLeftSaber.Class;
-	}
+ConstructorHelpers::FClassFinder<AActor> tempLeftSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_LeftLightSaber.BP_LeftLightSaber_C'"));
+if (tempLeftSaber.Succeeded()) {
+	leftSaberFactory = tempLeftSaber.Class;
+}
 
-	ConstructorHelpers::FClassFinder<AActor> tempRightSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_RightLightSaber.BP_RightLightSaber_C'"));
-	if (tempRightSaber.Succeeded()) {
-		rightSaberFactory = tempRightSaber.Class;
-	}
+ConstructorHelpers::FClassFinder<AActor> tempRightSaber(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_RightLightSaber.BP_RightLightSaber_C'"));
+if (tempRightSaber.Succeeded()) {
+	rightSaberFactory = tempRightSaber.Class;
+}
 
-	ConstructorHelpers::FClassFinder<AActor> tempRightRemoteController(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_LaserPointer.BP_LaserPointer_C'"));
-	if (tempRightRemoteController.Succeeded()) {
-		rightRemoteControllerFactory = tempRightRemoteController.Class;
-	}
+ConstructorHelpers::FClassFinder<AActor> tempRightRemoteController(TEXT("/Script/Engine.Blueprint'/Game/SB/Blueprints/BP_LaserPointer.BP_LaserPointer_C'"));
+if (tempRightRemoteController.Succeeded()) {
+	rightRemoteControllerFactory = tempRightRemoteController.Class;
+}
 
-	rightSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("RightSword"));
-	rightSword->SetupAttachment(rightController);
-	rightSword->SetChildActorClass(rightSaberFactory);
-	rightSword->SetRelativeLocation(FVector(26.6, -2.3, -9.4));
-	rightSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
+rightSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("RightSword"));
+rightSword->SetupAttachment(rightController);
+rightSword->SetChildActorClass(rightSaberFactory);
+rightSword->SetRelativeLocation(FVector(26.6, -2.3, -9.4));
+rightSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
 
-	leftSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("LeftSword"));
-	leftSword->SetupAttachment(leftController);
-	leftSword->SetChildActorClass(leftSaberFactory);
-	leftSword->SetRelativeLocation(FVector(26.6, 2.3, -9.4));
-	leftSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
+leftSword = CreateDefaultSubobject<UChildActorComponent>(TEXT("LeftSword"));
+leftSword->SetupAttachment(leftController);
+leftSword->SetChildActorClass(leftSaberFactory);
+leftSword->SetRelativeLocation(FVector(26.6, 2.3, -9.4));
+leftSword->SetRelativeRotation(FRotator(-78.8, 180, 180));
 
-	rightRemoteController = CreateDefaultSubobject<UChildActorComponent>(TEXT("RightRemoteController"));
-	rightRemoteController->SetupAttachment(rightController);
-	rightRemoteController->SetChildActorClass(rightRemoteControllerFactory);
-	rightRemoteController->SetRelativeLocation(FVector(26.6, 2.3, -9.4));
-	rightRemoteController->SetRelativeRotation(FRotator(-78.8, 180, 180));
+rightRemoteController = CreateDefaultSubobject<UChildActorComponent>(TEXT("RightRemoteController"));
+rightRemoteController->SetupAttachment(rightController);
+rightRemoteController->SetChildActorClass(rightRemoteControllerFactory);
+rightRemoteController->SetRelativeLocation(FVector(26.6, 2.3, -9.4));
+rightRemoteController->SetRelativeRotation(FRotator(-78.8, 180, 180));
 }
 
 // Called when the game starts or when spawned
@@ -127,6 +130,9 @@ void AVR_Player::BeginPlay()
 
 	laserPointer = Cast<ASB_LaserPointer>(rightRemoteController->GetChildActor());
 
+	for (TActorIterator<AEO_Sync> foundActor(GetWorld()); foundActor; ++foundActor){
+		sync = *foundActor;
+	}
 }
 
 // Called every frame
@@ -160,6 +166,7 @@ void AVR_Player::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	crashWallCount++;
 	bPlayerChk = true;
+	SetSlientSound();
 }
 
 void AVR_Player::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -167,6 +174,21 @@ void AVR_Player::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 	crashWallCount--;
 	if (crashWallCount <= 0) {
 		bPlayerChk = false;
+		SetRestoreSound();
+	}
+}
+
+void AVR_Player::SetSlientSound()
+{ 
+	if (sync) {
+		sync->audioComp->SetVolumeMultiplier(0.4);
+	}
+}
+
+void AVR_Player::SetRestoreSound()
+{
+	if (sync) {
+		sync->audioComp->SetVolumeMultiplier(1);
 	}
 }
 

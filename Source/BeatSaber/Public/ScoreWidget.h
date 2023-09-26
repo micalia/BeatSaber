@@ -16,5 +16,5 @@ class BEATSABER_API UScoreWidget : public UUserWidget
 
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* currScoreUI;
+	class UTextBlock* currScoreUI_txt;
 };

@@ -102,6 +102,10 @@ public:
 		int32 OtherBodyIndex
 		);
 
+		void SetSlientSound();
+
+		void SetRestoreSound();
+
 public:
 	UPROPERTY(EditAnywhere, Category="MySettings|Inputs")
 	class UInputMappingContext* imc_VRmap;
@@ -125,4 +129,7 @@ public:
 	class ASB_LaserPointer* laserPointer;
 
 	void ReleaseTrigger();
+
+	UPROPERTY()
+	class AEO_Sync* sync;
 };

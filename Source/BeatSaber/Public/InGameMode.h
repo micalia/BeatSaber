@@ -33,11 +33,16 @@ public:
 	//combo
 	UPROPERTY(BlueprintReadWrite)
 	int32 currCombo;
+	//score
+	UPROPERTY(BlueprintReadWrite)
+	int32 score;
 
 public:
 	//Á¡¼ö À§Á¬
 	UPROPERTY()
-	class ACurrComboWidget* currComboWidgetInstance;
+		class ACurrComboWidget* currComboWidgetInstance;
+	UPROPERTY()
+		class ASB_ScoreWidgetActor* scoreWidgetInstance;
 
 	void ScoreUpdate();
 public:

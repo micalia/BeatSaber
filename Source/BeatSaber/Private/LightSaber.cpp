@@ -176,6 +176,13 @@ void ALightSaber::Tick(float DeltaTime)
 								if ((int8)saberColor == nodeBlock->blockColor) {
 									UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
 									gm->currCombo += 1;
+									gm->score+=10;
+									if (player) {
+										player->currHp++;
+										if (player->currHp > player->fullHp) {
+											player->currHp = player->fullHp;
+										}
+									}
 								}
 								else {
 									if (player) {
@@ -197,6 +204,13 @@ void ALightSaber::Tick(float DeltaTime)
 							if ((int8)saberColor == nodeBlock->blockColor) {
 								UGameplayStatics::PlaySound2D(GetWorld(), hitCutSound, 0.5f);
 								gm->currCombo += 1;
+								gm->score += 10;
+								if (player) {
+									player->currHp++;
+									if (player->currHp > player->fullHp) {
+										player->currHp = player->fullHp;
+									}
+								}
 							}
 							else {
 								if (player) {
