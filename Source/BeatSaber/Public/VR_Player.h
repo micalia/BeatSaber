@@ -125,6 +125,9 @@ public:
 
 	void ClickTrigger();
 
+	UFUNCTION(BlueprintCallable)
+	void SetMappingContext();
+
 	UPROPERTY()
 	class ASB_LaserPointer* laserPointer;
 
@@ -132,4 +135,5 @@ public:
 
 	UPROPERTY()
 	class AEO_Sync* sync;
+
 };

@@ -16,6 +16,7 @@
 #include "EngineUtils.h"
 #include "EO_Sync.h"
 #include <Components/AudioComponent.h>
+#include "InGameMode.h"
 // Sets default values
 AVR_Player::AVR_Player()
 {
@@ -114,17 +115,7 @@ void AVR_Player::BeginPlay()
 	// 머리 장비 기준점 설정
 	UHeadMountedDisplayFunctionLibrary::SetTrackingOrigin(EHMDTrackingOrigin::Floor);
 
-	pc = GetController<APlayerController>();
-
-	if (pc != nullptr)
-	{
-		UEnhancedInputLocalPlayerSubsystem* subSys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer());
-
-		if (subSys != nullptr)
-		{
-			subSys->AddMappingContext(imc_VRmap, 0);
-		}
-	}
+	SetMappingContext();
 
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 
@@ -132,6 +123,11 @@ void AVR_Player::BeginPlay()
 
 	for (TActorIterator<AEO_Sync> foundActor(GetWorld()); foundActor; ++foundActor){
 		sync = *foundActor;
+	}
+
+	AInGameMode* ig = Cast<AInGameMode>(GetWorld()->GetAuthGameMode());
+	if (ig) {
+		ig->BlendCam();
 	}
 }
 
@@ -206,6 +202,21 @@ void AVR_Player::Scroll(const struct FInputActionValue& value)
 void AVR_Player::ClickTrigger()
 { 
 	laserPointer->interactionComp->PressPointerKey(EKeys::LeftMouseButton);
+}
+
+void AVR_Player::SetMappingContext()
+{
+	pc = GetController<APlayerController>();
+
+	if (pc != nullptr)
+	{
+		UEnhancedInputLocalPlayerSubsystem* subSys = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pc->GetLocalPlayer());
+
+		if (subSys != nullptr)
+		{
+			subSys->AddMappingContext(imc_VRmap, 0);
+		}
+	}
 }
 
 void AVR_Player::ReleaseTrigger()

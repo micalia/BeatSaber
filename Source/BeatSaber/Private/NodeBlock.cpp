@@ -9,6 +9,7 @@
 #include <Kismet/KismetMaterialLibrary.h>
 #include <Kismet/GameplayStatics.h>
 #include "EO_Sync.h"
+#include "InGameMode.h"
 
 // Sets default values
 ANodeBlock::ANodeBlock()
@@ -57,6 +58,8 @@ void ANodeBlock::BeginPlay()
 	CubeDynamicMaterial = UMaterialInstanceDynamic::Create(sm_nodeBlock->GetMaterial(0), this);
 	sm_nodeBlock->SetMaterial(0, CubeDynamicMaterial);
 	proceduralMesh->SetMaterial(0, CubeDynamicMaterial);
+
+	gm = Cast<AInGameMode>(GetWorld()->GetAuthGameMode());
 
 	//blockColor = UKismetMathLibrary::RandomIntegerInRange(0, 1);
 	//SwitchColor(blockColor);
@@ -113,6 +116,15 @@ void ANodeBlock::BeginPlay()
 void ANodeBlock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (gm) {
+		if (gm->bGameEnd) {
+			FVector p0 = GetActorLocation();
+			FVector vt = FVector::UpVector * -1 * speed * 0.7f * DeltaTime;
+			SetActorLocation(p0 + vt);
+			return;
+		}
+	}
 
 	if (sync != nullptr)
 	{

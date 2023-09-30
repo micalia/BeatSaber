@@ -47,7 +47,7 @@ public:
 	void ScoreUpdate();
 
 	UPROPERTY()
-		class ASB_GameResultActor* gameResultWidgetInstance;
+		class ASB_GameResultActor* gameResultWidgetActorInstance;
 
 	void SwitchCanvas(int32 index);
 
@@ -68,9 +68,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GameStart();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BlendCam();
+
 	UPROPERTY()
 		class AEO_Sync* sync;
 
+	void SetMusicInfoToResultPanel(FString songName, FString artist, FString thumbPath);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideUI();
 public:
 	bool bGameEnd;
 };

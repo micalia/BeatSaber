@@ -17,4 +17,18 @@ class BEATSABER_API USB_GameResultWidget : public UUserWidget
 public:
 	UPROPERTY(meta=(BindWidget))
 	class UWidgetSwitcher* SwitchWidget;
+
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
+	class UTextBlock* Subtitle_txt;
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
+	class UTextBlock* artist_txt;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
+		class UImage* MusicThumbnail_img;
+
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
+	class UTextBlock* Subtitle_txt2;
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget), Category=MySettings)
+	class UTextBlock* artist_txt2;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
+		class UImage* MusicThumbnail_img2;
 };

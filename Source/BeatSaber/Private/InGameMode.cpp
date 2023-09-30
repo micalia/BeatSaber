@@ -18,6 +18,7 @@
 #include "SB_GameResultActor.h"
 #include "SB_GameResultWidget.h"
 #include <UMG/Public/Components/WidgetSwitcher.h>
+#include <UMG/Public/Components/Image.h>
 
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,7 +36,7 @@ void AInGameMode::BeginPlay()
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	currComboWidgetInstance = Cast<ACurrComboWidget>(UGameplayStatics::GetActorOfClass(GetWorld(), ACurrComboWidget::StaticClass()));
 	scoreWidgetInstance = Cast<ASB_ScoreWidgetActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_ScoreWidgetActor::StaticClass()));
-	gameResultWidgetInstance = Cast<ASB_GameResultActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_GameResultActor::StaticClass()));
+	gameResultWidgetActorInstance = Cast<ASB_GameResultActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_GameResultActor::StaticClass()));
 
 	player->rightSword->SetVisibility(true);
 	player->leftSword->SetVisibility(true);
@@ -44,6 +45,7 @@ void AInGameMode::BeginPlay()
 	gi = Cast<UBeatSaberGameInstance>(GetGameInstance());
 	if (gi) {
 		UE_LOG(LogTemp, Warning, TEXT("SongPath : %s / PatternPath : %s / bpm : %f"), *gi->songPath, *gi->patternPath, gi->bpm)
+		SetMusicInfoToResultPanel(gi->songName, gi->artist, gi->imagePath);
 
 	}
 
@@ -52,34 +54,12 @@ void AInGameMode::BeginPlay()
 		sync = *it;
 	}
 
+
 }
 
 void AInGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*if (bGameStart) {
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : true")), true, FVector2D(1, 1));
-		UE_LOG(LogTemp, Warning, TEXT("gameStart : true"))
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("gameStart : false")), true, FVector2D(1, 1));
-		UE_LOG(LogTemp, Warning, TEXT("gameStart : false"))
-	}*/
-
-	//currTime+= DeltaTime;
-
-	//if (currTime > spawnDelayTime) { 
-	//	currTime = 0;
-
-	//////임시 생성위치
-	//	FVector testSpawnPos = FVector(1300,0,0);
-	//
-	//	float randomRotateVal = UKismetMathLibrary::RandomFloatInRange(0,360);
-
-	//	//GetWorld()->SpawnActor<ANodeBlock>(nodeBlockFactory, testSpawnPos, FRotator(0));
-
-	//}
 
 	ScoreUpdate();
 
@@ -87,7 +67,10 @@ void AInGameMode::Tick(float DeltaTime)
 		if(bGameEnd == true) return;
 		if (player->currHp <= 0) {
 			bGameEnd = true;
-			return;
+			player->rightSword->SetVisibility(false);
+			player->leftSword->SetVisibility(false);
+			player->rightRemoteController->SetVisibility(true);
+			HideUI();
 			ShowGameResult();
 		}
 	}
@@ -108,18 +91,18 @@ void AInGameMode::ScoreUpdate()
 
 void AInGameMode::SwitchCanvas(int32 index)
 { 
-	gameResultWidgetInstance->gameResultWidgetInstance->SwitchWidget->SetActiveWidgetIndex(index);
+	gameResultWidgetActorInstance->gameResultWidgetInstance->SwitchWidget->SetActiveWidgetIndex(index);
 }
 
 void AInGameMode::ShowGameResult()
 { 
 	if (player) {
 		if (player->currHp <= 0) {
-			gameResultWidgetInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			gameResultWidgetActorInstance->gameResultWidgetInstance->SetRenderOpacity(1);
 			SwitchCanvas(1);
 		}
 		else {
-			gameResultWidgetInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			gameResultWidgetActorInstance->gameResultWidgetInstance->SetRenderOpacity(1);
 			SwitchCanvas(0);
 		}
 	}
@@ -130,5 +113,32 @@ void AInGameMode::GameStart()
 	if (sync) {
 		sync->GenerateNote(gi->songPath, gi->patternPath, gi->bpm);
 		sync->GameStart();
+	}
+}
+
+void AInGameMode::SetMusicInfoToResultPanel(FString songName, FString artist, FString thumbPath)
+{
+	if (gameResultWidgetActorInstance) {
+		//ClearCanvas
+		gameResultWidgetActorInstance->gameResultWidgetInstance->Subtitle_txt->SetText(FText::FromString(songName));
+		gameResultWidgetActorInstance->gameResultWidgetInstance->artist_txt->SetText(FText::FromString(artist));
+
+		UTexture2D* thumbnail = Cast<UTexture2D>(StaticLoadObject(UTexture2D::StaticClass(), nullptr, *thumbPath));
+		FSlateBrush Brush;
+		Brush.DrawAs = ESlateBrushDrawType::Image;
+		Brush.Tiling = ESlateBrushTileType::NoTile;
+		Brush.Mirroring = ESlateBrushMirrorType::NoMirror;
+		Brush.ImageSize = FVector2D(32.0f, 32.0f);
+		Brush.Margin = FMargin(0.0f, 0.0f, 0.0f, 0.0f);
+		Brush.TintColor = FSlateColor(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+		
+		Brush.SetResourceObject(thumbnail);
+		gameResultWidgetActorInstance->gameResultWidgetInstance->MusicThumbnail_img->SetBrush(Brush);
+
+		//FailCanvas
+		gameResultWidgetActorInstance->gameResultWidgetInstance->Subtitle_txt2->SetText(FText::FromString(songName));
+		gameResultWidgetActorInstance->gameResultWidgetInstance->artist_txt2->SetText(FText::FromString(artist));
+		gameResultWidgetActorInstance->gameResultWidgetInstance->MusicThumbnail_img2->SetBrush(Brush);
+
 	}
 }

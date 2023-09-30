@@ -21,6 +21,9 @@ void UMusicInfoWidget::SetSongInfo()
 		gm->SetSelectMusicInfo(songSlotData.songName, songSlotData.artist, songSlotData.imagePath);
 		gm->PreviewSoundPlay(songSlotData.songPath, songSlotData.previewSongDuration);
 		if (gm->gi) {
+			gm->gi->songName = songSlotData.songName;
+			gm->gi->artist = songSlotData.artist;
+			gm->gi->imagePath = songSlotData.imagePath;
 			gm->gi->songPath = songSlotData.songPath;
 			gm->gi->patternPath = songSlotData.patternPath;
 			gm->gi->bpm = songSlotData.bpm;

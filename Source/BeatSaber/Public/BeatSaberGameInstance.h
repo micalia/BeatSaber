@@ -15,6 +15,9 @@ class BEATSABER_API UBeatSaberGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+	FString songName;
+	FString artist;
+	FString imagePath;
 	FString patternPath;
 	FString songPath;
 	float bpm;

@@ -45,6 +45,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Materials")
 	class UMaterialInterface* blockMat;
 
+	UPROPERTY()
+		class AInGameMode* gm;
 public:
 	//블럭 회전 값 (0~7)
 	int blockRotate;
@@ -69,5 +71,5 @@ private:
 	class AEO_Sync* sync;
 
 	UPROPERTY(EditDefaultsOnly)
-	class USoundBase* tik;
+		class USoundBase* tik;
 };
