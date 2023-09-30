@@ -148,11 +148,11 @@ void ALightSaber::Tick(float DeltaTime)
 					//Àß¶óÁø ´Ü¸é »ö±ò
 					if(nodeBlock->blockColor == 0) {  // »¡°­
 						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 1);
-						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), redDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.3f));
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), redDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.4f));
 					}
 					else if(nodeBlock->blockColor == 1) { // ÆÄ¶û
 						SliceCubeDynamicMaterial->SetScalarParameterValue(TEXT("ColorChoice"), 0);
-						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), blueDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.3f));
+						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), blueDestroyEffect, nodeBlock->GetActorLocation(), nodeBlock->GetActorRotation(), FVector(0.4f));
 					}
 					UMaterialInterface* mi = SliceCubeDynamicMaterial;
 					if (sm_pointVal) {
@@ -186,7 +186,7 @@ void ALightSaber::Tick(float DeltaTime)
 								}
 								else {
 									if (player) {
-										player->currHp--;
+										player->currHp -= 3;
 									}
 									UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 									gm->currCombo = 0;
@@ -194,7 +194,7 @@ void ALightSaber::Tick(float DeltaTime)
 							}
 							else {
 								if (player) {
-									player->currHp--;
+									player->currHp -= 3;
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 								gm->currCombo = 0;
@@ -214,7 +214,7 @@ void ALightSaber::Tick(float DeltaTime)
 							}
 							else {
 								if (player) {
-									player->currHp--;
+									player->currHp-=3;
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 								gm->currCombo = 0;
@@ -248,5 +248,4 @@ void ALightSaber::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
 

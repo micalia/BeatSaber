@@ -15,6 +15,9 @@
 #include "SB_ScoreWidgetActor.h"
 #include "Components/WidgetComponent.h"
 #include "ScoreWidget.h"
+#include "SB_GameResultActor.h"
+#include "SB_GameResultWidget.h"
+#include <UMG/Public/Components/WidgetSwitcher.h>
 
 AInGameMode::AInGameMode() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,6 +35,7 @@ void AInGameMode::BeginPlay()
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	currComboWidgetInstance = Cast<ACurrComboWidget>(UGameplayStatics::GetActorOfClass(GetWorld(), ACurrComboWidget::StaticClass()));
 	scoreWidgetInstance = Cast<ASB_ScoreWidgetActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_ScoreWidgetActor::StaticClass()));
+	gameResultWidgetInstance = Cast<ASB_GameResultActor>(UGameplayStatics::GetActorOfClass(GetWorld(), ASB_GameResultActor::StaticClass()));
 
 	player->rightSword->SetVisibility(true);
 	player->leftSword->SetVisibility(true);
@@ -47,6 +51,7 @@ void AInGameMode::BeginPlay()
 	{
 		sync = *it;
 	}
+
 }
 
 void AInGameMode::Tick(float DeltaTime)
@@ -77,6 +82,15 @@ void AInGameMode::Tick(float DeltaTime)
 	//}
 
 	ScoreUpdate();
+
+	if (!bGameEnd) {
+		if(bGameEnd == true) return;
+		if (player->currHp <= 0) {
+			bGameEnd = true;
+			return;
+			ShowGameResult();
+		}
+	}
 }
 
 void AInGameMode::ScoreUpdate()
@@ -88,6 +102,25 @@ void AInGameMode::ScoreUpdate()
 	if (scoreWidgetInstance) {
 		if (scoreWidgetInstance->scoreWidgetInstance) {
 			scoreWidgetInstance->scoreWidgetInstance->currScoreUI_txt->SetText(FText::AsNumber(score));
+		}
+	}
+}
+
+void AInGameMode::SwitchCanvas(int32 index)
+{ 
+	gameResultWidgetInstance->gameResultWidgetInstance->SwitchWidget->SetActiveWidgetIndex(index);
+}
+
+void AInGameMode::ShowGameResult()
+{ 
+	if (player) {
+		if (player->currHp <= 0) {
+			gameResultWidgetInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			SwitchCanvas(1);
+		}
+		else {
+			gameResultWidgetInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			SwitchCanvas(0);
 		}
 	}
 }

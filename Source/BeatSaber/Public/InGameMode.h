@@ -45,6 +45,13 @@ public:
 		class ASB_ScoreWidgetActor* scoreWidgetInstance;
 
 	void ScoreUpdate();
+
+	UPROPERTY()
+		class ASB_GameResultActor* gameResultWidgetInstance;
+
+	void SwitchCanvas(int32 index);
+
+	void ShowGameResult();
 public:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> StartNodeLoc;
@@ -62,5 +69,8 @@ public:
 	void GameStart();
 
 	UPROPERTY()
-	class AEO_Sync* sync;
+		class AEO_Sync* sync;
+
+public:
+	bool bGameEnd;
 };

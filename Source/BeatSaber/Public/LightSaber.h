@@ -72,4 +72,5 @@ public:
 	class UParticleSystem* redDestroyEffect;
 	UPROPERTY(EditAnywhere, Category = Effect)
 	class UParticleSystem* blueDestroyEffect;
+
 };
