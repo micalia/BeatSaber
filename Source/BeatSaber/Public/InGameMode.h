@@ -80,4 +80,6 @@ public:
 	void HideUI();
 public:
 	bool bGameEnd;
+
+	FNumberFormattingOptions numberformat;
 };

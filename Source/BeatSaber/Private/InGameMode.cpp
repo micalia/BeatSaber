@@ -54,7 +54,7 @@ void AInGameMode::BeginPlay()
 		sync = *it;
 	}
 
-
+	numberformat.UseGrouping = false;
 }
 
 void AInGameMode::Tick(float DeltaTime)
@@ -79,12 +79,12 @@ void AInGameMode::Tick(float DeltaTime)
 void AInGameMode::ScoreUpdate()
 {	
 	if (currComboWidgetInstance) {
-		currComboWidgetInstance->comboWidgetInstance->currCombo_txt->SetText(FText::AsNumber(currCombo));
+		currComboWidgetInstance->comboWidgetInstance->currCombo_txt->SetText(FText::AsNumber(currCombo, &numberformat));
 	}
 	
 	if (scoreWidgetInstance) {
 		if (scoreWidgetInstance->scoreWidgetInstance) {
-			scoreWidgetInstance->scoreWidgetInstance->currScoreUI_txt->SetText(FText::AsNumber(score));
+			scoreWidgetInstance->scoreWidgetInstance->currScoreUI_txt->SetText(FText::AsNumber(score, &numberformat));
 		}
 	}
 }
