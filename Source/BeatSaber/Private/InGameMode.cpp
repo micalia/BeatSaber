@@ -73,6 +73,7 @@ void AInGameMode::Tick(float DeltaTime)
 			}
 		}
 	}
+
 }
 
 void AInGameMode::ScoreUpdate()
@@ -97,13 +98,12 @@ void AInGameMode::ShowGameResult()
 { 
 	if (player) {
 		if (player->currHp <= 0) {
-			//gameResultWidgetActorInstance->bAppearPanel = true;
 			gameResultWidgetActorInstance->gameResultWidgetInstance->FadeEffect();
 			SwitchCanvas(1);
 		}
 		else {
+			gameResultWidgetActorInstance->gameResultWidgetInstance->Rank_txt->SetText(FText::FromString(CalculateScore(score)));
 			gameResultWidgetActorInstance->gameResultWidgetInstance->Score_txt->SetText(FText::AsNumber(score, &numberformat));
-			//gameResultWidgetActorInstance->bAppearPanel = true;
 			gameResultWidgetActorInstance->gameResultWidgetInstance->FadeEffect();
 			SwitchCanvas(0);
 		}
@@ -115,6 +115,18 @@ void AInGameMode::GameStart()
 	if (sync) {
 		sync->GenerateNote(gi->songPath, gi->patternPath, gi->bpm);
 		sync->GameStart();
+		int32 fullScore = sync->noteCount * noteScore;
+		currentRankVal = fullScore;
+		if (scoreWidgetInstance) {
+			scoreWidgetInstance->scoreWidgetInstance->currentRank_txt->SetText(FText::FromString(CalculateScore(currentRankVal)));
+		}
+		UE_LOG(LogTemp, Warning, TEXT("asdf NodeCount: %d"), sync->noteCount)
+		UE_LOG(LogTemp, Warning, TEXT("asdf FullScore: %d"), fullScore)
+		UE_LOG(LogTemp, Warning, TEXT("asdf SRank: %d"), (fullScore - (rankScoregap * 1)))
+		UE_LOG(LogTemp, Warning, TEXT("asdf ARank: %d"), (fullScore - (rankScoregap * 2)))
+		UE_LOG(LogTemp, Warning, TEXT("asdf BRank: %d"), (fullScore - (rankScoregap * 3)))
+		UE_LOG(LogTemp, Warning, TEXT("asdf CRank: %d"), (fullScore - (rankScoregap * 4)))
+		UE_LOG(LogTemp, Warning, TEXT("asdf DRank: %d"), (fullScore - (rankScoregap * 5)))
 	}
 }
 
@@ -153,4 +165,34 @@ void AInGameMode::EndGame()
 	player->rightRemoteController->SetVisibility(true);
 	HideUI();
 	ShowGameResult();
+}
+
+FString AInGameMode::CalculateScore(int32 finalScore)
+{
+	int32 fullScore = sync->noteCount * noteScore;
+	if (sync) {
+		if (finalScore > (fullScore - rankScoregap)) {
+			return "S";
+		}else if (finalScore > (fullScore - (rankScoregap * 2))) {
+			return "A";
+		}
+		else if (finalScore >= (fullScore - (rankScoregap * 3))) {
+			return "B";
+		}
+		else if (finalScore >= (fullScore - (rankScoregap * 4))) {
+			return "C";
+		}
+		else if (finalScore >= (fullScore - (rankScoregap * 5))){
+			return "D";
+		}
+	}
+
+	return "D";
+}
+
+void AInGameMode::MinusScoreFromFullScore()
+{
+	currentRankVal -= noteScore;
+	
+	scoreWidgetInstance->scoreWidgetInstance->currentRank_txt->SetText(FText::FromString(CalculateScore(currentRankVal)));
 }

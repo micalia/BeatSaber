@@ -82,6 +82,17 @@ public:
 	bool bGameEnd;
 
 	void EndGame();
+	UPROPERTY(EditAnywhere)
+	int32 rankScoregap = 150;
+	UPROPERTY(EditAnywhere)
+	int32 noteScore = 10;
+	FString CalculateScore(int32 score);
+
+public:
+	int32 currentRankVal;
+	
+	UFUNCTION(BlueprintCallable)
+	void MinusScoreFromFullScore();
 
 	FNumberFormattingOptions numberformat;
 };

@@ -41,7 +41,10 @@ void ASB_Destroyzone::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	ANodeBlock* nodeBlock = Cast<ANodeBlock>(OtherActor);
 	if (nodeBlock) {
 		if (!nodeBlock->bSlice) {
-			gameMode->currCombo = 0;
+			if (gameMode) {
+				gameMode->currCombo = 0;
+				gameMode->MinusScoreFromFullScore();
+			}
 			if (player) {
 				player->currHp--;
 				//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Purple, FString::Printf(TEXT("Hp decrease")), true, FVector2D(1, 1));

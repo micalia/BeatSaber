@@ -16,5 +16,7 @@ class BEATSABER_API UScoreWidget : public UUserWidget
 
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UTextBlock* currScoreUI_txt;
+		class UTextBlock* currScoreUI_txt;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+		class UTextBlock* currentRank_txt;
 };

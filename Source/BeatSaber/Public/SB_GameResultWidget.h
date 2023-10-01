@@ -26,6 +26,8 @@ public:
 		class UImage* MusicThumbnail_img;
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
 		class UTextBlock* Score_txt;
+	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
+		class UTextBlock* Rank_txt;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget), Category = MySettings)
 		class UTextBlock* Subtitle_txt2;

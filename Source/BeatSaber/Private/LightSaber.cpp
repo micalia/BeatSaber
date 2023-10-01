@@ -187,6 +187,7 @@ void ALightSaber::Tick(float DeltaTime)
 								else {
 									if (player) {
 										player->currHp -= 3;
+										gm->MinusScoreFromFullScore();
 									}
 									UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 									gm->currCombo = 0;
@@ -195,6 +196,7 @@ void ALightSaber::Tick(float DeltaTime)
 							else {
 								if (player) {
 									player->currHp -= 3;
+									gm->MinusScoreFromFullScore();
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 								gm->currCombo = 0;
@@ -215,6 +217,7 @@ void ALightSaber::Tick(float DeltaTime)
 							else {
 								if (player) {
 									player->currHp-=3;
+									gm->MinusScoreFromFullScore();
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
 								gm->currCombo = 0;
