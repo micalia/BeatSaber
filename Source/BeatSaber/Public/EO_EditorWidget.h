@@ -40,6 +40,16 @@ public:
 	class UButton* btn_Add;
 	UPROPERTY(meta = (BindWidget))
 	class UButton* btn_Delete;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btn_Play;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btn_RedNote;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btn_BlueNote;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btn_Bomb;
+	UPROPERTY(meta = (BindWidget))
+	class UButton* btn_Wall;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category="Settings|Generate")
@@ -49,9 +59,11 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category="Settings|Generate")
 	TSubclassOf<class AEO_GridController> gridControllerFactory;
+	UPROPERTY(VisibleAnywhere)
+	class AEO_GridController* gridController;
 
 public:
-	FString selectSongPath;
+	FString selectSongPath = "none";
 
 	float selectBPM;
 	float selectOffset;
@@ -60,6 +72,16 @@ private:
 	void GenerateList();
 	UFUNCTION()
 	void AddPattern();
+	UFUNCTION()
+	void SoundPlay();
+	UFUNCTION()
+	void ChangeRedNote();
+	UFUNCTION()
+	void ChangeBlueNote();
+	UFUNCTION()
+	void ChangeBomb();
+	UFUNCTION()
+	void ChangeWall();
 
 public:
 	void SaveSelectedData(FString songPath, float BPM, float offset);

@@ -58,6 +58,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsFinished = false;
+	UPROPERTY(BlueprintReadOnly)
+	int noteCount = 0;
 
 private:
 	class AVR_Player* player;

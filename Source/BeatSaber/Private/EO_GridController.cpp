@@ -175,7 +175,7 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 void AEO_GridController::MakeGrid()
 {
-	UE_LOG(LogTemp,Warning,TEXT("%f"), musicBPM);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), musicBPM);
 	//musicBPM = 169.74f;
 	//offset = 100.f;
 	frequeny = 44100.0f;
@@ -188,51 +188,54 @@ void AEO_GridController::MakeGrid()
 
 	//audioComp->SetSound(musicSound);
 
-	for (float i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
+	if (audioComp->GetSound() != nullptr)
 	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
-		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		for (float i = 0; i < audioComp->GetSound()->GetDuration() * 1000 + oneBeatTime * 1000;)
+		{
+			AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
+			gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
-		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+			gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
-		arr4BitGrid.Add(gridTemp);
-		gridTemp->SetGridNumber(arr4BitGrid.Num());
+			arr4BitGrid.Add(gridTemp);
+			gridTemp->SetGridNumber(arr4BitGrid.Num());
 
-		i += oneBeatTime * 1000;
+			i += oneBeatTime * 1000;
+		}
+
+		for (float i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+		{
+			AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
+			gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+			AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+			gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+			gridTemp->SetActive(false);
+			arr8BitGrid.Add(gridTemp);
+
+			i += oneBeatTime * 1000;
+		}
+
+		for (float i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
+		{
+			AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
+			gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+			AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
+			gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+			gridTemp->SetActive(false);
+			arr16BitGrid.Add(gridTemp);
+
+			i += oneBeatTime * 500;
+		}
+
+		cursorNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
+		cursorNote->SwitchNote(0);
+		cursorNote->SwitchNoteType(0);
 	}
-
-	for (float i = oneBeatTime / 2 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
-	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
-		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
-		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
-		gridTemp->SetActive(false);
-		arr8BitGrid.Add(gridTemp);
-
-		i += oneBeatTime * 1000;
-	}
-
-	for (float i = oneBeatTime / 4 * 1000; i < audioComp->GetSound()->GetDuration() * 1000;)
-	{
-		AActor* gridParent = GetWorld()->SpawnActor<AActor>(gridTemplate, FVector(speed * (i * 0.001f) + offset, 0, 0), FRotator());
-		gridParent->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-
-		AEO_Grid* gridTemp = GetWorld()->SpawnActor<AEO_Grid>(gridFactory, gridParent->GetActorLocation(), FRotator());
-		gridTemp->AttachToActor(gridParent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-
-		gridTemp->SetActive(false);
-		arr16BitGrid.Add(gridTemp);
-
-		i += oneBeatTime * 500;
-	}
-
-	cursorNote = Cast<AEO_CursorNote>(GetWorld()->SpawnActor<AEO_CursorNote>(cursorFactory, FVector(0, 0, 0), FRotator()));
-	cursorNote->SwitchNote(0);
-	cursorNote->SwitchNoteType(0);
 }
 
 void AEO_GridController::MoveGrid(float value)
@@ -249,7 +252,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X < 0)
 			{
-				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime) + offset, 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime)+offset, 0, 0));
 			}
 			else
 			{
@@ -260,7 +263,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime) + offset, 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime)+offset, 0, 0));
 			}
 			else
 			{
@@ -272,35 +275,38 @@ void AEO_GridController::MoveGrid(float value)
 
 void AEO_GridController::PlacedNote()
 {
-	if (currentGrid->noteArr[xArrIndex][yArrIndex] == nullptr && !isWallPlacing)
+	if (currentGrid != nullptr)
 	{
-		AEO_RhythmNote* noteTemp;
-
-		FActorSpawnParameters param;
-		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, cursorNote->GetTransform(), param);
-
-		noteTemp->AttachToActor(currentGrid->GetAttachParentActor(), FAttachmentTransformRules::KeepWorldTransform);
-		noteTemp->myXPos = xArrIndex;
-		noteTemp->myYPos = yArrIndex;
-		noteTemp->SetNote(colorIndex);
-		noteTemp->SetNoteType(typeIndex);
-		currentGrid->noteArr[xArrIndex][yArrIndex] = noteTemp;
-
-		if (noteTemp->colorIndex == 3)
+		if (currentGrid->noteArr[xArrIndex][yArrIndex] == nullptr && !isWallPlacing)
 		{
-			wallTemp = noteTemp;
-			wallGridTemp = currentGrid;
-			firstWallPoint = FVector(currentGrid->GetActorLocation().X, noteTemp->GetActorLocation().Y, noteTemp->GetActorLocation().Z);
-			isWallPlacing = true;
+			AEO_RhythmNote* noteTemp;
+
+			FActorSpawnParameters param;
+			param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			noteTemp = GetWorld()->SpawnActor<AEO_RhythmNote>(noteFactory, cursorNote->GetTransform(), param);
+
+			noteTemp->AttachToActor(currentGrid->GetAttachParentActor(), FAttachmentTransformRules::KeepWorldTransform);
+			noteTemp->myXPos = xArrIndex;
+			noteTemp->myYPos = yArrIndex;
+			noteTemp->SetNote(colorIndex);
+			noteTemp->SetNoteType(typeIndex);
+			currentGrid->noteArr[xArrIndex][yArrIndex] = noteTemp;
+
+			if (noteTemp->colorIndex == 3)
+			{
+				wallTemp = noteTemp;
+				wallGridTemp = currentGrid;
+				firstWallPoint = FVector(currentGrid->GetActorLocation().X, noteTemp->GetActorLocation().Y, noteTemp->GetActorLocation().Z);
+				isWallPlacing = true;
+			}
 		}
-	}
-	else if (isWallPlacing)
-	{
-		wallTemp->endPoint = currentGrid->GetActorLocation().X;
-		wallTemp->myXPos2 = xArrIndex;
-		wallTemp->myYPos2 = yArrIndex;
-		isWallPlacing = false;
+		else if (isWallPlacing)
+		{
+			wallTemp->endPoint = UKismetMathLibrary::FFloor((FMath::Abs(GetActorLocation().X) + currentGrid->GetActorLocation().X) * 1000 / speed);
+			wallTemp->myXPos2 = xArrIndex;
+			wallTemp->myYPos2 = yArrIndex;
+			isWallPlacing = false;
+		}
 	}
 }
 
@@ -505,7 +511,7 @@ void AEO_GridController::OutData()
 		textData += FString::SanitizeFloat(noteData->GetActorRotation().Roll);
 		textData += ",";
 		//wall end point
-		textData += FString::SanitizeFloat(UKismetMathLibrary::FFloor(noteData->endPoint * 1000 / speed));
+		textData += FString::FromInt(noteData->endPoint);
 		textData += ",";
 		//x2
 		textData += FString::FromInt(noteData->myXPos2);
