@@ -52,6 +52,8 @@ public:
 	void SwitchCanvas(int32 index);
 
 	void ShowGameResult();
+	UPROPERTY()
+	class USoundBase* clearSound;
 public:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> StartNodeLoc;

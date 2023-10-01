@@ -124,6 +124,8 @@ public:
 	void CallScrollDown();
 
 	void ClickTrigger();
+	UPROPERTY(EditAnywhere)
+	class USoundBase* clickSound;
 
 	UFUNCTION(BlueprintCallable)
 	void SetMappingContext();

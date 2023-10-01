@@ -27,6 +27,12 @@ AInGameMode::AInGameMode() {
 	if (tempNodeBlockObj.Succeeded()) {
 		nodeBlockFactory = tempNodeBlockObj.Class;
 	}
+
+	ConstructorHelpers::FObjectFinder<USoundBase> tempClearSound(TEXT("/Script/Engine.SoundWave'/Game/SB/Sounds/LevelClear.LevelClear'"));
+	if (tempClearSound.Succeeded()) {
+		clearSound = tempClearSound.Object;
+	}
+
 }
 
 void AInGameMode::BeginPlay()
@@ -102,6 +108,7 @@ void AInGameMode::ShowGameResult()
 			SwitchCanvas(1);
 		}
 		else {
+			UGameplayStatics::PlaySound2D(GetWorld(), clearSound);
 			gameResultWidgetActorInstance->gameResultWidgetInstance->Rank_txt->SetText(FText::FromString(CalculateScore(score)));
 			gameResultWidgetActorInstance->gameResultWidgetInstance->Score_txt->SetText(FText::AsNumber(score, &numberformat));
 			gameResultWidgetActorInstance->gameResultWidgetInstance->FadeEffect();

@@ -75,7 +75,7 @@ void AEO_Sync::Tick(float DeltaTime)
 
 void AEO_Sync::MusicPlay()
 {
-	audioComp->Play();
+	audioComp->Play(110);
 }
 
 void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
