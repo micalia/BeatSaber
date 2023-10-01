@@ -18,7 +18,6 @@ public:
 	AWallObstacle();
 
 public:
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
 	class USceneComponent* rootComp;
@@ -34,9 +33,5 @@ public:
 	UPROPERTY(EditAnywhere)
 	float wallZscaleRatio = 0.5f;
 
-	UPROPERTY(EditAnywhere)
-	float speed = 700;
 
-private:
-	class AEO_Sync* sync;
 };

@@ -31,20 +31,5 @@ AWallObstacle::AWallObstacle()
 		compWallMesh->SetStaticMesh(tempWallObstacle.Object);
 	}
 
-	sync = Cast<AEO_Sync>(UGameplayStatics::GetActorOfClass(GetWorld(), AEO_Sync::StaticClass()));
-}
-
-void AWallObstacle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (sync != nullptr)
-	{
-		if (sync->isGenerate && sync->bGameStart)
-		{
-			FVector p0 = GetActorLocation();
-			FVector vt = FVector::ForwardVector * -1 * speed * DeltaTime;
-			SetActorLocation(p0 + vt);
-		}
-	}
+	
 }
