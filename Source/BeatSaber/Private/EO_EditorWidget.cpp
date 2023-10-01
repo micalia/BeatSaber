@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EO_EditorWidget.h"
 #include <UMG/Public/Components/ScrollBox.h>
 #include <UMG/Public/Components/TextBlock.h>
@@ -64,18 +61,62 @@ void UEO_EditorWidget::GenerateList()
 
 void UEO_EditorWidget::AddPattern()
 {
-	UE_LOG(LogTemp,Warning,TEXT("clicked"));
-	FStreamableManager assetLoader;
+	if (selectSongPath != "none")
+	{
+		UE_LOG(LogTemp, Warning, TEXT("clicked"));
+		FStreamableManager assetLoader;
 
-	AEO_GridController* gcTemp = GetWorld()->SpawnActor<AEO_GridController>(gridControllerFactory, FVector(), FRotator());
+		gridController = GetWorld()->SpawnActor<AEO_GridController>(gridControllerFactory, FVector(), FRotator());
 
-	USoundBase* music = Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(selectSongPath)));
-	gcTemp->audioComp->SetSound(music);
-	gcTemp->musicBPM = selectBPM;
-	gcTemp->offset = selectOffset;
-	gcTemp->MakeGrid();
+		USoundBase* music = Cast<USoundBase>(assetLoader.LoadSynchronous(FPaths::ConvertRelativePathToFull(selectSongPath)));
+		gridController->audioComp->SetSound(music);
+		gridController->musicBPM = selectBPM;
+		gridController->offset = selectOffset;
+		gridController->MakeGrid();
 
-	ws_Switcher->SetActiveWidgetIndex(1);
+		ws_Switcher->SetActiveWidgetIndex(1);
+
+		if (btn_Play != nullptr)
+			btn_Play->OnClicked.AddDynamic(this, &UEO_EditorWidget::SoundPlay);
+		if (btn_RedNote != nullptr)
+			btn_RedNote->OnClicked.AddDynamic(this, &UEO_EditorWidget::ChangeRedNote);
+		if (btn_BlueNote != nullptr)
+			btn_BlueNote->OnClicked.AddDynamic(this, &UEO_EditorWidget::ChangeBlueNote);
+		if (btn_Bomb != nullptr)
+			btn_Bomb->OnClicked.AddDynamic(this, &UEO_EditorWidget::ChangeBomb);
+		if (btn_Wall != nullptr)
+			btn_Wall->OnClicked.AddDynamic(this, &UEO_EditorWidget::ChangeWall);
+	}
+}
+
+void UEO_EditorWidget::SoundPlay()
+{
+	if (gridController != nullptr)
+		gridController->SoundPlay();
+}
+
+void UEO_EditorWidget::ChangeRedNote()
+{
+	if (gridController != nullptr)
+		gridController->ChangeRedColor();
+}
+
+void UEO_EditorWidget::ChangeBlueNote()
+{
+	if (gridController != nullptr)
+		gridController->ChangeBlueColor();
+}
+
+void UEO_EditorWidget::ChangeBomb()
+{
+	if (gridController != nullptr)
+		gridController->ChangeBomb();
+}
+
+void UEO_EditorWidget::ChangeWall()
+{
+	if (gridController != nullptr)
+		gridController->ChangeWall();
 }
 
 void UEO_EditorWidget::SaveSelectedData(FString songPath, float BPM, float offset)

@@ -97,16 +97,17 @@ private:
 	void NodeDown();
 	void BitUp();
 	void BitDown();
-	void ChangeRedColor();
-	void ChangeBlueColor();
-	void ChangeBomb();
-	void ChangeWall();
 	void ChangeNoteType();
 	void ChangeView();
 
-	void SoundPlay();
 	void OutData();
 
 public:
 	void MakeGrid();
+	void SoundPlay();
+
+	void ChangeRedColor();
+	void ChangeBlueColor();
+	void ChangeBomb();
+	void ChangeWall();
 };
