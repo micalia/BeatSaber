@@ -22,6 +22,12 @@ public:
 public:
 	UPROPERTY(BlueprintReadOnly)
 	class UAudioComponent* audioComp;
+	UPROPERTY()
+	class UTimelineComponent* timelineComp;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|Timeline")
+	class UCurveFloat* fadeoutTimeline;
 
 public:
 	UPROPERTY(EditDefaultsOnly)
@@ -73,4 +79,10 @@ private:
 public:
 	void GenerateNote(FString songPath, FString patternPath, float bpm);
 	void GameStart();
+	UFUNCTION()
+	void FadeoutMusic(float output);
+	UFUNCTION()
+	void TimelineFinished();
+	UFUNCTION(BlueprintCallable)
+	void GameOverFadeout();
 };

@@ -10,6 +10,7 @@
 #include <Engine/StreamableManager.h>
 #include "WallObstacle.h"
 #include "SphereObstacle.h"
+#include <Components/TimelineComponent.h>
 
 
 AEO_Sync::AEO_Sync()
@@ -40,8 +41,16 @@ AEO_Sync::AEO_Sync()
 		patternData = patternTemp.Object;
 	}
 
+	ConstructorHelpers::FObjectFinder<UCurveFloat> fadeoutTemp(TEXT("'/Game/EO/Blueprints/MusicFader.MusicFader'"));
+	if (fadeoutTemp.Succeeded())
+	{
+		fadeoutTimeline = fadeoutTemp.Object;
+	}
+
 	audioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComp->SetupAttachment(RootComponent);
+	RootComponent = audioComp;
+
+	timelineComp = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline Component"));
 }
 
 void AEO_Sync::BeginPlay()
@@ -57,6 +66,22 @@ void AEO_Sync::BeginPlay()
 		bGameStart = true;
 	}
 
+	if (fadeoutTimeline != nullptr)
+	{
+		float min = 0, max = 0;
+		fadeoutTimeline->GetTimeRange(min, max);
+		timelineComp->SetTimelineLength(max);
+
+		FOnTimelineFloat timelineUpdateDelegate;
+		timelineUpdateDelegate.BindUFunction(this, FName("FadeoutMusic"));
+
+		FOnTimelineEvent timelineFinishedEvent;
+		timelineFinishedEvent.BindUFunction(this, FName("TimelineFinished"));
+
+		timelineComp->AddInterpFloat(fadeoutTimeline, timelineUpdateDelegate);
+		timelineComp->SetTimelineFinishedFunc(timelineFinishedEvent);
+	}
+
 	player = Cast<AVR_Player>(UGameplayStatics::GetActorOfClass(GetWorld(), AVR_Player::StaticClass()));
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 200));
@@ -68,7 +93,7 @@ void AEO_Sync::BeginPlay()
 void AEO_Sync::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (gameModeBase != nullptr)
 		bGameStart = gameModeBase->bGameStart;
 }
@@ -123,7 +148,7 @@ void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
 
 				FVector dist = FVector(vecEnd.X - vecFirst.X, vecEnd.Y + vecFirst.Y, vecEnd.Z - vecFirst.Z);
 				float xRef = (700 * (oneBeatTime / 4 * 1000) * 0.001f);
-				
+
 				AWallObstacle* wallObj = GetWorld()->SpawnActor<AWallObstacle>(wallFactory, FVector(vecFirst.X, dist.Y / 2, GetActorLocation().Z + dist.Z / 2), FRotator(0, 180, 0));
 				wallObj->SetActorRelativeScale3D(FVector((FMath::RoundToInt(dist.X / xRef) + 1) * (xRef / 100), (FMath::Abs(vecEnd.Y - vecFirst.Y) / 70 + 1), (FMath::Abs(vecEnd.Z - vecFirst.Z) / 60 + 1)));
 			}
@@ -132,7 +157,6 @@ void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
 
 	//UE_LOG(LogTemp, Warning, TEXT("All Generated"));
 	isGenerate = true;
-	UE_LOG(LogTemp,Warning,TEXT("%d"),noteCount);
 }
 
 void AEO_Sync::GameStart()
@@ -142,6 +166,24 @@ void AEO_Sync::GameStart()
 		FTimerHandle handle;
 		GetWorldTimerManager().SetTimer(handle, this, &AEO_Sync::MusicPlay, 3.0f, false);
 	}
+}
+
+void AEO_Sync::FadeoutMusic(float output)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Timeline in"));
+	UE_LOG(LogTemp, Warning, TEXT("%f"), output);
+	audioComp->SetPitchMultiplier(output);
+}
+
+void AEO_Sync::TimelineFinished()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Timeline finished"));
+}
+
+void AEO_Sync::GameOverFadeout()
+{
+	timelineComp->PlayFromStart();
+	audioComp->FadeOut(2.3f, 0);
 }
 
 float AEO_Sync::XGeneratePos(int rowX)
