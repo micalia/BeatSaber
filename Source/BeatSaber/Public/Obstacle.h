@@ -23,4 +23,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere)
+	float speed = 700;
+
+	UPROPERTY()
+	class AInGameMode* gm;
+
+private:
+	class AEO_Sync* sync;
 };
