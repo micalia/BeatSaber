@@ -81,5 +81,7 @@ public:
 public:
 	bool bGameEnd;
 
+	void EndGame();
+
 	FNumberFormattingOptions numberformat;
 };

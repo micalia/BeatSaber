@@ -36,5 +36,12 @@ void ASB_GameResultActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*if (bAppearPanel) {
+		if (currOpacityTime < opacityDelayTime) {
+			currOpacityTime += DeltaTime;
+			opacityAlpha = currOpacityTime / opacityDelayTime;
+			gameResultWidgetInstance->SetRenderOpacity(opacityAlpha);
+		}
+	}*/
 }
 

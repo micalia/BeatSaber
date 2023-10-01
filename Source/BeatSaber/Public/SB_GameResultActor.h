@@ -31,4 +31,11 @@ public:
 
 	UPROPERTY()
 	class USB_GameResultWidget* gameResultWidgetInstance;
+
+	/*bool bAppearPanel;
+	float opacityAlpha;
+	UPROPERTY(EditAnywhere)
+	float opacityDelayTime = 1;
+	float currOpacityTime;*/
+
 };

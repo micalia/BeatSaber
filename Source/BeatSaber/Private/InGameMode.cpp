@@ -44,9 +44,7 @@ void AInGameMode::BeginPlay()
 
 	gi = Cast<UBeatSaberGameInstance>(GetGameInstance());
 	if (gi) {
-		UE_LOG(LogTemp, Warning, TEXT("SongPath : %s / PatternPath : %s / bpm : %f"), *gi->songPath, *gi->patternPath, gi->bpm)
 		SetMusicInfoToResultPanel(gi->songName, gi->artist, gi->imagePath);
-
 	}
 
 	for (TActorIterator<AEO_Sync> it(GetWorld()); it; ++it)
@@ -66,12 +64,13 @@ void AInGameMode::Tick(float DeltaTime)
 	if (!bGameEnd) {
 		if(bGameEnd == true) return;
 		if (player->currHp <= 0) {
-			bGameEnd = true;
-			player->rightSword->SetVisibility(false);
-			player->leftSword->SetVisibility(false);
-			player->rightRemoteController->SetVisibility(true);
-			HideUI();
-			ShowGameResult();
+			EndGame();
+		}
+		
+		if(sync){
+			if (sync->bIsFinished) {
+				EndGame();
+			}
 		}
 	}
 }
@@ -98,11 +97,14 @@ void AInGameMode::ShowGameResult()
 { 
 	if (player) {
 		if (player->currHp <= 0) {
-			gameResultWidgetActorInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			//gameResultWidgetActorInstance->bAppearPanel = true;
+			gameResultWidgetActorInstance->gameResultWidgetInstance->FadeEffect();
 			SwitchCanvas(1);
 		}
 		else {
-			gameResultWidgetActorInstance->gameResultWidgetInstance->SetRenderOpacity(1);
+			gameResultWidgetActorInstance->gameResultWidgetInstance->Score_txt->SetText(FText::AsNumber(score, &numberformat));
+			//gameResultWidgetActorInstance->bAppearPanel = true;
+			gameResultWidgetActorInstance->gameResultWidgetInstance->FadeEffect();
 			SwitchCanvas(0);
 		}
 	}
@@ -141,4 +143,14 @@ void AInGameMode::SetMusicInfoToResultPanel(FString songName, FString artist, FS
 		gameResultWidgetActorInstance->gameResultWidgetInstance->MusicThumbnail_img2->SetBrush(Brush);
 
 	}
+}
+
+void AInGameMode::EndGame()
+{
+	bGameEnd = true;
+	player->rightSword->SetVisibility(false);
+	player->leftSword->SetVisibility(false);
+	player->rightRemoteController->SetVisibility(true);
+	HideUI();
+	ShowGameResult();
 }
