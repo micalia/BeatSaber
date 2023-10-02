@@ -86,6 +86,7 @@ public:
 	float offset = 0;
 
 	FVector syncPos;
+	FString outdataName;
 
 private:
 	void MoveGrid(float value);
@@ -100,8 +101,6 @@ private:
 	void ChangeNoteType();
 	void ChangeView();
 
-	void OutData();
-
 public:
 	void MakeGrid();
 	void SoundPlay();
@@ -110,4 +109,7 @@ public:
 	void ChangeBlueColor();
 	void ChangeBomb();
 	void ChangeWall();
+
+	void OutData(FString csvName = "");
+	void BindOutData();
 };

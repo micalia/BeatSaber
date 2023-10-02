@@ -86,7 +86,7 @@ void AEO_Sync::BeginPlay()
 	if (player != nullptr)
 		SetActorLocation(FVector(player->GetActorLocation().X + 140, player->GetActorLocation().Y, GetActorLocation().Z + 200));
 
-	/*GenerateNote(TEXT("'/Game/EO/Sounds/Yuuri-BETELGEUSE.Yuuri-BETELGEUSE'"), TEXT("'/Game/EO/Resources/BETELGEUSE_Complete.BETELGEUSE_Complete'"), 90.f);
+	/*GenerateNote(TEXT("'/Game/EO/Sounds/BTS-Dynamite__Short_Version_.BTS-Dynamite__Short_Version_'"), TEXT("'/Game/EO/Resources/Dynamite.Dynamite'"), 148.f);
 	GameStart();*/
 }
 
@@ -100,7 +100,7 @@ void AEO_Sync::Tick(float DeltaTime)
 
 void AEO_Sync::MusicPlay()
 {
-	audioComp->Play(110);
+	audioComp->Play();
 }
 
 void AEO_Sync::GenerateNote(FString songPath, FString patternPath, float bpm)
