@@ -70,6 +70,9 @@ void AInGameMode::Tick(float DeltaTime)
 	if (!bGameEnd) {
 		if(bGameEnd == true) return;
 		if (player->currHp <= 0) {
+			if (sync) {
+				sync->GameOverFadeout();
+			}
 			EndGame();
 		}
 		
