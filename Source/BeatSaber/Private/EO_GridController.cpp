@@ -158,7 +158,7 @@ void AEO_GridController::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction(TEXT("Click"), IE_Pressed, this, &AEO_GridController::PlacedNote);
 	PlayerInputComponent->BindAction(TEXT("RemoveClick"), IE_Pressed, this, &AEO_GridController::RemoveNote);
 	PlayerInputComponent->BindAction(TEXT("SoundPlay"), IE_Pressed, this, &AEO_GridController::SoundPlay);
-	PlayerInputComponent->BindAction(TEXT("TestKey"), IE_Pressed, this, &AEO_GridController::OutData);
+	PlayerInputComponent->BindAction(TEXT("TestKey"), IE_Pressed, this, &AEO_GridController::BindOutData);
 	PlayerInputComponent->BindAction(TEXT("LeftRotation"), IE_Pressed, this, &AEO_GridController::NodeLeftRotation);
 	PlayerInputComponent->BindAction(TEXT("RightRotation"), IE_Pressed, this, &AEO_GridController::NodeRightRotation);
 	PlayerInputComponent->BindAction(TEXT("UpNode"), IE_Pressed, this, &AEO_GridController::NodeUp);
@@ -252,7 +252,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X < 0)
 			{
-				SetActorLocation(GetActorLocation() + FVector(speed * (oneBeatTime)+offset, 0, 0));
+				SetActorLocation(GetActorLocation() + FVector(speed * oneBeatTime, 0, 0));
 			}
 			else
 			{
@@ -263,7 +263,7 @@ void AEO_GridController::MoveGrid(float value)
 		{
 			if (GetActorLocation().X > -(audioComp->GetSound()->GetDuration() * speed))
 			{
-				SetActorLocation(GetActorLocation() - FVector(speed * (oneBeatTime)+offset, 0, 0));
+				SetActorLocation(GetActorLocation() - FVector(speed * oneBeatTime, 0, 0));
 			}
 			else
 			{
@@ -477,7 +477,7 @@ void AEO_GridController::SoundPlay()
 	}
 }
 
-void AEO_GridController::OutData()
+void AEO_GridController::OutData(FString csvName)
 {
 	int i = 0;
 
@@ -524,7 +524,21 @@ void AEO_GridController::OutData()
 		i++;
 	}
 
-	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("BETELGEUSE.csv"), data, true);
+	if(csvName.IsEmpty())
+		outdataName += TEXT("test.csv");
+	else
+	{
+		outdataName += csvName;
+		outdataName += TEXT(".csv");
+	}
+
+	UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), outdataName, data, true);
+	//UCsvFileManager::SaveArrayText(UKismetSystemLibrary::GetProjectDirectory(), TEXT("BETELGEUSE.csv"), data, true);
 	//UE_LOG(LogTemp, Warning, TEXT("CSV make complete"));
+}
+
+void AEO_GridController::BindOutData()
+{
+	OutData();
 }
 
