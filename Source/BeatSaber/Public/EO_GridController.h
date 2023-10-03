@@ -58,7 +58,6 @@ private:
 	int yArrIndex = 0;
 	int xArrIndex = 2;
 	float zPos = 0;
-	int colorIndex = 0;
 	int typeIndex = 0;
 
 	int bitIndex = 0;
@@ -82,6 +81,8 @@ private:
 public:
 	bool isPlaying = false;
 
+	int colorIndex = 0;
+	
 	float musicBPM = 0;
 	float offset = 0;
 
