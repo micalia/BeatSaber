@@ -28,10 +28,37 @@ UEO_EditorWidget::UEO_EditorWidget(const FObjectInitializer& Object) : Super(Obj
 
 void UEO_EditorWidget::NativeConstruct()
 {
+	Super::NativeConstruct();
+
 	if (btn_Add != nullptr)
 		btn_Add->OnClicked.AddDynamic(this, &UEO_EditorWidget::AddPattern);
 
 	GenerateList();
+}
+
+void UEO_EditorWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (gridController != nullptr)
+	{
+		if (gridController->colorIndex == 0)
+		{
+			text_Tip->SetText(FText::FromString(redBlockInfo));
+		}
+		else if (gridController->colorIndex == 1)
+		{
+			text_Tip->SetText(FText::FromString(blueBlockInfo));
+		}
+		else if (gridController->colorIndex == 2)
+		{
+			text_Tip->SetText(FText::FromString(bombInfo));
+		}
+		else if (gridController->colorIndex == 3)
+		{
+			text_Tip->SetText(FText::FromString(wallInfo)); 
+		}
+	}
 }
 
 void UEO_EditorWidget::GenerateList()
