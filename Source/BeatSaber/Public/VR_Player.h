@@ -79,7 +79,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	float decreaseDelayTime = 0.5f;
+	float decreaseDelayTime = 0.25f;
 	float currTime;
 
 	int32 crashWallCount;

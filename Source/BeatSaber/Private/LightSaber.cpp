@@ -186,7 +186,7 @@ void ALightSaber::Tick(float DeltaTime)
 								}
 								else {
 									if (player) {
-										player->currHp -= 3;
+										player->currHp -= missBlockDamage;
 										gm->MinusScoreFromFullScore();
 									}
 									UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
@@ -195,7 +195,7 @@ void ALightSaber::Tick(float DeltaTime)
 							}
 							else {
 								if (player) {
-									player->currHp -= 3;
+									player->currHp -= missBlockDamage;
 									gm->MinusScoreFromFullScore();
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);
@@ -216,7 +216,7 @@ void ALightSaber::Tick(float DeltaTime)
 							}
 							else {
 								if (player) {
-									player->currHp-=3;
+									player->currHp-= missBlockDamage;
 									gm->MinusScoreFromFullScore();
 								}
 								UGameplayStatics::PlaySound2D(GetWorld(), badCutSound, 0.5f);

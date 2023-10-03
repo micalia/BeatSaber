@@ -73,4 +73,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = Effect)
 	class UParticleSystem* blueDestroyEffect;
 
+	UPROPERTY(EditAnywhere)
+	int32 missBlockDamage = 2;
 };
